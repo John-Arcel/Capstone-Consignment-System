@@ -1,2 +1,2 @@
-public class Consignee {
+public class Consignee extends Entity{
 }
