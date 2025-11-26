@@ -5,4 +5,5 @@ public class MainProgram {
     private JPanel SideBarMenu;
     private JLabel greetTextField;
     private JButton dashboardButton;
+    private JPanel MainContentPanel;
 }
