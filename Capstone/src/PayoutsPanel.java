@@ -1,18 +1,44 @@
 import javax.swing.*;
+import java.awt.*;
 
-public class PayoutsPanel extends JPanel{
+public class PayoutsPanel extends JFrame{
 
-    PayoutsPanel(){
-        this.setSize(800,600);
-        this.setLayout(null);
+    private JPanel content;
+    private JTextField textField1;
+    private JTable HistoryTable;
+    private JTextPane TotalPayout;
+    private JTextPane PendingPayout;
+    private JTable table1;
 
-        String[] columnNames = {"Payout ID" , "Consignor" , "Paid" , "Date"};
-        Object[][] data = {{"P0000001", "P0000002", "P0000003"},{"Sally's shop", "GAP" , "Bench"},{10, 20 ,30} ,{"11/02/25", "11/03/25", "11/04/25"}};
+    public PayoutsPanel(){
+        //setSize(800,600);
 
-        JTable table = new JTable(data, columnNames);
-        table.setBounds(50,50,700,200);
-        this.add(table);
-        this.setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setContentPane(content);
+
+        String[] HistoryHeaders= {"Payout ID" , "Consignor" , "Paid" , "Date"};
+        Object[][] HistoryData = {
+                {"P0000001","Sally's shop",10,"11/02/25"},
+                {"P0000002","GAP",20,"11/03/25"},
+                {"P0000003","Bench",30,"11/04/25"},
+        };
+
+        String[] PendingHeaders = {"Payout ID" , "Consignor" , "Paid" , "Date"};
+        Object[][] PendingData = {
+                {"P0000001","Sally's shop",10,"11/02/25"},
+                {"P0000002","GAP",20,"11/03/25"},
+                {"P0000003","Bench",30,"11/04/25"},
+        };
+
+
+        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+        HistoryTable.setRowHeight(30);
+        HistoryTable.setBounds(0,0,100,200);
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+
     }
 
     public static void main(String[] args) {
