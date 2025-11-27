@@ -23,6 +23,8 @@
         </constraints>
         <properties>
           <background color="-1573377"/>
+          <opaque value="true"/>
+          <visible value="true"/>
         </properties>
         <border type="none"/>
         <children>
@@ -30,6 +32,7 @@
             <constraints/>
             <properties>
               <autoCreateRowSorter value="true"/>
+              <opaque value="true"/>
             </properties>
           </component>
         </children>
@@ -40,6 +43,19 @@
         </constraints>
         <properties>
           <text value="Items in inventory: "/>
+        </properties>
+      </component>
+      <component id="561af" class="javax.swing.JTextField" binding="searchTextField" default-binding="true">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <focusable value="true"/>
+          <requestFocusEnabled value="true"/>
+          <text value=""/>
+          <toolTipText value=""/>
         </properties>
       </component>
     </children>
