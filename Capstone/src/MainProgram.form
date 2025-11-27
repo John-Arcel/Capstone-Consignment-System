@@ -28,7 +28,7 @@
               <text value="Welcome, [name]"/>
             </properties>
           </component>
-          <component id="2f6a1" class="javax.swing.JLabel">
+          <component id="2f6a1" class="javax.swing.JLabel" binding="adminID">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -62,7 +62,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="2c4e9" class="javax.swing.JButton" default-binding="true">
+          <component id="2c4e9" class="javax.swing.JButton" binding="inventoryButton">
             <constraints>
               <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -79,7 +79,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="dc534" class="javax.swing.JButton" default-binding="true">
+          <component id="dc534" class="javax.swing.JButton" binding="transactionsButton">
             <constraints>
               <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -96,7 +96,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="33537" class="javax.swing.JButton" default-binding="true">
+          <component id="33537" class="javax.swing.JButton" binding="payoutsButton">
             <constraints>
               <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -113,7 +113,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <component id="228e2" class="javax.swing.JButton" default-binding="true">
+          <component id="228e2" class="javax.swing.JButton" binding="logoutButton">
             <constraints>
               <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
