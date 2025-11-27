@@ -93,7 +93,7 @@ class PaddedCellRenderer extends DefaultTableCellRenderer {
     }
 }
 
-public class InventoryPanel extends JFrame {
+public class InventoryPanel extends JPanel {
     private JPanel contentPane;
     private JTable table;
     private JTextField searchIDTextField;
@@ -112,8 +112,8 @@ public class InventoryPanel extends JFrame {
     private int totalConsignors;
 
     public InventoryPanel() {
-        setContentPane(contentPane);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        setContentPane(contentPane);
+//        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         headers = new String[]{"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Return Date"};
         data = new Object[][]{
@@ -155,8 +155,8 @@ public class InventoryPanel extends JFrame {
         itemIDSearchFieldPlaceholderText();
         consignorSearchFieldPlaceholderText();
 
-        pack();
-        setVisible(true);
+//        pack();
+//        setVisible(true);
         afterInit();
     }
 
@@ -238,7 +238,7 @@ public class InventoryPanel extends JFrame {
         return data.length;
     }
 
-    public static void main(String[] args) {
-        new InventoryPanel();
-    }
+//    public static void main(String[] args) {
+//        new InventoryPanel();
+//    }
 }
