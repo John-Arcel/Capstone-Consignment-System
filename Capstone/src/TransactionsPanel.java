@@ -1,16 +1,13 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class TransactionsPanel extends JFrame{
+public class TransactionsPanel extends JPanel{
     private JPanel contentPane;
     private JTextField transactionTextField;
     private JTable table1;
     private JTextField transactionHistoryTextField;
 
     public TransactionsPanel(){
-        setTitle("Transactions");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setContentPane(contentPane);
 
         String[][] data = {
                 {"T-0000001", "Apple", "January 6", "$1.57", "$0.65"},
@@ -24,9 +21,6 @@ public class TransactionsPanel extends JFrame{
 
         table1.setModel(new DefaultTableModel(data, columnNames));
 
-
-        pack();
-        setVisible(true);
     }
 
     public static void main(String[] args) {

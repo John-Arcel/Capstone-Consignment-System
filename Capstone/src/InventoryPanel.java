@@ -1,16 +1,11 @@
 import javax.swing.*;
-import java.util.Vector;
 
-public class InventoryPanel extends JFrame {
+public class InventoryPanel extends JPanel {
     private JPanel contentPane;
     private JTable table;
     private JLabel inventoryAmountLabel;
 
     public InventoryPanel() {
-        setTitle("Inventory");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setContentPane(contentPane);
-
         String[] headers = {"Name", "ID", "Owner", "Selling Price", "Receive Date", "Expiry Date"};
         Object[][] data = {
                 {"name1", "id1", "owner1", "P100.00", "10/10/10", "10/11/10"},
@@ -25,9 +20,6 @@ public class InventoryPanel extends JFrame {
         String inventoryAmountText = "Items in inventory: ";
         int itemAmount = getInventoryAmount(data);
         inventoryAmountLabel.setText(inventoryAmountText + itemAmount);
-
-        pack();
-        setVisible(true);
     }
 
     private int getInventoryAmount(Object[][] data) {

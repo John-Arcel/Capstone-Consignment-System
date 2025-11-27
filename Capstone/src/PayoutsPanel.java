@@ -1,2 +1,4 @@
-public class PayoutsPanel {
+import javax.swing.*;
+
+public class PayoutsPanel extends JPanel {
 }
