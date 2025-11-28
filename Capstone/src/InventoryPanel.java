@@ -11,7 +11,7 @@ class DollarDecimalRenderer extends DefaultTableCellRenderer {
     private int top, left, bottom, right;
 
     public DollarDecimalRenderer(int top, int left, int bottom, int right) {
-        this.formatter = new DecimalFormat("$#.00"); // $ and 2 decimals
+        this.formatter = new DecimalFormat("$#0.00"); // $ and 2 decimals
         this.top = top;
         this.left = left;
         this.bottom = bottom;
