@@ -1,17 +1,19 @@
 import javax.swing.*;
-import java.awt.*;
 
 public class PayoutsPanel extends JFrame{
 
     private JPanel content;
-    private JTextField textField1;
+    private JTextField Search;
     private JTable HistoryTable;
-    private JTextPane TotalPayout;
-    private JTextPane PendingPayout;
-    private JTable table1;
+    private JTable PendingTable;
+    private JScrollPane ScrollPending;
+    private JScrollPane ScrollHistory;
+    private JLabel PayoutNum;
+    private JLabel PendingNum;
+    private JButton transferButton;
 
     public PayoutsPanel(){
-        //setSize(800,600);
+        setSize(800,700);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -34,7 +36,12 @@ public class PayoutsPanel extends JFrame{
 
         HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
         HistoryTable.setRowHeight(30);
-        HistoryTable.setBounds(0,0,100,200);
+        HistoryTable.setBounds(0,0,100,150);
+
+
+        PendingTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+        PendingTable.setRowHeight(30);
+        PendingTable.setBounds(0,0,100,150);
 
         setLocationRelativeTo(null);
         setVisible(true);
