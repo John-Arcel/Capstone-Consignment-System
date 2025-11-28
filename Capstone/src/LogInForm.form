@@ -218,6 +218,102 @@
               </vspacer>
             </children>
           </grid>
+          <grid id="72fdd" binding="Welcome_Panel" layout-manager="GridBagLayout">
+            <constraints>
+              <card name="Card1"/>
+            </constraints>
+            <properties>
+              <autoscrolls value="false"/>
+              <background color="-14725511"/>
+              <enabled value="true"/>
+              <font style="1"/>
+              <foreground color="-16777216"/>
+              <minimumSize width="800" height="500"/>
+              <opaque value="true"/>
+              <preferredSize width="600" height="350"/>
+              <visible value="false"/>
+            </properties>
+            <clientProperties>
+              <html.disable class="java.lang.Boolean" value="false"/>
+            </clientProperties>
+            <border type="none"/>
+            <children>
+              <component id="1efca" class="javax.swing.JLabel" binding="Company_Name">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <autoscrolls value="false"/>
+                  <enabled value="true"/>
+                  <focusTraversalPolicyProvider value="false"/>
+                  <focusable value="false"/>
+                  <font name="Century Gothic" size="94" style="1"/>
+                  <foreground color="-854793"/>
+                  <horizontalAlignment value="0"/>
+                  <preferredSize width="76" height="100"/>
+                  <text value="CoStock"/>
+                  <verticalTextPosition value="1"/>
+                </properties>
+              </component>
+              <hspacer id="fdea1">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </hspacer>
+              <vspacer id="b3613">
+                <constraints>
+                  <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="64b00">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="90.0" weighty="0.0"/>
+                </constraints>
+              </vspacer>
+              <component id="576cc" class="javax.swing.JButton" binding="Log_In_Button_Directory" custom-create="true">
+                <constraints>
+                  <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipadx="50" ipady="10"/>
+                </constraints>
+                <properties>
+                  <background color="-854793"/>
+                  <focusTraversalPolicyProvider value="true"/>
+                  <font size="19"/>
+                  <foreground color="-16777216"/>
+                  <preferredSize width="350" height="55"/>
+                  <text value="Log In"/>
+                </properties>
+              </component>
+              <component id="d37be" class="javax.swing.JButton" binding="Register_Button_Directory">
+                <constraints>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipadx="50" ipady="10"/>
+                </constraints>
+                <properties>
+                  <background color="-14725511"/>
+                  <font size="19"/>
+                  <foreground color="-854793"/>
+                  <text value="Register"/>
+                </properties>
+              </component>
+              <vspacer id="b1d62">
+                <constraints>
+                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipady="90"/>
+                </constraints>
+              </vspacer>
+              <vspacer id="7c406">
+                <constraints>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipady="10"/>
+                </constraints>
+              </vspacer>
+            </children>
+          </grid>
           <grid id="4e92" binding="Register_Panel" layout-manager="GridBagLayout">
             <constraints>
               <card name="Card3"/>
@@ -475,102 +571,26 @@
                   <gridbag weightx="0.0" weighty="0.0" ipady="10"/>
                 </constraints>
               </vspacer>
-            </children>
-          </grid>
-          <grid id="72fdd" binding="Welcome_Panel" layout-manager="GridBagLayout">
-            <constraints>
-              <card name="Card1"/>
-            </constraints>
-            <properties>
-              <autoscrolls value="false"/>
-              <background color="-14725511"/>
-              <enabled value="true"/>
-              <font style="1"/>
-              <foreground color="-16777216"/>
-              <minimumSize width="800" height="500"/>
-              <opaque value="true"/>
-              <preferredSize width="600" height="350"/>
-              <visible value="false"/>
-            </properties>
-            <clientProperties>
-              <html.disable class="java.lang.Boolean" value="false"/>
-            </clientProperties>
-            <border type="none"/>
-            <children>
-              <component id="1efca" class="javax.swing.JLabel" binding="Company_Name">
+              <vspacer id="c2915">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+              </vspacer>
+              <component id="38f36" class="javax.swing.JLabel" binding="Register_Flag">
+                <constraints>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <autoscrolls value="false"/>
-                  <enabled value="true"/>
-                  <focusTraversalPolicyProvider value="false"/>
-                  <focusable value="false"/>
-                  <font name="Century Gothic" size="94" style="1"/>
-                  <foreground color="-854793"/>
+                  <font size="18"/>
+                  <foreground color="-16777216"/>
                   <horizontalAlignment value="0"/>
-                  <preferredSize width="76" height="100"/>
-                  <text value="CoStock"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="Label"/>
                   <verticalTextPosition value="1"/>
                 </properties>
               </component>
-              <hspacer id="fdea1">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0"/>
-                </constraints>
-              </hspacer>
-              <vspacer id="b3613">
-                <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0"/>
-                </constraints>
-              </vspacer>
-              <vspacer id="64b00">
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="90.0" weighty="0.0"/>
-                </constraints>
-              </vspacer>
-              <component id="576cc" class="javax.swing.JButton" binding="Log_In_Button_Directory" custom-create="true">
-                <constraints>
-                  <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0" ipadx="50" ipady="10"/>
-                </constraints>
-                <properties>
-                  <background color="-854793"/>
-                  <focusTraversalPolicyProvider value="true"/>
-                  <font size="19"/>
-                  <foreground color="-16777216"/>
-                  <preferredSize width="350" height="55"/>
-                  <text value="Log In"/>
-                </properties>
-              </component>
-              <component id="d37be" class="javax.swing.JButton" binding="Register_Button_Directory">
-                <constraints>
-                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0" ipadx="50" ipady="10"/>
-                </constraints>
-                <properties>
-                  <background color="-14725511"/>
-                  <font size="19"/>
-                  <foreground color="-854793"/>
-                  <text value="Register"/>
-                </properties>
-              </component>
-              <vspacer id="b1d62">
-                <constraints>
-                  <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0" ipady="90"/>
-                </constraints>
-              </vspacer>
-              <vspacer id="7c406">
-                <constraints>
-                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0" ipady="10"/>
-                </constraints>
-              </vspacer>
             </children>
           </grid>
         </children>

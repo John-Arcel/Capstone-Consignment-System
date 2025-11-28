@@ -4,7 +4,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+
 public class LogInForm extends JFrame {
+    private static int count = 1;
+
 
     // REMOVE STATIC — MUST NOT BE STATIC
     private JPanel LogInPanel;      // This is the real root panel created by IntelliJ GUI Designer
@@ -23,6 +27,7 @@ public class LogInForm extends JFrame {
     private JPasswordField Login_Password_TextField;
     private JButton Login_Button;
     private JButton Register_Button;
+    private JLabel Register_Flag;
 
     private CardLayout cardLayout;
 
@@ -55,7 +60,7 @@ public class LogInForm extends JFrame {
 
 
 
-        // Switching panels
+        //-------------------------------Weclome Action Listeners-------------------------------
         Register_Button_Directory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +88,73 @@ public class LogInForm extends JFrame {
                 cardLayout.show(Main_Panel, "login");
             }
         });
+
+
+        // -------------------------------Register Action Listeners-------------------------------
+
+        Register_Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // variables
+                String shopName = Shop_Name_Text_Field.getText();
+                String adminName = Shop_Name_Text_Field.getText();
+                String password = Register_Password_TextField.getText();
+                String commissionText = Commision_Rate_TextField.getText();
+
+                    if (shopName.isEmpty() || adminName.isEmpty() || password.isEmpty() || commissionText.isEmpty()) {
+                        System.out.println("Null");
+                        Register_Flag.setText("Please enter missing fields");
+                        return;
+                    }
+
+                    if (password.length() < 8) {
+                        Register_Flag.setText("Password must be at least 8 characters long");
+                        return;
+                    }
+                    else if (!password.matches(".*[A-Z].*")) {
+                        Register_Flag.setText("Password must contain at least 1 uppercase letter");
+                        return;
+                    }
+                    else if (!password.matches(".*[0-9].*")) {
+                        Register_Flag.setText("Password must contain at least 1 number");
+                        return;
+                    }
+                    else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                        Register_Flag.setText("Password must contain at least 1 special character");
+                        return;
+                    }
+
+                    double commissionRate = 0;
+                     try {
+                        commissionRate = Double.parseDouble(commissionText);
+                     }
+                     catch (NumberFormatException e1){
+                        Register_Flag.setText("Invalid Commission Rate");
+                     }
+
+                     if(commissionRate > 100 || commissionRate < 0) {
+                         Register_Flag.setText("Commission Rate must be between 0 - 100");
+                         return;
+                     }
+
+
+                     // Todo File handling ---
+
+
+                    LogInPanel.setBackground(new Color(0x1F4E79));
+                    LogInPanel.setOpaque(true);
+                    cardLayout.show(Main_Panel, "welcome");
+            }
+        });
     }
+
+
+
+
+
+
+
+
 
     // Force spacers to be opaque
     public static void makeTransparent(JComponent container) {
