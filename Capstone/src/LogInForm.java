@@ -6,23 +6,26 @@ import java.io.*;
 
 
 public class LogInForm extends JFrame {
-    private static int LoginFormCount = 1;
 
 
-    // REMOVE STATIC — MUST NOT BE STATIC
-    private JPanel LogInPanel;      // This is the real root panel created by IntelliJ GUI Designer
+    //Root Panel
+    private JPanel LogInPanel;
+
+    //Base Panel
     private JPanel Main_Panel;
+
+    //Card Panels
     private JPanel Log_In_Panel;
     private JPanel Register_Panel;
     private JPanel Welcome_Panel;
+
     private JButton Register_Button_Directory;
     private JButton Log_In_Button_Directory;
     private JLabel Company_Name;
-    private JTextField Shop_Name_Text_Field;
-    private JTextField Admin_Name_Text_Field;
+    private JTextField Register_Username_Text_Field;
     private JTextField Register_Password_TextField;
     private JTextField Commision_Rate_TextField;
-    private JTextField Enter_ID_TextField;
+    private JTextField Login_Username_TextField;
     private JPasswordField Login_Password_TextField;
     private JButton Login_Button;
     private JButton Register_Button;
@@ -34,15 +37,18 @@ public class LogInForm extends JFrame {
 
     public LogInForm() {
 
-        // DO THIS FIRST — your root panel must be the content pane
+        // Todo you can remove this basic initialization rani for testing
+        // Todo just remove the 5 lines of code below
         setContentPane(LogInPanel);
-
         setTitle("Login Form");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
 
+        //purpose call static function to make spacer transparent
+        // for some reason di siya transparent
         makeTransparent(LogInPanel);
+
         // Create card layout on the MAIN PANEL inside the form
         cardLayout = new CardLayout();
         Main_Panel.setLayout(cardLayout);
@@ -53,110 +59,161 @@ public class LogInForm extends JFrame {
         Main_Panel.add(Register_Panel, "register");
 
 
+        //purpose: remove outlines of button
         Login_Button.setBorderPainted(false);
         Register_Button.setBorderPainted(false);
         Register_Button_Directory.setBorderPainted(false);
         Log_In_Button_Directory.setBorderPainted(false);
 
 
+        //============================================================================================
+        //-------------------------------Welcome Panel Action Listeners-------------------------------
+        //============================================================================================
 
-
-        //-------------------------------Weclome Action Listeners-------------------------------
         Register_Button_Directory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                //purpose: change color of root panel to be the same as sa cards
                 LogInPanel.setBackground(new Color(0xF2F4F7));
-                LogInPanel.setOpaque(true);
 
-                // Force Swing to redraw immediately
-                LogInPanel.revalidate();
-                LogInPanel.repaint();
-
+                //purpose: switch to register panel
                 cardLayout.show(Main_Panel, "register");
             }
         });
-        Log_In_Button_Directory.addActionListener(new ActionListener() {
 
+
+        Log_In_Button_Directory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                //purpose: change color of root panel to be the same as sa cards
                 LogInPanel.setBackground(new Color(0xF2F4F7));
-                LogInPanel.setOpaque(true);
 
-                // Force Swing to redraw immediately
-                LogInPanel.revalidate();
-                LogInPanel.repaint();
-
+                //purpose: switch to login panel
                 cardLayout.show(Main_Panel, "login");
             }
         });
 
-
-        // -------------------------------Register Action Listeners-------------------------------
+        //==============================================================================================
+        // -------------------------------Register Panel Action Listeners-------------------------------
+        //==============================================================================================
 
         Register_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // variables
-                String shopName = Shop_Name_Text_Field.getText();
-                String adminName = Admin_Name_Text_Field.getText();
+
+                //purpose: get all information of the text fields
+                String userName = Register_Username_Text_Field.getText();
                 String password = Register_Password_TextField.getText();
                 String contactNumberText = Contact_Number_Text_Field.getText();
                 String commissionText = Commision_Rate_TextField.getText();
 
-                     // check if all the fields are not empty
-                    if (shopName.isEmpty() || adminName.isEmpty() || password.isEmpty() || commissionText.isEmpty() || contactNumberText.isEmpty()) {
-                        Register_Flag.setText("Please enter missing fields");
-                        return;
+
+                //--------purpose: Validate all registration input fields--------
+
+                // purpose: check if any required field is empty
+                if (userName.isEmpty() || password.isEmpty() || commissionText.isEmpty() || contactNumberText.isEmpty()) {
+                    Register_Flag.setText("Please enter missing fields");
+                    return;
+                }
+
+
+                //--------purpose: validate username requirements--------
+
+                // purpose: check if username already exists in admin_registry
+                try (BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))) {
+
+                    String line;
+
+                    // checks line by line in admin_registry
+                    while ((line = br.readLine()) != null) {
+                        String[] parts = line.split(",");
+
+                        if (parts[1].equals(userName)) {
+                            Register_Flag.setText("Username already exists");
+                            return;
+                        }
                     }
 
-                    // check if password is valid
-                    if (password.length() < 8) { // checks if it is 8 character long
-                        Register_Flag.setText("Password must be at least 8 characters long");
-                        return;
-                    }
-                    else if (!password.matches(".*[A-Z].*")) { // checks for uppercase letter
-                        Register_Flag.setText("Password must contain at least 1 uppercase letter");
-                        return;
-                    }
-                    else if (!password.matches(".*[0-9].*")) { // checks for number
-                        Register_Flag.setText("Password must contain at least 1 number");
-                        return;
-                    }
-                    else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) { // checks for special character
-                        Register_Flag.setText("Password must contain at least 1 special character");
-                        return;
-                    }
+                } catch (IOException e22) {
+                    e22.printStackTrace();
+                }
 
-                    // check if contactnumber is valid
-                    if (!contactNumberText.matches("\\d+")) { // this checks if the input is all digits
-                        Register_Flag.setText("Contact number must be digits only");
-                        return;
-                    }
-                    else if(contactNumberText.length() != 11){ // this checks if it is 11 digits long
-                        Register_Flag.setText("Contact number must be 11 digits long");
-                        return;
-                    }
 
-                    if (!commissionText.matches("\\d+")) {  // allows decimals
-                        Register_Flag.setText("Commission rate must be a valid number");
-                        return;
-                    }
+                //--------purpose: validate password requirements--------
 
-                    double commission = Double.parseDouble(commissionText);
-                    if(commission > 100 || commission < 0){
-                        Register_Flag.setText("Commission rate must be between 0 - 100");
-                        return;
-                    }
+                // purpose: check if password has minimum length
+                if (password.length() < 8) {
+                    Register_Flag.setText("Password must be at least 8 characters long");
+                    return;
+                }
 
-                    commission = commission / 100;
-                Entity new_user = new Consignee(adminName,contactNumberText,password);
+                // purpose: check if password contains at least one uppercase letter
+                else if (!password.matches(".*[A-Z].*")) {
+                    Register_Flag.setText("Password must contain at least 1 uppercase letter");
+                    return;
+                }
+
+                // purpose: check if password contains at least one digit
+                else if (!password.matches(".*[0-9].*")) {
+                    Register_Flag.setText("Password must contain at least 1 number");
+                    return;
+                }
+
+                // purpose: check if password contains at least one special character
+                else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                    Register_Flag.setText("Password must contain at least 1 special character");
+                    return;
+                }
+
+
+                //--------purpose: validate contact number format--------
+
+                // purpose: check if contact number contains digits only
+                if (!contactNumberText.matches("\\d+")) {
+                    Register_Flag.setText("Contact number must be digits only");
+                    return;
+                }
+
+                // purpose: check if contact number is exactly 11 digits long
+                else if (contactNumberText.length() != 11) {
+                    Register_Flag.setText("Contact number must be 11 digits long");
+                    return;
+                }
+
+
+                //--------purpose: validate commission rate--------
+
+                // purpose: check if commission input is numeric (integer-only check as written)
+                if (!commissionText.matches("\\d+")) {
+                    Register_Flag.setText("Commission rate must be a valid number");
+                    return;
+                }
+
+                // purpose: convert commission string to double
+                double commission = Double.parseDouble(commissionText);
+
+                // purpose: ensure commission is between 0 and 100
+                if (commission > 100 || commission < 0) {
+                    Register_Flag.setText("Commission rate must be between 0 - 100");
+                    return;
+                }
+
+                // purpose: convert percentage to decimal (example: 10 → 0.10)
+                commission = commission / 100;
+
+                // initialized consignee
+                Entity new_user = new Consignee(userName,contactNumberText,password);
 
 
                 // -------------------------------File Handling-------------------------------
 
+                //purpose: create folder inside /data
                 File userFolder = new File("Capstone/data/" + new_user.getID());
                 userFolder.mkdirs();
 
+                //purpose: creating files
                 File config = new File(userFolder, "config.txt");
                 File suppliers = new File(userFolder, "suppliers.csv");
                 File inventory = new File(userFolder, "inventory.csv");
@@ -168,12 +225,15 @@ public class LogInForm extends JFrame {
                    inventory.createNewFile();
                    salesLog.createNewFile();
 
+                   //purpose: write the username and commission rate on config.txt
                     try (BufferedWriter br = new BufferedWriter(new FileWriter(config))) {
-                        br.write(String.format("%s,%.2f", shopName, commission));
+                        br.write(String.format("%s,%.2f", userName, commission));
                     }
 
+                    //purpose: append the user and password information of new user to admin_registry.csv
+                    //         format of this is (id of user,username,password)  Ex. V-0000001,John,Password123!
                     try(BufferedWriter br = new BufferedWriter((new FileWriter("Capstone/data/admin_registry.csv",true)))){
-                        br.write(new_user.getID() + "," + password);
+                        br.write(new_user.getID() + "," + userName + "," + password);
                         br.newLine();
                     }
 
@@ -182,74 +242,85 @@ public class LogInForm extends JFrame {
                 }
 
                 // Todo once the details are registered it will go to dashboard
+                // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
                     LogInPanel.setBackground(new Color(0x1F4E79));
-                    LogInPanel.setOpaque(true);
                     cardLayout.show(Main_Panel, "welcome");
             }
         });
 
-
-        // -------------------------------Log In Action Listeners-------------------------------
+        //============================================================================================
+        // -------------------------------Log In Panel Action Listeners-------------------------------
+        //============================================================================================
 
         Login_Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String userId = Enter_ID_TextField.getText();
+
+                //purpose: get all information of the text fields
+                // I used getPassword in password field text kay mas safe daw ingon ni AI hahaha
+                String username = Login_Username_TextField.getText();
                 char[] passArray = Login_Password_TextField.getPassword();
                 String password = new String(passArray);
 
-                    if(userId.isEmpty() || password.isEmpty()){
-                        Login_Flag.setText("Please enter missing fields");
-                        return;
-                    }
+                // purpose: check if any of the fields are empty
+                if(username.isEmpty() || password.isEmpty()){
+                    Login_Flag.setText("Please enter missing fields");
+                    return;
+                }
 
-                    try(BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))){
-                        String s;
-                        boolean foundUser = false;
+                // purpose: read the admin_registry.csv and verify login
+                try(BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))){
+                    String line;
+                    boolean foundUser = false;
 
-                        while((s = br.readLine()) != null){
-                            // tokenized usedId and password
-                            String[] inputArr = s.split(",");
+                    // purpose: check each line (each user record) in admin_registry.csv
+                    while((line = br.readLine()) != null){
 
-                            String fileUser = inputArr[0];
-                            String filePass = inputArr[1];
+                        // tokenized userID, username, password, etc.
+                        String[] inputArr = line.split(",");
+                        String fileUser = inputArr[1];
+                        String filePass = inputArr[2];
 
-                            if (fileUser.equals(userId)) {        // user found
-                                foundUser = true;
+                        // purpose: if username matches, check password
+                        if (fileUser.equals(username)) {        // user found
+                            foundUser = true;
 
-                                if (filePass.equals(password)) {  // correct password
-                                    // Todo once the details are registered it will go to dashboard
+                            // purpose: if correct password, show dashboard panel
+                            if (filePass.equals(password)) {
 
-                                    LogInPanel.setBackground(new Color(0x1F4E79));
-                                    LogInPanel.setOpaque(true);
-                                    cardLayout.show(Main_Panel, "welcome");
-                                    return;
-                                } else {
-                                    Login_Flag.setText("Incorrect password");
-                                    return;
-                                }
+                                // Todo once the details are registered it will go to dashboard
+                                // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
+                                LogInPanel.setBackground(new Color(0x1F4E79));
+                                cardLayout.show(Main_Panel, "welcome");
+                                return;
+                            }
+
+                            // purpose: password is incorrect for this user
+                            else {
+                                Login_Flag.setText("Incorrect password");
+                                return;
                             }
                         }
-
-                        if (!foundUser) {
-                            Login_Flag.setText("No account exists");
-                        }
-
                     }
-                    catch (IOException e12) {
-                        e12.printStackTrace();
+
+                    // purpose: if username not found in admin_registry.csv
+                    if (!foundUser) {
+                        Login_Flag.setText("No account exists");
                     }
+
+                }
+                catch (IOException e12) {
+                    e12.printStackTrace();
+                }
 
             }
         });
     }
 
 
-
-
-
-
-
+    //=============================================================================
+    // -----------------------------Static Functions-------------------------------
+    //=============================================================================
 
     // Force spacers to be opaque
     public static void makeTransparent(JComponent container) {
@@ -277,22 +348,23 @@ public class LogInForm extends JFrame {
     }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LogInForm().setVisible(true));
-    }
-
-
+    //purpose: custom style for swing components
+    //all of the component here makes corner rounded
     private void createUIComponents() {
-        Shop_Name_Text_Field = new Style.RoundedTextField(60);
-        Admin_Name_Text_Field = new Style.RoundedTextField(60);
-        Shop_Name_Text_Field = new Style.RoundedTextField(60);
+
+        Register_Username_Text_Field = new Style.RoundedTextField(60);
         Register_Password_TextField = new Style.RoundedTextField(60);
         Commision_Rate_TextField = new Style.RoundedTextField(60);
-        Enter_ID_TextField = new Style.RoundedTextField(60);
+        Login_Username_TextField = new Style.RoundedTextField(60);
         Contact_Number_Text_Field = new Style.RoundedTextField(60);
         Login_Password_TextField = new Style.RoundedPasswordField(60);
 
         Log_In_Button_Directory = new Style.RoundedButton(60);
 
+    }
+
+    // Todo remove this main this is just for testing
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new LogInForm().setVisible(true));
     }
 }
