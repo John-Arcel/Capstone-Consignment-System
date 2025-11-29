@@ -107,7 +107,7 @@ class PaddedCellRenderer extends DefaultTableCellRenderer {
 // -------------------------- InventoryPanel class --------------------------------
 // ================================================================================
 
-public class InventoryPanel extends JFrame {
+public class InventoryPanel extends JPanel {
     private JPanel contentPane;
     private JTable table;
     private JTextField searchIDTextField;
@@ -137,8 +137,8 @@ public class InventoryPanel extends JFrame {
     private int totalConsignors;
 
     public InventoryPanel() {
-        setContentPane(contentPane);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        setContentPane(contentPane);
+//        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         table.setRowHeight(30);
         table.setBounds(0,0,100,200);
@@ -156,8 +156,8 @@ public class InventoryPanel extends JFrame {
         searchIDTextField.addActionListener(e -> runCombinedSearch());
         searchConsignorTextField.addActionListener(e -> runCombinedSearch());
 
-        pack();
-        setVisible(true);
+//        pack();
+//        setVisible(true);
         //purpose: focus on window first (default is focus on text field)
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
     }
@@ -315,7 +315,7 @@ public class InventoryPanel extends JFrame {
         deleteItemButton = new Style.RoundedButton(roundRadius);
     }
 
-    public static void main(String[] args) {
-        new InventoryPanel();
-    }
+//    public static void main(String[] args) {
+//        new InventoryPanel();
+//    }
 }
