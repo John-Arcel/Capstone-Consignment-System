@@ -72,6 +72,15 @@ public class TransactionsPanel extends JPanel{
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
     }
 
+    public double getTotalAmount(){
+        double total = 0;
+
+        for(int i=0; i<data.length;i++){
+            total = total + (double)data[i][3];
+        }
+        return total;
+    }
+
     private void prettifyTable() {
         // It does:
         // 1. adds cell padding to the table cell

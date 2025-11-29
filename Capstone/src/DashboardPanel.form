@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="DashboardPanel">
-  <grid id="82525" layout-manager="BorderLayout" hgap="0" vgap="0">
+  <grid id="82525" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="924" height="535"/>
+      <xy x="20" y="20" width="1024" height="625"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="27dc6" layout-manager="GridLayoutManager" row-count="13" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="27dc6" layout-manager="GridLayoutManager" row-count="12" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="40" left="20" bottom="20" right="40"/>
-        <constraints border-constraint="Center"/>
+        <constraints border-constraint="West"/>
         <properties/>
         <border type="none"/>
         <children>
@@ -24,23 +24,14 @@
           </component>
           <hspacer id="c26d9">
             <constraints>
-              <grid row="2" column="0" row-span="3" col-span="1" vsize-policy="1" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
+              <grid row="2" column="0" row-span="4" col-span="1" vsize-policy="1" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="40" height="-1"/>
               </grid>
             </constraints>
           </hspacer>
-          <component id="4488e" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="14" style="1"/>
-              <text value="Today's Total Sales: "/>
-            </properties>
-          </component>
           <vspacer id="7ef87">
             <constraints>
-              <grid row="12" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
           <vspacer id="bf465">
@@ -50,33 +41,6 @@
               </grid>
             </constraints>
           </vspacer>
-          <component id="6c6f5" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="14" style="1"/>
-              <text value="Store's Earnings Today (Commission): "/>
-            </properties>
-          </component>
-          <component id="bcd45" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="14" style="1"/>
-              <text value="Items Sold Count: "/>
-            </properties>
-          </component>
-          <component id="d4100" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="14" style="1"/>
-              <text value="Pending Payouts: "/>
-            </properties>
-          </component>
           <vspacer id="622a3">
             <constraints>
               <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
@@ -84,26 +48,6 @@
               </grid>
             </constraints>
           </vspacer>
-          <component id="36ce3" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <font size="20" style="1"/>
-              <text value="Items Due for Pull-Out/Expiry"/>
-            </properties>
-          </component>
-          <component id="e1abf" class="javax.swing.JTable" binding="table1" default-binding="true">
-            <constraints>
-              <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
-            </constraints>
-            <properties>
-              <fillsViewportHeight value="false"/>
-              <gridColor color="-16777216"/>
-            </properties>
-          </component>
           <vspacer id="c7803">
             <constraints>
               <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
@@ -111,33 +55,129 @@
               </grid>
             </constraints>
           </vspacer>
-          <component id="5de76" class="javax.swing.JLabel">
+          <grid id="6b6b5" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="10" bottom="10" right="10"/>
             <constraints>
-              <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font size="20" style="1"/>
-              <text value="Recent Transactions"/>
+              <background color="-13726737"/>
             </properties>
-          </component>
-          <component id="264cb" class="javax.swing.JTable" default-binding="true">
+            <border type="none"/>
+            <children>
+              <component id="4488e" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="14" style="1"/>
+                  <text value="Today's Total Sales: "/>
+                </properties>
+              </component>
+              <component id="40072" class="javax.swing.JLabel" binding="totalSales">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Label"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="e24e9" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="10" bottom="10" right="10"/>
             <constraints>
-              <grid row="11" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="50"/>
-              </grid>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <fillsViewportHeight value="false"/>
-              <gridColor color="-16777216"/>
+              <background color="-13726737"/>
             </properties>
-          </component>
+            <border type="none"/>
+            <children>
+              <component id="6c6f5" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="14" style="1"/>
+                  <text value="Store's Earnings Today (Commission): "/>
+                </properties>
+              </component>
+              <component id="70899" class="javax.swing.JLabel" binding="earnings">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Label"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="8e2cf" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="10" bottom="10" right="10"/>
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-13726737"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="bcd45" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="14" style="1"/>
+                  <text value="Items Sold Count: "/>
+                </properties>
+              </component>
+              <component id="9af65" class="javax.swing.JLabel" binding="itemSold">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Label"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="d588e" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="10" left="10" bottom="10" right="10"/>
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-13726737"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="d4100" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <font size="14" style="1"/>
+                  <text value="Pending Payouts: "/>
+                </properties>
+              </component>
+              <component id="c1b21" class="javax.swing.JLabel" binding="pendingPayout">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Label"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
       <grid id="f93a5" layout-manager="GridLayoutManager" row-count="13" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="20" bottom="0" right="20"/>
         <constraints border-constraint="East"/>
         <properties>
-          <background color="-2829100"/>
+          <background color="-13158601"/>
         </properties>
         <border type="none"/>
         <children>
@@ -148,7 +188,7 @@
             <properties>
               <font size="20" style="1"/>
               <foreground color="-16777216"/>
-              <text value="Quick Sale"/>
+              <text value="Quick Sell"/>
             </properties>
           </component>
           <vspacer id="dd284">
@@ -182,13 +222,15 @@
               <text value="Enter Item ID:"/>
             </properties>
           </component>
-          <component id="607ae" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="607ae" class="javax.swing.JTextField" binding="itemIDField">
             <constraints>
               <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
-            <properties/>
+            <properties>
+              <background color="-14013132"/>
+            </properties>
           </component>
           <vspacer id="5270e">
             <constraints>
@@ -212,7 +254,7 @@
               <text value="Item Details:"/>
             </properties>
           </component>
-          <component id="fb4d1" class="javax.swing.JTable" binding="table2" default-binding="true">
+          <component id="fb4d1" class="javax.swing.JTable" binding="itemDetail">
             <constraints>
               <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="50"/>
@@ -232,15 +274,94 @@
               <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-13726737"/>
               <text value="Find Item"/>
             </properties>
           </component>
-          <component id="c80c4" class="javax.swing.JButton" default-binding="true">
+          <component id="c80c4" class="javax.swing.JButton" binding="sellItemButton">
             <constraints>
               <grid row="10" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <background color="-13726737"/>
               <text value="Sell Item"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="8b5e3" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="20" bottom="0" right="20"/>
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="36ce3" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="20" style="1"/>
+              <text value="Items Due for Pull-Out/Expiry"/>
+            </properties>
+          </component>
+          <vspacer id="eead4">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                <preferred-size width="-1" height="10"/>
+              </grid>
+            </constraints>
+          </vspacer>
+          <vspacer id="c0bf1">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false">
+                <preferred-size width="-1" height="30"/>
+              </grid>
+            </constraints>
+          </vspacer>
+          <vspacer id="483e2">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <vspacer id="674b9">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <vspacer id="b0cf">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <component id="e1abf" class="javax.swing.JTable" binding="itemsDue">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="50"/>
+              </grid>
+            </constraints>
+            <properties>
+              <fillsViewportHeight value="false"/>
+              <gridColor color="-16777216"/>
+            </properties>
+          </component>
+          <component id="5de76" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="20" style="1"/>
+              <text value="Recent Transactions"/>
+            </properties>
+          </component>
+          <component id="264cb" class="javax.swing.JTable" binding="transactions">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="50"/>
+              </grid>
+            </constraints>
+            <properties>
+              <fillsViewportHeight value="false"/>
+              <gridColor color="-16777216"/>
             </properties>
           </component>
         </children>
