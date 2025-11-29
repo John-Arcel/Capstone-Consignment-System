@@ -1,11 +1,12 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DashboardPanel extends JPanel {
+public class DashboardPanel extends JFrame {
 
-    private JPanel contentPane;
+    private JPanel dashboardPanel;
 
     private JLabel totalSales;
     private JLabel earnings;
@@ -21,154 +22,259 @@ public class DashboardPanel extends JPanel {
     private JButton sellItemButton;
     private JButton findItemButton;
 
+    private List<Item> inventory = new ArrayList<>();
+    private List<Transaction> transactionList = new ArrayList<>();
+
+    // -----------------------------------------------------
+    // Constructor
+    // -----------------------------------------------------
     public DashboardPanel() {
 
-        setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setContentPane(dashboardPanel);
+        setTitle("Dashboard");
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        // ---------------- LEFT SIDE (Dashboard Metrics) ----------------
-        JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(Color.WHITE);
-        leftPanel.setBorder(new EmptyBorder(30, 30, 30, 30));
+        // Make the text visible (white)
+        itemIDField.setForeground(Color.WHITE);
+        itemIDField.setCaretColor(Color.WHITE);
+        itemIDField.setBackground(new Color(40,40,40));
 
-        JLabel title = new JLabel("Dashboard");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        pack();
+        setLocationRelativeTo(null);
 
-        totalSales = new JLabel("Today's Total Sales");
-        earnings = new JLabel("Commission");
-        itemSold = new JLabel("Sold Count");
-        pendingPayout = new JLabel("Pending Payout");
+        makeTransparent(dashboardPanel);
 
-        leftPanel.add(title);
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 25)));
+        loadSampleData();
+        loadTransactionTable();
+        loadItemsDueTable();
+        updateTotals();
 
-        leftPanel.add(makeBlueCard(totalSales));
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        // -----------------------------------------------------
+        // FIND ITEM
+        // -----------------------------------------------------
+        findItemButton.addActionListener(e -> {
+            String id = itemIDField.getText().trim();
 
-        leftPanel.add(makeBlueCard(earnings));
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Item ID");
+                return;
+            }
 
-        leftPanel.add(makeBlueCard(itemSold));
-        leftPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+            Item found = null;
 
-        leftPanel.add(makeBlueCard(pendingPayout));
+            for (Item it : inventory) {
+                if (it.id.equalsIgnoreCase(id)) {
+                    found = it;
+                    break;
+                }
+            }
 
-        // ---------------- CENTER AREA (Expiry + Recent Transactions) ----------------
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(Color.WHITE);
-        centerPanel.setBorder(new EmptyBorder(30, 20, 30, 20));
+            if (found == null) {
+                JOptionPane.showMessageDialog(this, "Item not found");
+                return;
+            }
 
-        JLabel expiryLabel = new JLabel("Expiry");
-        expiryLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+            String[] cols = {"Field", "Value"};
+            String[][] rows = {
+                    {"Item ID", found.id},
+                    {"Name", found.name},
+                    {"Price", String.format("₱%.2f", found.price)},
+                    {"Sold", found.sold ? "YES" : "NO"},
+                    {"Expiry", found.expiry}
+            };
 
-        itemsDue = new JTable();
-        JScrollPane expiryScroll = new JScrollPane(itemsDue);
-        expiryScroll.setPreferredSize(new Dimension(500, 180));
-        expiryScroll.setBorder(new LineBorder(Color.BLACK, 1));
+            itemDetail.setModel(new DefaultTableModel(rows, cols));
+        });
 
-        JLabel recentLabel = new JLabel("Recent Transactions");
-        recentLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        // -----------------------------------------------------
+        // SELL ITEM
+        // -----------------------------------------------------
+        sellItemButton.addActionListener(e -> {
 
-        transactions = new JTable();
-        JScrollPane recentScroll = new JScrollPane(transactions);
-        recentScroll.setPreferredSize(new Dimension(500, 180));
-        recentScroll.setBorder(new LineBorder(Color.BLACK, 1));
+            String id = itemIDField.getText().trim();
 
-        centerPanel.add(expiryLabel);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        centerPanel.add(expiryScroll);
+            if (id.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Enter Item ID");
+                return;
+            }
 
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+            for (Item it : inventory) {
 
-        centerPanel.add(recentLabel);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        centerPanel.add(recentScroll);
+                if (it.id.equalsIgnoreCase(id)) {
 
-        // ---------------- RIGHT SIDE (Quick Sale) ----------------
-        JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(new Color(34, 39, 47));
-        rightPanel.setPreferredSize(new Dimension(350, 0));
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBorder(new EmptyBorder(40, 30, 40, 30));
+                    if (it.sold) {
+                        JOptionPane.showMessageDialog(this, "Item already sold!");
+                        return;
+                    }
 
-        JLabel quickSaleLabel = new JLabel("Quick Sale");
-        quickSaleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        quickSaleLabel.setForeground(Color.WHITE);
-        quickSaleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    it.sold = true;
+                    transactionList.add(new Transaction(id, "2025-11-30", it.price));
 
-        JLabel idLabel = new JLabel("Enter Item ID:");
-        idLabel.setForeground(Color.WHITE);
+                    updateTotals();
+                    loadTransactionTable();
+                    loadItemsDueTable();
 
-        // Rounded Input Field (simulate)
-        itemIDField = new JTextField(15);
-        itemIDField.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(122, 88, 255), 3, true),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
-        itemIDField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+                    JOptionPane.showMessageDialog(this, "Item Sold!");
+                    return;
+                }
+            }
 
-        findItemButton = new JButton("Find Item");
-        findItemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        findItemButton.setBackground(new Color(0, 122, 255));
-        findItemButton.setForeground(Color.WHITE);
-        findItemButton.setFocusPainted(false);
-
-        JLabel detailsLabel = new JLabel("Item Details:");
-        detailsLabel.setForeground(Color.WHITE);
-
-        itemDetail = new JTable();
-        JScrollPane detailScroll = new JScrollPane(itemDetail);
-        detailScroll.setPreferredSize(new Dimension(250, 150));
-        detailScroll.setBorder(new LineBorder(Color.WHITE, 1));
-
-        sellItemButton = new JButton("Sell Item");
-        sellItemButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        sellItemButton.setBackground(new Color(0, 122, 255));
-        sellItemButton.setForeground(Color.WHITE);
-        sellItemButton.setFocusPainted(false);
-
-        rightPanel.add(quickSaleLabel);
-        rightPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        rightPanel.add(idLabel);
-        rightPanel.add(itemIDField);
-        rightPanel.add(Box.createRigidArea(new Dimension(0, 15)));
-        rightPanel.add(findItemButton);
-        rightPanel.add(Box.createRigidArea(new Dimension(0, 25)));
-        rightPanel.add(detailsLabel);
-        rightPanel.add(detailScroll);
-        rightPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        rightPanel.add(sellItemButton);
-
-        // ---------------- ADD ALL TO MAIN PANEL ----------------
-        add(leftPanel, BorderLayout.WEST);
-        add(centerPanel, BorderLayout.CENTER);
-        add(rightPanel, BorderLayout.EAST);
+            JOptionPane.showMessageDialog(this, "Item ID not found.");
+        });
     }
 
-    // ---------------- BLUE CARD BUILDER ----------------
-    private JPanel makeBlueCard(JLabel label) {
-        JPanel card = new JPanel();
-        card.setBackground(new Color(25, 125, 255));
-        card.setLayout(new BorderLayout());
-        card.setBorder(new EmptyBorder(25, 20, 25, 20));
-        card.setMaximumSize(new Dimension(220, 100));
+    // -----------------------------------------------------
+    // SAMPLE DATA
+    // -----------------------------------------------------
+    private void loadSampleData() {
 
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        inventory.add(new Item("A101", "Blue Shirt", 350.00, true, "2025-12-05"));
+        inventory.add(new Item("A102", "White Pants", 550.00, false, "2025-12-01"));
+        inventory.add(new Item("A103", "Black Shoes", 999.00, true, "2025-11-29"));
+        inventory.add(new Item("A104", "Red Jacket", 1200.00, false, "2025-11-30"));
+        inventory.add(new Item("A105", "Green Hat", 220.00, false, "2025-11-28")); // nearest expiry
 
-        card.add(label, BorderLayout.CENTER);
-        return card;
+        transactionList.add(new Transaction("A101", "2025-11-29", 350.00));
+        transactionList.add(new Transaction("A103", "2025-11-29", 999.00));
     }
 
-    // ---------------- TEST MAIN ----------------
+    // -----------------------------------------------------
+    // ITEMS DUE - SORT BY NEAREST EXPIRY
+    // -----------------------------------------------------
+    private void loadItemsDueTable() {
+
+        ArrayList<Item> due = new ArrayList<>(inventory);
+
+        due.sort((a, b) -> a.expiry.compareTo(b.expiry));
+
+        String[] cols = {"Item ID", "Name", "Expiry"};
+        String[][] rows = new String[due.size()][3];
+
+        for (int i = 0; i < due.size(); i++) {
+            Item it = due.get(i);
+            rows[i][0] = it.id;
+            rows[i][1] = it.name;
+            rows[i][2] = it.expiry;
+        }
+
+        itemsDue.setModel(new DefaultTableModel(rows, cols));
+    }
+
+    // -----------------------------------------------------
+    // UPDATE TOTALS
+    // -----------------------------------------------------
+    private void updateTotals() {
+
+        int soldCount = 0;
+        double earningsSum = 0;
+        double pendingSum = 0;
+
+        for (Item it : inventory) {
+            if (it.sold) {
+                soldCount++;
+                earningsSum += it.price;
+            } else {
+                pendingSum += it.price;
+            }
+        }
+
+        itemSold.setText(String.valueOf(soldCount));
+        earnings.setText(String.format("₱%.2f", earningsSum));
+        pendingPayout.setText(String.format("₱%.2f", pendingSum));
+        totalSales.setText(String.valueOf(transactionList.size()));
+    }
+
+    // -----------------------------------------------------
+    // TRANSACTION TABLE
+    // -----------------------------------------------------
+    private void loadTransactionTable() {
+
+        String[] cols = {"Item ID", "Date", "Amount"};
+        String[][] rows = new String[transactionList.size()][3];
+
+        for (int i = 0; i < transactionList.size(); i++) {
+            Transaction t = transactionList.get(i);
+            rows[i][0] = t.itemID;
+            rows[i][1] = t.date;
+            rows[i][2] = String.format("₱%.2f", t.amount);
+        }
+
+        transactions.setModel(new DefaultTableModel(rows, cols));
+    }
+
+    // -----------------------------------------------------
+    // MAKE PANELS TRANSPARENT
+    // -----------------------------------------------------
+    public static void makeTransparent(JComponent container) {
+        for (Component c : container.getComponents()) {
+            if (c instanceof JComponent) {
+                JComponent jc = (JComponent) c;
+
+                if (jc.getComponentCount() > 0) {
+                    makeTransparent(jc);
+                } else {
+                    if (!(c instanceof JButton) &&
+                            !(c instanceof JTextField) &&
+                            !(c instanceof JLabel) &&
+                            !(c instanceof JCheckBox) &&
+                            !(c instanceof JTable)) {
+
+                        jc.setOpaque(false);
+                    }
+                }
+            }
+        }
+    }
+
+    // -----------------------------------------------------
+    // MAIN
+    // -----------------------------------------------------
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Dashboard");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1400, 800);
-        frame.setContentPane(new DashboardPanel());
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        SwingUtilities.invokeLater(() -> new DashboardPanel().setVisible(true));
+    }
+
+    // -----------------------------------------------------
+    // DATA CLASSES
+    // -----------------------------------------------------
+    static class Item {
+        String id;
+        String name;
+        double price;
+        boolean sold;
+        String expiry;
+
+        Item(String id, String name, double price, boolean sold, String expiry) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+            this.sold = sold;
+            this.expiry = expiry;
+        }
+    }
+
+    static class Transaction {
+        String itemID;
+        String date;
+        double amount;
+
+        Transaction(String itemID, String date, double amount) {
+            this.itemID = itemID;
+            this.date = date;
+            this.amount = amount;
+        }
+    }
+
+    // -----------------------------------------------------
+    // Needed when using IntelliJ .form custom components
+    // -----------------------------------------------------
+    private void createUIComponents() {
+        itemIDField = new JTextField(20);
+        itemsDue = new JTable();
+        transactions = new JTable();
+        itemDetail = new JTable();
+        itemIDField = new Style.RoundedTextField(60);
+        sellItemButton = new Style.RoundedButton(60);
+        findItemButton = new Style.RoundedButton(60);
+
     }
 }
