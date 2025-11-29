@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Consignor extends Entity {
+    private static int counter = 1;
 
     private double payableBalance;
     private boolean isActive;
@@ -10,7 +11,7 @@ public class Consignor extends Entity {
     private final List<Transaction> transactionHistory;
 
     public Consignor(String name, String contactNumber, String location) {
-        super(name, contactNumber);
+        super(name, contactNumber, String.format("S-%07d", counter++));
 
         if (location == null || location.isBlank())
             throw new NullPointerException("Location cannot be null or empty.");

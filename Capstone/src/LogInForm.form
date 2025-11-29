@@ -216,6 +216,26 @@
                   <gridbag weightx="0.0" weighty="0.0" ipady="10"/>
                 </constraints>
               </vspacer>
+              <component id="66cd8" class="javax.swing.JLabel" binding="Login_Flag">
+                <constraints>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <font size="12"/>
+                  <foreground color="-65536"/>
+                  <horizontalAlignment value="0"/>
+                  <horizontalTextPosition value="0"/>
+                  <text value="  "/>
+                  <verticalTextPosition value="1"/>
+                </properties>
+              </component>
+              <vspacer id="b0fc9">
+                <constraints>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipady="4"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
           <grid id="72fdd" binding="Welcome_Panel" layout-manager="GridBagLayout">
@@ -432,7 +452,7 @@
                   </vspacer>
                   <component id="c1950" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="13" column="2" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="17" column="2" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -495,7 +515,7 @@
                   </vspacer>
                   <vspacer id="11808">
                     <constraints>
-                      <grid row="14" column="2" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <grid row="18" column="2" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0" ipady="5"/>
                     </constraints>
                   </vspacer>
@@ -513,7 +533,7 @@
                   </hspacer>
                   <component id="26697" class="javax.swing.JTextField" binding="Commision_Rate_TextField" custom-create="true">
                     <constraints>
-                      <grid row="15" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
+                      <grid row="19" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag weightx="1.0" weighty="0.0"/>
@@ -528,7 +548,7 @@
                   </component>
                   <component id="e1351" class="javax.swing.JLabel">
                     <constraints>
-                      <grid row="15" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                      <grid row="19" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                       <gridbag weightx="0.0" weighty="0.0"/>
                     </constraints>
                     <properties>
@@ -539,6 +559,44 @@
                       <text value="%"/>
                     </properties>
                   </component>
+                  <component id="3a477" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="13" column="2" row-span="1" col-span="6" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <font size="16"/>
+                      <foreground color="-16777216"/>
+                      <text value="Contact Number"/>
+                    </properties>
+                  </component>
+                  <component id="70f04" class="javax.swing.JTextField" binding="Contact_Number_Text_Field" custom-create="true">
+                    <constraints>
+                      <grid row="15" column="2" row-span="1" col-span="6" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="-1"/>
+                      </grid>
+                      <gridbag weightx="1.0" weighty="0.0"/>
+                    </constraints>
+                    <properties>
+                      <background color="-13726737"/>
+                      <font size="16"/>
+                      <foreground color="-16777216"/>
+                      <preferredSize width="60" height="55"/>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <vspacer id="23979">
+                    <constraints>
+                      <grid row="14" column="2" row-span="1" col-span="2" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="0.0" weighty="0.0" ipady="5"/>
+                    </constraints>
+                  </vspacer>
+                  <vspacer id="c65ae">
+                    <constraints>
+                      <grid row="16" column="7" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                      <gridbag weightx="1.0" weighty="0.0" ipady="10"/>
+                    </constraints>
+                  </vspacer>
                 </children>
               </grid>
               <hspacer id="94d5c">
@@ -562,7 +620,7 @@
               <vspacer id="edffa">
                 <constraints>
                   <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-                  <gridbag weightx="0.0" weighty="0.0" ipady="60"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipady="40"/>
                 </constraints>
               </vspacer>
               <vspacer id="dff31">
@@ -573,24 +631,30 @@
               </vspacer>
               <vspacer id="c2915">
                 <constraints>
-                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
               </vspacer>
               <component id="38f36" class="javax.swing.JLabel" binding="Register_Flag">
                 <constraints>
-                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
                 </constraints>
                 <properties>
-                  <font size="18"/>
-                  <foreground color="-16777216"/>
+                  <font size="12"/>
+                  <foreground color="-65536"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <text value="Label"/>
+                  <text value="  "/>
                   <verticalTextPosition value="1"/>
                 </properties>
               </component>
+              <vspacer id="6c67e">
+                <constraints>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0" ipady="5"/>
+                </constraints>
+              </vspacer>
             </children>
           </grid>
         </children>

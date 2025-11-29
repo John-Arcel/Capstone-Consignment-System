@@ -1,13 +1,12 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.*;
 
 
 public class LogInForm extends JFrame {
-    private static int count = 1;
+    private static int LoginFormCount = 1;
 
 
     // REMOVE STATIC — MUST NOT BE STATIC
@@ -28,6 +27,8 @@ public class LogInForm extends JFrame {
     private JButton Login_Button;
     private JButton Register_Button;
     private JLabel Register_Flag;
+    private JTextField Contact_Number_Text_Field;
+    private JLabel Login_Flag;
 
     private CardLayout cardLayout;
 
@@ -97,57 +98,151 @@ public class LogInForm extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // variables
                 String shopName = Shop_Name_Text_Field.getText();
-                String adminName = Shop_Name_Text_Field.getText();
+                String adminName = Admin_Name_Text_Field.getText();
                 String password = Register_Password_TextField.getText();
+                String contactNumberText = Contact_Number_Text_Field.getText();
                 String commissionText = Commision_Rate_TextField.getText();
 
-                    if (shopName.isEmpty() || adminName.isEmpty() || password.isEmpty() || commissionText.isEmpty()) {
-                        System.out.println("Null");
+                     // check if all the fields are not empty
+                    if (shopName.isEmpty() || adminName.isEmpty() || password.isEmpty() || commissionText.isEmpty() || contactNumberText.isEmpty()) {
                         Register_Flag.setText("Please enter missing fields");
                         return;
                     }
 
-                    if (password.length() < 8) {
+                    // check if password is valid
+                    if (password.length() < 8) { // checks if it is 8 character long
                         Register_Flag.setText("Password must be at least 8 characters long");
                         return;
                     }
-                    else if (!password.matches(".*[A-Z].*")) {
+                    else if (!password.matches(".*[A-Z].*")) { // checks for uppercase letter
                         Register_Flag.setText("Password must contain at least 1 uppercase letter");
                         return;
                     }
-                    else if (!password.matches(".*[0-9].*")) {
+                    else if (!password.matches(".*[0-9].*")) { // checks for number
                         Register_Flag.setText("Password must contain at least 1 number");
                         return;
                     }
-                    else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                    else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) { // checks for special character
                         Register_Flag.setText("Password must contain at least 1 special character");
                         return;
                     }
 
-                    double commissionRate = 0;
-                     try {
-                        commissionRate = Double.parseDouble(commissionText);
-                     }
-                     catch (NumberFormatException e1){
-                        Register_Flag.setText("Invalid Commission Rate");
-                     }
+                    // check if contactnumber is valid
+                    if (!contactNumberText.matches("\\d+")) { // this checks if the input is all digits
+                        Register_Flag.setText("Contact number must be digits only");
+                        return;
+                    }
+                    else if(contactNumberText.length() != 11){ // this checks if it is 11 digits long
+                        Register_Flag.setText("Contact number must be 11 digits long");
+                        return;
+                    }
 
-                     if(commissionRate > 100 || commissionRate < 0) {
-                         Register_Flag.setText("Commission Rate must be between 0 - 100");
-                         return;
-                     }
+                    if (!commissionText.matches("\\d+")) {  // allows decimals
+                        Register_Flag.setText("Commission rate must be a valid number");
+                        return;
+                    }
+
+                    double commission = Double.parseDouble(commissionText);
+                    if(commission > 100 || commission < 0){
+                        Register_Flag.setText("Commission rate must be between 0 - 100");
+                        return;
+                    }
+
+                    commission = commission / 100;
+                Entity new_user = new Consignee(adminName,contactNumberText,password);
 
 
-                     // Todo File handling ---
+                // -------------------------------File Handling-------------------------------
 
+                File userFolder = new File("Capstone/data/" + new_user.getID());
+                userFolder.mkdirs();
 
+                File config = new File(userFolder, "config.txt");
+                File suppliers = new File(userFolder, "suppliers.csv");
+                File inventory = new File(userFolder, "inventory.csv");
+                File salesLog = new File(userFolder, "sales_log.csv");
+
+                try{
+                   config.createNewFile();
+                   suppliers.createNewFile();
+                   inventory.createNewFile();
+                   salesLog.createNewFile();
+
+                    try (BufferedWriter br = new BufferedWriter(new FileWriter(config))) {
+                        br.write(String.format("%s,%.2f", shopName, commission));
+                    }
+
+                    try(BufferedWriter br = new BufferedWriter((new FileWriter("Capstone/data/admin_registry.csv",true)))){
+                        br.write(new_user.getID() + "," + password);
+                        br.newLine();
+                    }
+
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                // Todo once the details are registered it will go to dashboard
                     LogInPanel.setBackground(new Color(0x1F4E79));
                     LogInPanel.setOpaque(true);
                     cardLayout.show(Main_Panel, "welcome");
             }
         });
-    }
 
+
+        // -------------------------------Log In Action Listeners-------------------------------
+
+        Login_Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userId = Enter_ID_TextField.getText();
+                char[] passArray = Login_Password_TextField.getPassword();
+                String password = new String(passArray);
+
+                    if(userId.isEmpty() || password.isEmpty()){
+                        Login_Flag.setText("Please enter missing fields");
+                        return;
+                    }
+
+                    try(BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))){
+                        String s;
+                        boolean foundUser = false;
+
+                        while((s = br.readLine()) != null){
+                            // tokenized usedId and password
+                            String[] inputArr = s.split(",");
+
+                            String fileUser = inputArr[0];
+                            String filePass = inputArr[1];
+
+                            if (fileUser.equals(userId)) {        // user found
+                                foundUser = true;
+
+                                if (filePass.equals(password)) {  // correct password
+                                    // Todo once the details are registered it will go to dashboard
+
+                                    LogInPanel.setBackground(new Color(0x1F4E79));
+                                    LogInPanel.setOpaque(true);
+                                    cardLayout.show(Main_Panel, "welcome");
+                                    return;
+                                } else {
+                                    Login_Flag.setText("Incorrect password");
+                                    return;
+                                }
+                            }
+                        }
+
+                        if (!foundUser) {
+                            Login_Flag.setText("No account exists");
+                        }
+
+                    }
+                    catch (IOException e12) {
+                        e12.printStackTrace();
+                    }
+
+            }
+        });
+    }
 
 
 
@@ -194,6 +289,7 @@ public class LogInForm extends JFrame {
         Register_Password_TextField = new Style.RoundedTextField(60);
         Commision_Rate_TextField = new Style.RoundedTextField(60);
         Enter_ID_TextField = new Style.RoundedTextField(60);
+        Contact_Number_Text_Field = new Style.RoundedTextField(60);
         Login_Password_TextField = new Style.RoundedPasswordField(60);
 
         Log_In_Button_Directory = new Style.RoundedButton(60);
