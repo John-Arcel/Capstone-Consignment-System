@@ -87,17 +87,17 @@ public class TransactionsPanel extends JPanel{
         // 2. adds $ sign in front and displays 2 decimal places for double values (total, storeRevenue, consignorShare)
 
         // Quantity → integer style
-        table.getColumnModel().getColumn(3).setCellRenderer(new DollarDecimalRenderer(5, 5, 5, 5));
+        table.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
 
         // Price → $ with 2 decimals
-        table.getColumnModel().getColumn(4).setCellRenderer(new DollarDecimalRenderer(5, 5, 5, 5));
+        table.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
 
-        table.getColumnModel().getColumn(5).setCellRenderer(new DollarDecimalRenderer(5, 5, 5, 5));
+        table.getColumnModel().getColumn(5).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
 
         // Other columns → padded text
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (i != 3 && i != 4 && i != 5) {
-                table.getColumnModel().getColumn(i).setCellRenderer(new PaddedCellRenderer(5, 5, 5, 5));
+                table.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
             }
         }
 

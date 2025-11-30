@@ -1,113 +1,19 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import java.text.DecimalFormat;
 
-
-
-// ================================================================================
-// -------------------------- Table Formatting classes ----------------------------
-// ================================================================================
-
-//purpose: adds $ sign and displays 2 decimal places to doubles (price column) in table
-class DollarDecimalRenderer extends DefaultTableCellRenderer {
-    private DecimalFormat formatter;
-    private int top, left, bottom, right;
-
-    public DollarDecimalRenderer(int top, int left, int bottom, int right) {
-        this.formatter = new DecimalFormat("$#0.00"); // $ and 2 decimals
-        this.top = top;
-        this.left = left;
-        this.bottom = bottom;
-        this.right = right;
-        setHorizontalAlignment(RIGHT); // align numbers to the right
-        setOpaque(true);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus,
-                                                   int row, int column) {
-        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (c instanceof JLabel) {
-            ((JLabel) c).setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-            if (value instanceof Number) {
-                setText(formatter.format(value));
-            }
-        }
-        return c;
-    }
-}
-
-//purpose: center aligns integers (quantity column) in table
-class IntegerRenderer extends DefaultTableCellRenderer {
-    private int top, left, bottom, right;
-
-    public IntegerRenderer(int top, int left, int bottom, int right) {
-        this.top = top;
-        this.left = left;
-        this.bottom = bottom;
-        this.right = right;
-        setHorizontalAlignment(CENTER);
-        setOpaque(true);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table,
-                                                   Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus,
-                                                   int row,
-                                                   int column) {
-        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (c instanceof JLabel) {
-            ((JLabel) c).setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-            if (value instanceof Number) {
-                setText(String.valueOf(((Number) value).intValue()));
-            }
-        }
-        return c;
-    }
-}
-
-//purpose: adds cell padding to table cells
-class PaddedCellRenderer extends DefaultTableCellRenderer {
-    private int top, left, bottom, right;
-
-    public PaddedCellRenderer(int top, int left, int bottom, int right) {
-        this.top = top;
-        this.left = left;
-        this.bottom = bottom;
-        this.right = right;
-        setOpaque(true); // important so background is visible
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table,
-                                                   Object value,
-                                                   boolean isSelected,
-                                                   boolean hasFocus,
-                                                   int row,
-                                                   int column) {
-        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (c instanceof JLabel) {
-            ((JLabel) c).setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-        }
-        return c;
-    }
-}
-
-
-
 // ================================================================================
 // -------------------------- InventoryPanel class --------------------------------
 // ================================================================================
 
-public class InventoryPanel extends JPanel {
+public class InventoryPanel extends JFrame {
     private JPanel contentPane;
     private JTable table;
     private JTextField searchIDTextField;
@@ -137,8 +43,8 @@ public class InventoryPanel extends JPanel {
     private int totalConsignors;
 
     public InventoryPanel() {
-//        setContentPane(contentPane);
-//        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setContentPane(contentPane);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         table.setRowHeight(30);
         table.setBounds(0,0,100,200);
@@ -156,8 +62,15 @@ public class InventoryPanel extends JPanel {
         searchIDTextField.addActionListener(e -> runCombinedSearch());
         searchConsignorTextField.addActionListener(e -> runCombinedSearch());
 
-//        pack();
-//        setVisible(true);
+        addItemButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog();
+            }
+        });
+
+        pack();
+        setVisible(true);
         //purpose: focus on window first (default is focus on text field)
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
     }
@@ -246,15 +159,15 @@ public class InventoryPanel extends JPanel {
         // 3. adds $ sign in front and displays 2 decimal places for double values (price column)
 
         // Quantity → integer style
-        table.getColumnModel().getColumn(3).setCellRenderer(new IntegerRenderer(cellPadding, cellPadding, cellPadding, cellPadding));
+        table.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.IntegerRenderer(cellPadding, cellPadding, cellPadding, cellPadding));
 
         // Price → $ with 2 decimals
-        table.getColumnModel().getColumn(4).setCellRenderer(new DollarDecimalRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
+        table.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
 
         // Other columns → padded text
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (i != 3 && i != 4) {
-                table.getColumnModel().getColumn(i).setCellRenderer(new PaddedCellRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
+                table.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.PaddedCellRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
             }
         }
     }
@@ -315,7 +228,7 @@ public class InventoryPanel extends JPanel {
         deleteItemButton = new Style.RoundedButton(roundRadius);
     }
 
-//    public static void main(String[] args) {
-//        new InventoryPanel();
-//    }
+    public static void main(String[] args) {
+        new InventoryPanel();
+    }
 }
