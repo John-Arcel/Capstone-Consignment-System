@@ -3,11 +3,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
-import java.text.DecimalFormat;
 
 // ================================================================================
 // -------------------------- InventoryPanel class --------------------------------
@@ -27,16 +27,16 @@ public class InventoryPanel extends JFrame {
 
     private String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Return Date"};
     private Object[][] data = {
-            {"Apple", "A001", "John", 1, 100.50, "01/01/2025", "01/01/2026"},
-            {"Banana", "B002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026"},
-            {"Carrot", "C003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026"},
-            {"Dates", "D004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026"},
-            {"Eggplant", "E005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026"},
-            {"Fig", "F006", "John", 6, 150.00, "06/01/2025", "06/01/2026"},
-            {"Grapes", "G007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026"},
-            {"Honeydew", "H008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026"},
-            {"Iceberg Lettuce", "I009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026"},
-            {"Jackfruit", "J010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026"}
+            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026"},
+            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026"},
+            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026"},
+            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026"},
+            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026"},
+            {"Fig",         "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026"},
+            {"Grapes",      "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026"},
+            {"Honeydew",    "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026"},
+            {"Lettuce",     "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026"},
+            {"Jackfruit",   "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026"}
     };
 
     private int totalItems;
@@ -55,7 +55,6 @@ public class InventoryPanel extends JFrame {
         totalConsignors = getTotalConsignors();
         totalItemsLabel.setText(Integer.toString(totalItems));
         totalConsignorsLabel.setText(Integer.toString(totalConsignors));
-
         addTextFieldPlaceholderText();
 
         //purpose: adds functionality to search by item id and consignor
@@ -65,7 +64,50 @@ public class InventoryPanel extends JFrame {
         addItemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog dialog = new JDialog();
+                AddItemDialog dialog = new AddItemDialog();
+                dialog.pack();
+                dialog.setVisible(true);
+
+                if(dialog.isConfirmed()) {
+                    ArrayList<Object> newItemData = dialog.getAllFieldInput();
+                    String newItemID = generateID('I', getMaxID(data)+1);
+                    newItemData.add(1, newItemID);
+                    addRow(newItemData);
+                }
+                drawTable(data, headers);
+                prettifyTable();
+            }
+        });
+
+        deleteItemButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+
+            //purpose: error dialog box if user did not select row
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a row first!",
+                        "No Selection",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            //purpose: show confirm dialog window to confirm deletion
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to delete the selected item?",
+                    "Confirm Deletion",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            //purpose: if deletion is confirmed, delete the row and update total items/consignors
+            if (result == JOptionPane.YES_OPTION) {
+                deleteRow(selectedRow);
+
+                drawTable(data, headers);
+                prettifyTable();
+                totalItemsLabel.setText(Integer.toString(getTotalItems()));
+                totalConsignorsLabel.setText(Integer.toString(getTotalConsignors()));
             }
         });
 
@@ -134,6 +176,39 @@ public class InventoryPanel extends JFrame {
     // ================================================================================
     // ------------------------------ Helper methods ----------------------------------
     // ================================================================================
+
+    private void addRow(ArrayList<Object> newRow) {
+        List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
+        dataList.add(newRow.toArray());
+        data = dataList.toArray(new Object[0][]);
+    };
+
+    private void deleteRow(int selectedRow) {
+        // Convert view index to model index in case table is sorted
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+
+        // Remove the row
+        List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
+        dataList.remove(modelRow);
+        data = dataList.toArray(new Object[0][]);
+    }
+
+    public static String generateID(char prefix, int number) {
+        // %07d → pads number with zeros to 7 digits
+        return String.format("%c-%07d", prefix, number);
+    }
+
+    private static int getMaxID(Object[][] data) {
+        int max = 0;
+        for (Object[] row : data) {
+            String id = row[1].toString();          // e.g., "I-0000010"
+            String numberPart = id.split("-")[1];   // "0000010"
+            int num = Integer.parseInt(numberPart);
+            if (num > max) max = num;
+        }
+        return max;
+    }
+
 
     //purpose: draws the table using original data and headers
     private void drawTable(Object[][] data, String[] headers) {
@@ -221,7 +296,7 @@ public class InventoryPanel extends JFrame {
     }
 
     private void createUIComponents() {
-        int roundRadius = 60;
+        int roundRadius = 30;
         searchIDTextField = new Style.RoundedTextField(roundRadius);
         searchConsignorTextField = new Style.RoundedTextField(roundRadius);
         addItemButton = new Style.RoundedButton(roundRadius);
