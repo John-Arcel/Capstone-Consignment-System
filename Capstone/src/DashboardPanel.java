@@ -6,6 +6,14 @@ import java.util.List;
 
 public class DashboardPanel extends JFrame {
 
+    // ---------------------------
+    // TEMPORARY APP CONFIG
+    // ---------------------------
+    public static class AppConfig {
+        public static double storeCutPercent = 0.20; // default 20% store cut
+    }
+
+
     private JPanel dashboardPanel;
 
     private JLabel totalSales;
@@ -47,7 +55,7 @@ public class DashboardPanel extends JFrame {
         loadSampleData();
         loadTransactionTable();
         loadItemsDueTable();
-        updateTotals();
+        updateTotals(); // initial calculation
 
         // -----------------------------------------------------
         // FIND ITEM
@@ -108,8 +116,11 @@ public class DashboardPanel extends JFrame {
                     }
 
                     it.sold = true;
+
+                    // Add transaction
                     transactionList.add(new Transaction(id, "2025-11-30", it.price));
 
+                    // Update dashboard totals and tables
                     updateTotals();
                     loadTransactionTable();
                     loadItemsDueTable();
@@ -165,19 +176,26 @@ public class DashboardPanel extends JFrame {
     // -----------------------------------------------------
     private void updateTotals() {
 
-        int soldCount = 0;
-        double earningsSum = 0;
-        double pendingSum = 0;
+        int soldCount = 0;           // number of items sold
+        double earningsSum = 0;       // total earnings for store
+        double pendingSum = 0;        // total amount pending to supplier
 
         for (Item it : inventory) {
             if (it.sold) {
                 soldCount++;
-                earningsSum += it.price;
-            } else {
-                pendingSum += it.price;
+
+                // Calculate store earnings based on agreed cut
+                double storeCut = it.price * AppConfig.storeCutPercent;
+
+                // Calculate supplier pending payout
+                double supplierCut = it.price - storeCut;
+
+                earningsSum += storeCut;       // store earns their cut
+                pendingSum += supplierCut;     // supplier payout increases
             }
         }
 
+        // Update labels in dashboard
         itemSold.setText(String.valueOf(soldCount));
         earnings.setText(String.format("₱%.2f", earningsSum));
         pendingPayout.setText(String.format("₱%.2f", pendingSum));
@@ -272,9 +290,9 @@ public class DashboardPanel extends JFrame {
         itemsDue = new JTable();
         transactions = new JTable();
         itemDetail = new JTable();
-        itemIDField = new Style.RoundedTextField(60);
-        sellItemButton = new Style.RoundedButton(60);
-        findItemButton = new Style.RoundedButton(60);
 
+        itemIDField = new Style.RoundedTextField(30);
+        sellItemButton = new Style.RoundedButton(30);
+        findItemButton = new Style.RoundedButton(30);
     }
 }
