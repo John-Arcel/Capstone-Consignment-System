@@ -1,9 +1,5 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
@@ -22,25 +18,20 @@ public class InventoryPanel extends JFrame {
     private JLabel totalConsignorsLabel;
     private JButton addItemButton;
     private JButton deleteItemButton;
-    private JLabel EMPTY_SPACE;
-    private JLabel EMPTY_SPACE2;
 
-    private String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Return Date"};
+    private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Return Date", "Item Type"};
     private Object[][] data = {
-            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026"},
-            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026"},
-            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026"},
-            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026"},
-            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026"},
-            {"Fig",         "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026"},
-            {"Grapes",      "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026"},
-            {"Honeydew",    "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026"},
-            {"Lettuce",     "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026"},
-            {"Jackfruit",   "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026"}
+            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
+            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},
+            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026", "Perishable"},
+            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026", "Perishable"},
+            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026", "Perishable"},
+            {"Metal",         "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026", "Non-Perishable"},
+            {"Screw",      "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026", "Non-Perishable"},
+            {"Iron",    "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026", "Non-Perishable"},
+            {"Gold",     "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026", "Non-Perishable"},
+            {"Diamond",   "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026", "Non-Perishable"}
     };
-
-    private int totalItems;
-    private int totalConsignors;
 
     public InventoryPanel() {
         setContentPane(contentPane);
@@ -51,8 +42,8 @@ public class InventoryPanel extends JFrame {
         drawTable(data, headers);
         prettifyTable();
 
-        totalItems = getTotalItems();
-        totalConsignors = getTotalConsignors();
+        int totalItems = getTotalItems();
+        int totalConsignors = getTotalConsignors();
         totalItemsLabel.setText(Integer.toString(totalItems));
         totalConsignorsLabel.setText(Integer.toString(totalConsignors));
         addTextFieldPlaceholderText();
@@ -61,22 +52,19 @@ public class InventoryPanel extends JFrame {
         searchIDTextField.addActionListener(e -> runCombinedSearch());
         searchConsignorTextField.addActionListener(e -> runCombinedSearch());
 
-        addItemButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AddItemDialog dialog = new AddItemDialog();
-                dialog.pack();
-                dialog.setVisible(true);
+        addItemButton.addActionListener(e ->  {
+            AddItemDialog dialog = new AddItemDialog();
+            dialog.pack();
+            dialog.setVisible(true);
 
-                if(dialog.isConfirmed()) {
-                    ArrayList<Object> newItemData = dialog.getAllFieldInput();
-                    String newItemID = generateID('I', getMaxID(data)+1);
-                    newItemData.add(1, newItemID);
-                    addRow(newItemData);
-                }
-                drawTable(data, headers);
-                prettifyTable();
+            if(dialog.isConfirmed()) {
+                ArrayList<Object> newItemData = dialog.getAllFieldInput();
+                String newItemID = generateID('I', getMaxID(data)+1);
+                newItemData.add(1, newItemID);
+                addRow(newItemData);
             }
+            drawTable(data, headers);
+            prettifyTable();
         });
 
         deleteItemButton.addActionListener(e -> {
@@ -181,7 +169,7 @@ public class InventoryPanel extends JFrame {
         List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
         dataList.add(newRow.toArray());
         data = dataList.toArray(new Object[0][]);
-    };
+    }
 
     private void deleteRow(int selectedRow) {
         // Convert view index to model index in case table is sorted
@@ -193,11 +181,13 @@ public class InventoryPanel extends JFrame {
         data = dataList.toArray(new Object[0][]);
     }
 
+    //purpose: public generator for item id
     public static String generateID(char prefix, int number) {
         // %07d → pads number with zeros to 7 digits
         return String.format("%c-%07d", prefix, number);
     }
 
+    //purpose: returns the max id from a data matrix, used alongside generateID()
     private static int getMaxID(Object[][] data) {
         int max = 0;
         for (Object[] row : data) {
@@ -208,7 +198,6 @@ public class InventoryPanel extends JFrame {
         }
         return max;
     }
-
 
     //purpose: draws the table using original data and headers
     private void drawTable(Object[][] data, String[] headers) {
@@ -223,6 +212,7 @@ public class InventoryPanel extends JFrame {
                 };
             }
         });
+        table.getTableHeader().setReorderingAllowed(false);
     }
 
     //purpose: adds table cell padding (5), center-aligns quantity, 2 decimal + $ to price
