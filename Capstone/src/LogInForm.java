@@ -32,6 +32,7 @@ public class LogInForm extends JFrame {
     private JLabel Register_Flag;
     private JTextField Contact_Number_Text_Field;
     private JLabel Login_Flag;
+    private JButton backButton;
 
     private CardLayout cardLayout;
 
@@ -66,6 +67,49 @@ public class LogInForm extends JFrame {
         Log_In_Button_Directory.setBorderPainted(false);
 
 
+
+        //-----------This is portion of code block is hardcoded due to limitation of GridBagLayout---------------
+
+            //purpose: load the image resource for the back button
+            ImageIcon originalIcon = new ImageIcon("Capstone/image/back_button.png");
+
+            //purpose: scale the image to a smaller size (40x40) for the UI
+            Image scaledImage = originalIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+            ImageIcon backIcon = new ImageIcon(scaledImage);
+
+            //purpose: initialize the button using the resized icon
+            backButton = new JButton(backIcon);
+
+            //purpose: configure button position (x,y) and size
+            backButton.setBounds(25, 25, 40, 40);
+
+            //purpose: remove default button styling (borders, background) to show only the PNG
+            backButton.setBorderPainted(false);
+            backButton.setContentAreaFilled(false);
+            backButton.setFocusPainted(false);
+            backButton.setOpaque(false);
+
+            //purpose: hide button initially (only show on sub-panels)
+            backButton.setVisible(false);
+
+            //purpose: access the glass pane overlay to allow fixed positioning
+            JPanel glassPane = (JPanel) this.getRootPane().getGlassPane();
+            glassPane.setVisible(true);
+            glassPane.setLayout(null);
+            glassPane.setOpaque(false);
+
+            //purpose: add the custom back button to the overlay
+            glassPane.add(backButton);
+
+            //purpose: define action to return to welcome screen on click
+            backButton.addActionListener(e -> {
+                cardLayout.show(Main_Panel, "welcome");
+                LogInPanel.setBackground(new Color(0x1F4E79));
+                backButton.setVisible(false);
+            });
+        //--------------------End of hardcoded portion--------------------------
+
+
         //============================================================================================
         //-------------------------------Welcome Panel Action Listeners-------------------------------
         //============================================================================================
@@ -79,6 +123,9 @@ public class LogInForm extends JFrame {
 
                 //purpose: switch to register panel
                 cardLayout.show(Main_Panel, "register");
+
+                //purpose: show back button to allows users to go back to welcome page
+                backButton.setVisible(true);
             }
         });
 
@@ -92,6 +139,9 @@ public class LogInForm extends JFrame {
 
                 //purpose: switch to login panel
                 cardLayout.show(Main_Panel, "login");
+
+                //purpose: show back button to allows users to go back to welcome page
+                backButton.setVisible(true);
             }
         });
 
