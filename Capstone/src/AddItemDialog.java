@@ -36,6 +36,7 @@ public class AddItemDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         setResizable(false);
+        setLocationRelativeTo(null);
         getRootPane().setDefaultButton(buttonOK);
 
         fields = new JTextField[]{

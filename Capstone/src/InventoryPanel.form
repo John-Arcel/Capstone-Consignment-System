@@ -28,7 +28,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="39c42" class="javax.swing.JTable" binding="table">
+          <component id="39c42" class="javax.swing.JTable" binding="dataTable" custom-create="true">
             <constraints/>
             <properties>
               <autoCreateRowSorter value="true"/>

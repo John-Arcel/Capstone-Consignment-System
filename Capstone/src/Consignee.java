@@ -4,7 +4,6 @@ import java.util.List;
 public class Consignee extends Entity {
     private static int counter = 1;
 
-
     private final String password;
     private List<Consignor> consignorList;
     private List<Item> itemList;
@@ -12,17 +11,14 @@ public class Consignee extends Entity {
     public Consignee(String name, String contactNumber, String password) {
         super(name, contactNumber, String.format("V-%07d", counter++));
 
-
         if (password == null || password.isBlank())
             throw new NullPointerException("Password cannot be null or empty.");
-
 
         this.password = password;
 
         this.consignorList = new ArrayList<>();
         this.itemList = new ArrayList<>();
     }
-
 
     public String getPassword() {
         return password;

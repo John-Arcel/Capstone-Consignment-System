@@ -45,6 +45,7 @@ public class LogInForm extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
+        setVisible(true);
 
         //purpose call static function to make spacer transparent
         // for some reason di siya transparent
@@ -411,10 +412,5 @@ public class LogInForm extends JFrame {
 
         Log_In_Button_Directory = new Style.RoundedButton(60);
 
-    }
-
-    // Todo remove this main this is just for testing
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new LogInForm().setVisible(true));
     }
 }

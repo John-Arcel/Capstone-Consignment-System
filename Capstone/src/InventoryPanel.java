@@ -9,9 +9,9 @@ import java.util.Set;
 // -------------------------- InventoryPanel class --------------------------------
 // ================================================================================
 
-public class InventoryPanel extends JFrame {
+public class InventoryPanel extends JPanel {
     private JPanel contentPane;
-    private JTable table;
+    private JTable dataTable;
     private JTextField searchIDTextField;
     private JTextField searchConsignorTextField;
     private JLabel totalItemsLabel;
@@ -34,11 +34,12 @@ public class InventoryPanel extends JFrame {
     };
 
     public InventoryPanel() {
-        setContentPane(contentPane);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        table.setRowHeight(30);
-        table.setBounds(0,0,100,200);
+        add(contentPane, BorderLayout.CENTER);
+
+        dataTable.setRowHeight(30);
+        dataTable.setBounds(0,0,100,200);
         drawTable(data, headers);
         prettifyTable();
 
@@ -68,7 +69,7 @@ public class InventoryPanel extends JFrame {
         });
 
         deleteItemButton.addActionListener(e -> {
-            int selectedRow = table.getSelectedRow();
+            int selectedRow = dataTable.getSelectedRow();
 
             //purpose: error dialog box if user did not select row
             if (selectedRow == -1) {
@@ -98,11 +99,11 @@ public class InventoryPanel extends JFrame {
                 totalConsignorsLabel.setText(Integer.toString(getTotalConsignors()));
             }
         });
-
-        pack();
-        setVisible(true);
-        //purpose: focus on window first (default is focus on text field)
-        SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
+//
+//        pack();
+//        setVisible(true);
+//        //purpose: focus on window first (default is focus on text field)
+//        SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
     }
 
 
@@ -118,7 +119,7 @@ public class InventoryPanel extends JFrame {
         boolean noID = idText.isEmpty() || idText.equals("Search Item ID");
         boolean noConsignor = consignorText.isEmpty() || consignorText.equals("Search Consignor");
 
-        // If both empty → reset table
+        // If both empty → reset dataTable
         if (noID && noConsignor) {
             drawTable(data, headers);
             prettifyTable();
@@ -135,11 +136,11 @@ public class InventoryPanel extends JFrame {
             String itemID = row[1].toString().toLowerCase();
             String consignor = row[2].toString().toLowerCase();
 
-            // filters table for item id
+            // filters dataTable for item id
             boolean idMatches = idFilter.isEmpty() || idFilter.equals("Search Item ID")
                     || itemID.contains(idFilter.toLowerCase());
 
-            // filters table for consignor
+            // filters dataTable for consignor
             boolean consignorMatches = consignorFilter.isEmpty() || consignorFilter.equals("Search Consignor")
                     || consignor.contains(consignorFilter.toLowerCase());
 
@@ -154,12 +155,10 @@ public class InventoryPanel extends JFrame {
             filteredData[i] = filtered.get(i);
         }
 
-        // Update table
+        // Update dataTable
         drawTable(filteredData, headers);
         prettifyTable();
     }
-
-
 
     // ================================================================================
     // ------------------------------ Helper methods ----------------------------------
@@ -172,8 +171,8 @@ public class InventoryPanel extends JFrame {
     }
 
     private void deleteRow(int selectedRow) {
-        // Convert view index to model index in case table is sorted
-        int modelRow = table.convertRowIndexToModel(selectedRow);
+        // Convert view index to model index in case dataTable is sorted
+        int modelRow = dataTable.convertRowIndexToModel(selectedRow);
 
         // Remove the row
         List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
@@ -199,10 +198,10 @@ public class InventoryPanel extends JFrame {
         return max;
     }
 
-    //purpose: draws the table using original data and headers
+    //purpose: draws the dataTable using original data and headers
     private void drawTable(Object[][] data, String[] headers) {
-        table.setModel(new javax.swing.table.DefaultTableModel(data, headers) {
-            //purpose: to be able to sort double and int values properly in the table
+        dataTable.setModel(new javax.swing.table.DefaultTableModel(data, headers) {
+            //purpose: to be able to sort double and int values properly in the dataTable
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
@@ -212,27 +211,27 @@ public class InventoryPanel extends JFrame {
                 };
             }
         });
-        table.getTableHeader().setReorderingAllowed(false);
+        dataTable.getTableHeader().setReorderingAllowed(false);
     }
 
-    //purpose: adds table cell padding (5), center-aligns quantity, 2 decimal + $ to price
+    //purpose: adds dataTable cell padding (5), center-aligns quantity, 2 decimal + $ to price
     private void prettifyTable() {
         int cellPadding = 5;
         // It does:
-        // 1. adds cell padding to the table cell
+        // 1. adds cell padding to the dataTable cell
         // 2. center-aligns integer values (quantity column)
         // 3. adds $ sign in front and displays 2 decimal places for double values (price column)
 
         // Quantity → integer style
-        table.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.IntegerRenderer(cellPadding, cellPadding, cellPadding, cellPadding));
+        dataTable.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.IntegerRenderer(cellPadding, cellPadding, cellPadding, cellPadding));
 
         // Price → $ with 2 decimals
-        table.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
+        dataTable.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
 
         // Other columns → padded text
-        for (int i = 0; i < table.getColumnCount(); i++) {
+        for (int i = 0; i < dataTable.getColumnCount(); i++) {
             if (i != 3 && i != 4) {
-                table.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.PaddedCellRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
+                dataTable.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.PaddedCellRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
             }
         }
     }
@@ -291,9 +290,6 @@ public class InventoryPanel extends JFrame {
         searchConsignorTextField = new Style.RoundedTextField(roundRadius);
         addItemButton = new Style.RoundedButton(roundRadius);
         deleteItemButton = new Style.RoundedButton(roundRadius);
-    }
-
-    public static void main(String[] args) {
-        new InventoryPanel();
+        dataTable = new JTable();
     }
 }
