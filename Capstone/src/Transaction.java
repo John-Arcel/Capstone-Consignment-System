@@ -42,6 +42,8 @@ public class Transaction {
         System.out.println("Consignor Share: " + String.format("%.2f", consignorShare));
     }
 
+    public static void main(String[] args) {
 
+    }
 
 }

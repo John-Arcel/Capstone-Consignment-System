@@ -1,5 +1,9 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 public class TransactionsPanel extends JPanel{
@@ -10,14 +14,15 @@ public class TransactionsPanel extends JPanel{
     private JLabel totalTransactionsLabel;
     private JLabel totalStoreRevenueLabel;
     private JLabel totalConsignorShareLabel;
+    private static int counter;
     private Object[][] data;
+    private final String[] columnNames = {"Transaction ID", "Items", "Date", "Total", "Store Revenue", "Consignor Share"};
 
     public TransactionsPanel(){
 //        setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        setContentPane(contentPane);
-
-        String[] columnNames = {"Transaction ID", "Items", "Date", "Total", "Store Revenue", "Consignor Share"};
         data = new Object[][] {
+                // remove lang nya ni
                 {"T-0000001", "Apple", "2025-01-06", 1.57, 0.39, 1.18},
                 {"T-0000002", "Banana", "2025-01-06", 0.89, 0.22, 0.67},
                 {"T-0000003", "Grapes (lb)", "2025-01-07", 4.99, 1.25, 3.74},
@@ -34,9 +39,10 @@ public class TransactionsPanel extends JPanel{
                 {"T-0000014", "Spinach Bag", "2025-01-12", 1.99, 0.50, 1.49},
                 {"T-0000015", "Ground Coffee", "2025-01-13", 7.45, 1.86, 5.59}
         };
-
+        // create the table with column name and data
         table.setModel(new DefaultTableModel(data, columnNames));
 
+        // add placeholder to textfield
         searchTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
@@ -56,20 +62,16 @@ public class TransactionsPanel extends JPanel{
         table.setRowHeight(30);
         prettifyTable();
 
+        //labels for each box
         totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
         totalStoreRevenueLabel.setText("$" + Double.toString(getTotalStoreRevenue()));
         totalConsignorShareLabel.setText("$" + Double.toString(getTotalConsignorShare()));
 //        pack();
 //        setVisible(true);
 
-        afterInit();
-
-    }
-
-
-
-    public void afterInit() {
+        //purpose: focus on window first (default is focus on text field)
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
+
     }
 
     public double getTotalAmount(){
@@ -81,15 +83,38 @@ public class TransactionsPanel extends JPanel{
         return total;
     }
 
+    // create a transaction and add in the array
+    public void transact(Item i){
+        ArrayList<Object> list = new ArrayList<Object>();
+        String id = "T-" + String.format("%07d", ++counter);
+        list.add(id);
+        list.add(i.getName());
+        LocalDateTime date = LocalDateTime.now();
+        list.add(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        list.add(i.getSellingPrice());
+        list.add(i.getSellingPrice()-i.calculateOwnerShare());
+        list.add(i.calculateOwnerShare());
+        addTransaction(list);
+        table.setModel(new DefaultTableModel(data, columnNames));
+        prettifyTable();
+
+    }
+
+    //helper method to convert primitive array to arraylist and vice versa
+    private void addTransaction(ArrayList<Object> transaction) {
+        List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
+        dataList.add(transaction.toArray());
+        data = dataList.toArray(new Object[0][]);
+    }
+
     private void prettifyTable() {
         // It does:
         // 1. adds cell padding to the table cell
         // 2. adds $ sign in front and displays 2 decimal places for double values (total, storeRevenue, consignorShare)
 
-        // Quantity → integer style
+        // total, storeRevenue, consignorShare → $ with 2 decimals
         table.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
 
-        // Price → $ with 2 decimals
         table.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
 
         table.getColumnModel().getColumn(5).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
@@ -102,11 +127,12 @@ public class TransactionsPanel extends JPanel{
         }
 
     }
-
+    // private for now if walay lain class maggamit
     private int getTotalTransactions(){
         return data.length;
     }
 
+    // private for now if walay lain class maggamit
     private double getTotalStoreRevenue(){
         double total = 0;
 
@@ -117,6 +143,7 @@ public class TransactionsPanel extends JPanel{
         return total;
     }
 
+    // private for now if walay lain class maggamit
     private double getTotalConsignorShare(){
         double total = 0;
 
