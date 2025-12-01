@@ -20,7 +20,7 @@
           <text value="Payout"/>
         </properties>
       </component>
-      <component id="93f6e" class="javax.swing.JTextField" binding="Search">
+      <component id="93f6e" class="javax.swing.JTextField" binding="Search" custom-create="true">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -28,9 +28,9 @@
           <gridbag top="5" left="20" bottom="5" right="8" weightx="0.0" weighty="0.0" ipadx="150" ipady="10"/>
         </constraints>
         <properties>
-          <font size="11" style="2"/>
+          <font size="11" style="0"/>
           <foreground color="-14013132"/>
-          <text value=""/>
+          <text value="Search payout"/>
         </properties>
       </component>
       <component id="e0ec4" class="javax.swing.JLabel">
@@ -172,7 +172,7 @@
           </grid>
         </children>
       </grid>
-      <component id="502ee" class="javax.swing.JButton" binding="transferButton" default-binding="true">
+      <component id="502ee" class="javax.swing.JButton" binding="transferButton" custom-create="true" default-binding="true">
         <constraints>
           <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
           <gridbag top="5" left="5" bottom="10" right="20" weightx="0.0" weighty="0.0" ipadx="10" ipady="5"/>

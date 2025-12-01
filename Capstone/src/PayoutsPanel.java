@@ -18,16 +18,16 @@ public class PayoutsPanel extends JFrame{
     private JLabel PendingNum;
     private JButton transferButton;
 
-    private List<Transaction> Check = new ArrayList<>();
-    private List<Payout> AllPayout = new ArrayList<>();
-    private List<Object[]> historyDataList = new ArrayList<>();
-    private List<Object[]> pendingDataList = new ArrayList<>();
-    private Consignee consignee;
+    private List<Transaction> Check = new ArrayList<>(); // list that stores all transactions that are not initially payouts
+    private List<Payout> AllPayout = new ArrayList<>(); // list of payouts
+    private List<Object[]> historyDataList = new ArrayList<>(); // list of objects na makita sa history
+    private List<Object[]> pendingDataList = new ArrayList<>(); // list of objects na makita sa pending
+    private Consignee consignee; // the admin
     private final String[] HistoryHeaders= {"Payout ID" , "Consignor" , "Amount Paid" , "Date"};
     private final String[] PendingHeaders = {"Select" , "Transaction ID" , "Total Amount" , "Consignor Share"};
 
-    int countPending = 0;
-    int countPayout = 0;
+    int countPending = 0; // for the total pending display
+    int countPayout = 0; // for the total payout displayed
 
     public PayoutsPanel(Consignee consignee){
         this.consignee = consignee;
@@ -48,6 +48,7 @@ public class PayoutsPanel extends JFrame{
         HistoryTable.setRowHeight(30);
         //HistoryTable.setBounds(0,0,100,150);
 
+        // Initial count of total payout and pending
         if(countPayout <= 0 || countPending <= 0){
             PayoutNum.setText("" + 0);
             PendingNum.setText(""+ 0);
@@ -61,39 +62,83 @@ public class PayoutsPanel extends JFrame{
         // if transfer button is selected then it will add the amount of pending payout to payout list
         transferButton.addActionListener(new ActionListener() {
             @Override
+
+            // once transfer is clicked, tanan selected na pending will be transferred to history
+            // then calls to update history table as pending table will update on its own
             public void actionPerformed(ActionEvent e) {
                 handleTransferAction(pendingModel);
                 updateHistoryTable();
             }
         });
-        Search.addActionListener(new ActionListener() {
+
+        Search.addKeyListener(new java.awt.event.KeyAdapter() {
+            static boolean first = false;
+
+            // Giset nako ang field to display search payout, if this is invoked it will clear that para makatype
+            // if na invoke nakaisa then it will not clear again para dili sya mo print "" after every other key
+            public void keyPressed(java.awt.event.KeyEvent e) {
+                if(first == false){
+                    Search.setText("");
+                    first = true;
+                }else{
+                    return;
+                }
+            }
+
+            // gets the text once nakaenter naka after typing
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void keyTyped(java.awt.event.KeyEvent e) {
                 SelectFilter(Search.getText());
             }
+
         });
     }
 
-    private void SelectFilter(String text){
 
+    //FUNCTIONS
+
+    // -------------------------------Search Functions-------------------------------
+    // this code accepts the string from text field and filters that specific item and updates table accordingly
+
+    private void SelectFilter(String text){
         historyDataList.clear();
 
         String input = text.trim().toLowerCase();
 
-        AllPayout.forEach(p -> {
-            String ID = p.getTransactionID().toLowerCase();
-            if (ID.equals(input)) {
-                historyDataList.add(new Object[]{
-                        p.getPayoutID(),
-                        p.getConsignor(),
-                        p.getAmountPaid(),
-                        p.getPayoutDate()});
-            }
-        });
+        if(input.isEmpty()){
+            AllPayout.forEach(p -> {
+                    historyDataList.add(new Object[]{
+                            p.getPayoutID(),
+                            p.getConsignor(),
+                            p.getAmountPaid(),
+                            p.getPayoutDate()});
+
+            });
+        }else{
+            AllPayout.forEach(p -> {
+
+                String ID = null;
+                if (p.getPayoutID() != null) {
+                    ID = p.getPayoutID().toLowerCase();
+                }
+                if (ID.contains(input)) {
+                    historyDataList.add(new Object[]{
+                            p.getPayoutID(),
+                            p.getConsignor(),
+                            p.getAmountPaid(),
+                            p.getPayoutDate()});
+                }
+            });
+        }
+
 
 
         updateHistoryTable();
     }
+
+    // -------------------------------Process Transaction Function -------------------------------
+    // This function goes through the consignee's list of transactions and goes through everything, if it's a transaction(pending) or is already a payout
+    // stores the payouts in history while transactions are put in the pending
 
     private void processConsigneeTransactions(){
         if(consignee != null && consignee.transactions!= null){// getter medthod for consignee's list of transactions
@@ -118,6 +163,9 @@ public class PayoutsPanel extends JFrame{
                 }
         }
     }
+
+    // -------------------------------Handle Transfer-------------------------------
+    // this function updates the history table according to the transfers made from the pending table
 
     private void handleTransferAction(PendingTableModel model){
         List<Object[]> selectedItems = new ArrayList<>();
@@ -144,6 +192,8 @@ public class PayoutsPanel extends JFrame{
         JOptionPane.showMessageDialog(this, "Initiating payout for " + selectedItems.size() + " transactions");
     }
 
+    // -------------------------------Add To History-------------------------------
+    // this function add to the history data List that show up at the table
     public void addHistory(Object transactionId){
         for(PayoutsPanel.Transaction a : Check){
             if(a.getTransactionID().equals(transactionId)){
@@ -161,7 +211,11 @@ public class PayoutsPanel extends JFrame{
 
     }
 
+    // -------------------------------Update History Table-------------------------------
+    // if a new payout is added to the history or a specific payout is searched, this function updates what is shown in the table
     public void updateHistoryTable(){
+
+        //updated total payout and total pending
         if(countPayout <= 0 || countPending <= 0){
             PayoutNum.setText("" + 0);
             PendingNum.setText(""+ 0);
@@ -173,6 +227,10 @@ public class PayoutsPanel extends JFrame{
         HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
         HistoryTable.setRowHeight(30);
     }
+
+
+    // -------------------------------Pending Table Creator-------------------------------
+    // Custom create the Pending table
 
     private class PendingTableModel extends AbstractTableModel {
         private List<Object[]> data;
@@ -226,9 +284,24 @@ public class PayoutsPanel extends JFrame{
         }
     }
 
+
+    // -------------------------------Transaction to Payout Transformer-------------------------------
+    // Accepts a transaction and makes it into a Payout
     public Payout toPayout(Transaction t){
         Payout p = new Payout();
-        return p;}
+        return p;
+    }
+
+    // -------------------------------Elements Radius editor-------------------------------
+    //
+    private void createUIComponents() {
+        Search = new Style.RoundedTextField(40);
+        transferButton = new Style.RoundedButton(40);
+    }
+
+
+
+    // DUMMY PSVM FOR MOCK RUNNING
 
     public static void main(String[] args) {
         // Dummy data for testing the structure
@@ -246,18 +319,18 @@ public class PayoutsPanel extends JFrame{
     }
     public static class Payout extends Transaction {
         //public Payout(Consignor c, )
-        //String payID = "PO-001";
+        String payID;
         //String consignor = "Jane Doe";
         //double amountPaid = 500.00;
         //String payDate = "2025-11-28";
         static int ctr = 0;
         public Payout(){
-
+            this.payID = "P0-00" + ctr;
+            ctr++;
         }
         String getPayoutID() {
-            String id = "P0-00" + ctr;
-            ctr++;
-            return id; }
+
+            return payID; }
         String getConsignor() { return "Jane Doe"; }
         double getAmountPaid() { return 500.00; }
         String getPayoutDate() { return "2025-11-28"; }
