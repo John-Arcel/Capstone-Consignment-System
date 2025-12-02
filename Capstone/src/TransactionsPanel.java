@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ public class TransactionsPanel extends JPanel{
     public TransactionsPanel(){
 //        setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        setContentPane(contentPane);
+
+        setLayout(new BorderLayout());
+
+        add(contentPane, BorderLayout.CENTER);
         data = new Object[][] {
                 // remove lang nya ni
                 {"T-0000001", "Apple", "2025-01-06", 1.57, 0.39, 1.18},

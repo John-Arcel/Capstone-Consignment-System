@@ -25,10 +25,10 @@ public class MainProgram extends JFrame{
 
          cardLayout = (CardLayout) MainContentPanel.getLayout();
 
-//        MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
+       // MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(), "KEY_INVENTORY");
-//        MainContentPanel.add(new TransactionsPanel(), "KEY_TRANSACTIONS");
-//        MainContentPanel.add(new PayoutsPanel(), "KEY_PAYOUTS");
+        MainContentPanel.add(new TransactionsPanel(), "KEY_TRANSACTIONS");
+        //MainContentPanel.add(new PayoutsPanel(), "KEY_PAYOUTS");
 
         ActionListener listener = new ActionListener() {
             @Override
@@ -57,7 +57,9 @@ public class MainProgram extends JFrame{
         setLocationRelativeTo(null);
         setVisible(true);
     }
-//    public static void main(String[] args) {
-//        new MainProgram();
-//    }
+
+
+    public static void main(String[] args) {
+        new MainProgram();
+    }
 }

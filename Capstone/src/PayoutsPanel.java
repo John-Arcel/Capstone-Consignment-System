@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,6 +31,10 @@ public class PayoutsPanel extends JFrame{
     int countPayout = 0; // for the total payout displayed
 
     public PayoutsPanel(Consignee consignee){
+//        setLayout(new BorderLayout());
+//
+//        add(content, BorderLayout.CENTER);
+
         this.consignee = consignee;
 
         setSize(800,700);
