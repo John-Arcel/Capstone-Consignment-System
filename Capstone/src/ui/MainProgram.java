@@ -1,5 +1,6 @@
 package ui;
 
+import handlers.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,7 +8,6 @@ import java.awt.event.ActionListener;
 
 public class MainProgram extends JFrame{
     private final CardLayout cardLayout;
-
     private JPanel panelMain;
     private JPanel SideBarMenu;
     private JLabel greetTextField;
@@ -19,11 +19,21 @@ public class MainProgram extends JFrame{
     private JButton payoutsButton;
     private JButton logoutButton;
 
-    public MainProgram(){
+    private InventoryHandler inventoryHandler;
+    private TransactionsHandler transactionsHandler;
+    private SupplierHandler supplierHandler;
+    private PayoutsHandler payoutsHandler;
+
+    public MainProgram(String entityID){
         setTitle("Consignment System - Main");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMain);
+
+        inventoryHandler = new InventoryHandler(entityID);
+        transactionsHandler = new TransactionsHandler(entityID);
+        supplierHandler = new SupplierHandler(entityID);
+        payoutsHandler = new PayoutsHandler(entityID);
 
          cardLayout = (CardLayout) MainContentPanel.getLayout();
 
@@ -58,10 +68,5 @@ public class MainProgram extends JFrame{
 
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-
-    public static void main(String[] args) {
-        new MainProgram();
     }
 }
