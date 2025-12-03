@@ -24,7 +24,7 @@ public class ItemComparators {
             Perishable pa = (Perishable) a;
             Perishable pb = (Perishable) b;
 
-            return pa.getExpiryDate().compareTo(pb.getExpiryDate());
+            return pa.getReturnDate().compareTo(pb.getReturnDate());
         }
 
         // classes.NonPerishable goes last

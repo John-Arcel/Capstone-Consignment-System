@@ -37,8 +37,8 @@ public class InventoryHandler {
 //                        data[2],
 //                );
             }
-        } catch (IOException _) {
-
+        } catch (IOException e) {
+            System.out.println("This is an error");
         }
     }
 }
