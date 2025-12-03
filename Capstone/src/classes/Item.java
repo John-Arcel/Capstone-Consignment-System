@@ -1,3 +1,5 @@
+package classes;
+
 public abstract class Item {
     private static int ctr = 0;
     private final String itemID;

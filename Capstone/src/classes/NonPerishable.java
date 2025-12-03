@@ -1,3 +1,4 @@
+package classes;
 
 public class NonPerishable extends Item{
     public NonPerishable(String name, double sellingPrice, String dateReceived, Consignee owner){

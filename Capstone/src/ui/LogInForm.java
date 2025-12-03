@@ -1,3 +1,8 @@
+package ui;
+
+import classes.Consignee;
+import classes.Entity;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -45,6 +50,12 @@ public class LogInForm extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
+
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Rectangle bounds = env.getMaximumWindowBounds();
+        setBounds(bounds);
+
+        setResizable(false);
         setVisible(true);
 
         //purpose call static function to make spacer transparent
@@ -213,7 +224,7 @@ public class LogInForm extends JFrame {
                 }
 
                 // purpose: check if password contains at least one special character
-                else if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                else if (!password.matches(".*[!@#$%^&*().?/:{}|<>+_-].*")) {
                     Register_Flag.setText("Password must contain at least 1 special character");
                     return;
                 }
@@ -266,15 +277,15 @@ public class LogInForm extends JFrame {
 
                 //purpose: creating files
                 File config = new File(userFolder, "config.txt");
-                File suppliers = new File(userFolder, "suppliers.csv");
                 File inventory = new File(userFolder, "inventory.csv");
-                File salesLog = new File(userFolder, "sales_log.csv");
+                File transactions = new File(userFolder, "transactions.csv");
+                File payouts = new File(userFolder, "payouts.csv");
 
                 try{
                    config.createNewFile();
-                   suppliers.createNewFile();
                    inventory.createNewFile();
-                   salesLog.createNewFile();
+                   transactions.createNewFile();
+                   payouts.createNewFile();
 
                    //purpose: write the username and commission rate on config.txt
                     try (BufferedWriter br = new BufferedWriter(new FileWriter(config))) {
@@ -341,9 +352,8 @@ public class LogInForm extends JFrame {
 
                                 // Todo once the details are registered it will go to dashboard
                                 // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
-                                LogInPanel.setBackground(new Color(0x1F4E79));
-                                cardLayout.show(Main_Panel, "welcome");
-                                return;
+                                new MainProgram();
+                                LogInForm.this.dispose();
                             }
 
                             // purpose: password is incorrect for this user
@@ -400,7 +410,7 @@ public class LogInForm extends JFrame {
     }
 
     //purpose: custom style for swing components
-    //all of the component here makes corner rounded
+    //all the components here makes corner rounded
     private void createUIComponents() {
 
         Register_Username_Text_Field = new Style.RoundedTextField(60);

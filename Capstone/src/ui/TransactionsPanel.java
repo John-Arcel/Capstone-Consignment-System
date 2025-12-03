@@ -1,3 +1,6 @@
+package ui;
+
+import classes.Item;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -5,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class TransactionsPanel extends JPanel{
     private JPanel contentPane;

@@ -1,3 +1,5 @@
+import ui.LogInForm;
+
 import javax.swing.*;
 //
 //import java.time.LocalDate;
@@ -8,8 +10,8 @@ import javax.swing.*;
 //    public static void main(String[] args) {
 //        Scanner scn = new Scanner(System.in);
 //
-//        List<Consignee> consigneeAccounts = new ArrayList<Consignee>();
-//        Consignee currentConsignee = null;
+//        List<classes.Consignee> consigneeAccounts = new ArrayList<classes.Consignee>();
+//        classes.Consignee currentConsignee = null;
 //
 //        while (true) {
 //            // register/login page
@@ -40,7 +42,7 @@ import javax.swing.*;
 //                            break;
 //                        }
 //
-//                        for (Consignee user : consigneeAccounts) {
+//                        for (classes.Consignee user : consigneeAccounts) {
 //                            if (user.getName().equals(username) && user.getPassword().equals(password)) {
 //                                System.out.println("Login successful");
 //                                currentConsignee = user;
@@ -68,7 +70,7 @@ import javax.swing.*;
 //                        System.out.print("Enter contact number: ");
 //                        contactNumber = scn.nextLine();
 //
-//                        Consignee consignee = new Consignee(name, contactNumber, password);
+//                        classes.Consignee consignee = new classes.Consignee(name, contactNumber, password);
 //                        consigneeAccounts.add(consignee);
 //
 //                        isLoggedIn = true;
@@ -90,13 +92,13 @@ import javax.swing.*;
 //            boolean isMainMenuRunning = true;
 //            while (isMainMenuRunning) {
 //                System.out.println("\n===== MAIN MENU =====");
-//                System.out.println("Welcome Consignee: " + currentConsignee.getName() + "!");
+//                System.out.println("Welcome classes.Consignee: " + currentConsignee.getName() + "!");
 //                System.out.println("\nWhat do you want to do? ");
 //                System.out.println("Consignors options");
 //                System.out.println("[1] add consignor");
 //                System.out.println("[2] remove consignor");
 //                System.out.println("[3] display consignors");
-//                System.out.println("Item options");
+//                System.out.println("classes.Item options");
 //                System.out.println("[4] add item");
 //                System.out.println("[5] remove item");
 //                System.out.println("[6] return an item");
@@ -154,7 +156,7 @@ import javax.swing.*;
 //    }
 //
 //
-//    private Item returnItem(Scanner scn, List<Item> items) {
+//    private classes.Item returnItem(Scanner scn, List<classes.Item> items) {
 //        boolean running = true;
 //        while(running) {
 //            System.out.println("===== Returning an item from inventory =====");
@@ -163,8 +165,8 @@ import javax.swing.*;
 //            String dateToday = getTodayDate();
 //
 //            for (int i = 0; i < items.size(); i++) {
-//                Item item = items.get(i);
-//                if (item instanceof NonPerishable)
+//                classes.Item item = items.get(i);
+//                if (item instanceof classes.NonPerishable)
 //                    System.out.println((i + 1) + ". " + item.getName() +
 //                            " | id: " + item.getItemID() +
 //                            " | price: Php" + String.format("%.2f", item.getSellingPrice()) +
@@ -178,8 +180,8 @@ import javax.swing.*;
 //                            " | price: Php" + String.format("%.2f", item.getSellingPrice()) +
 //                            " | date received: " + item.getDateReceived() +
 //                            " | perishable: true" +
-//                            " | date expiry: " + ((Perishable)item).getExpiryDate() +
-//                            " | isExpired: " + ((Perishable) item).isExpired(dateToday));
+//                            " | date expiry: " + ((classes.Perishable)item).getExpiryDate() +
+//                            " | isExpired: " + ((classes.Perishable) item).isExpired(dateToday));
 //            }
 //            int c;
 //            System.out.println("\nOperations");
@@ -198,19 +200,19 @@ import javax.swing.*;
 //                    running = false;
 //                    break;
 //                case 2:
-//                    items.sort(ItemComparators.BY_NAME);
+//                    items.sort(classes.ItemComparators.BY_NAME);
 //                    break;
 //                case 3:
-//                    items.sort(ItemComparators.BY_EXPIRY);
+//                    items.sort(classes.ItemComparators.BY_EXPIRY);
 //                    break;
 //                case 4:
-//                    items.sort(ItemComparators.BY_DATE_RECEIVED);
+//                    items.sort(classes.ItemComparators.BY_DATE_RECEIVED);
 //                    break;
 //                case 5:
-//                    items.sort(ItemComparators.BY_ITEM_ID);
+//                    items.sort(classes.ItemComparators.BY_ITEM_ID);
 //                    break;
 //                case 6:
-//                    items.sort(ItemComparators.BY_SELLING_PRICE);
+//                    items.sort(classes.ItemComparators.BY_SELLING_PRICE);
 //                    break;
 //                case 0:
 //                    System.out.println("Cancelled return item");
@@ -236,7 +238,7 @@ import javax.swing.*;
 //        return null;
 //    }
 //
-//    private void displayItems(Scanner scn, List<Item> items) {
+//    private void displayItems(Scanner scn, List<classes.Item> items) {
 //        boolean isMainMenuRunning = true;
 //        while(isMainMenuRunning) {
 //            System.out.println("===== Displaying list of items in inventory =====");
@@ -245,8 +247,8 @@ import javax.swing.*;
 //            String dateToday = getTodayDate();
 //
 //            for (int i = 0; i < items.size(); i++) {
-//                Item item = items.get(i);
-//                if (item instanceof NonPerishable)
+//                classes.Item item = items.get(i);
+//                if (item instanceof classes.NonPerishable)
 //                    System.out.println((i + 1) + ". " + item.getName() +
 //                            " | id: " + item.getItemID() +
 //                            " | price: Php" + String.format("%.2f", item.getSellingPrice()) +
@@ -260,8 +262,8 @@ import javax.swing.*;
 //                            " | price: Php" + String.format("%.2f", item.getSellingPrice()) +
 //                            " | date received: " + item.getDateReceived() +
 //                            " | perishable: true" +
-//                            " | date expiry: " + ((Perishable)item).getExpiryDate() +
-//                            " | isExpired: " + ((Perishable) item).isExpired(dateToday));
+//                            " | date expiry: " + ((classes.Perishable)item).getExpiryDate() +
+//                            " | isExpired: " + ((classes.Perishable) item).isExpired(dateToday));
 //            }
 //            int c;
 //            System.out.println("Sort by: ");
@@ -275,19 +277,19 @@ import javax.swing.*;
 //            System.out.print("Enter option: "); c = scn.nextInt();
 //            switch(c) {
 //                case 1:
-//                    items.sort(ItemComparators.BY_NAME);
+//                    items.sort(classes.ItemComparators.BY_NAME);
 //                    break;
 //                case 2:
-//                    items.sort(ItemComparators.BY_EXPIRY);
+//                    items.sort(classes.ItemComparators.BY_EXPIRY);
 //                    break;
 //                case 3:
-//                    items.sort(ItemComparators.BY_DATE_RECEIVED);
+//                    items.sort(classes.ItemComparators.BY_DATE_RECEIVED);
 //                    break;
 //                case 4:
-//                    items.sort(ItemComparators.BY_ITEM_ID);
+//                    items.sort(classes.ItemComparators.BY_ITEM_ID);
 //                    break;
 //                case 5:
-//                    items.sort(ItemComparators.BY_SELLING_PRICE);
+//                    items.sort(classes.ItemComparators.BY_SELLING_PRICE);
 //                    break;
 //                case 0:
 //                    System.out.println("Returning to menu...");
@@ -300,17 +302,17 @@ import javax.swing.*;
 //        }
 //    }
 //
-//    private void displayConsignors(List<Consignor> consignors) {
+//    private void displayConsignors(List<classes.Consignor> consignors) {
 //        System.out.println("===== Displaying partnered consignors =====");
 //        System.out.println("Consignors partnered: " + consignors.size());
 //        for(int i = 0; i < consignors.size(); i++) {
-//            Consignor c = consignors.get(i);
+//            classes.Consignor c = consignors.get(i);
 //            System.out.println((i+1) + ". " + c.getName() + " | #: " + c.getContactNumber() + " | loc: " + c.getLocation());
 //        }
 //    }
 //
 //
-//    private Consignor addConsignor(Scanner scn, int consignorAmount) {
+//    private classes.Consignor addConsignor(Scanner scn, int consignorAmount) {
 //        String name, contactNumber, location;
 //        System.out.println("===== Add new consignor =====");
 //        System.out.println("You are currently partnered with " + consignorAmount + " consignors");
@@ -319,16 +321,16 @@ import javax.swing.*;
 //        System.out.print("Enter " + name + "'s contact number: "); contactNumber = scn.nextLine();
 //        System.out.print("Enter " + name + "'s location: "); location = scn.nextLine();
 //
-//        Consignor consignor = new Consignor(name, contactNumber, location);
+//        classes.Consignor consignor = new classes.Consignor(name, contactNumber, location);
 //        System.out.println("New consignor: " + name + " added");
 //        return consignor;
 //    }
 //
-//    private Consignor removeConsignor(Scanner scn, List<Consignor> consignors) {
+//    private classes.Consignor removeConsignor(Scanner scn, List<classes.Consignor> consignors) {
 //        System.out.println("===== Remove a consignor =====");
 //        System.out.println("List of partnered consignors");
 //        for(int i = 0; i < consignors.size(); i++) {
-//            Consignor c = consignors.get(i);
+//            classes.Consignor c = consignors.get(i);
 //            System.out.println("[" + (i+1) + "] " + c.getName());
 //        }
 //        System.out.println("\n[0] Cancel");
@@ -347,7 +349,7 @@ import javax.swing.*;
 //        return null;
 //    }
 //
-//    private Item addItem(Scanner scn, int itemAmount, Consignee owner) {
+//    private classes.Item addItem(Scanner scn, int itemAmount, classes.Consignee owner) {
 //        System.out.println("===== Add a new item =====");
 //        System.out.println("You currently have " + itemAmount + " items");
 //        scn.nextLine();
@@ -365,17 +367,17 @@ import javax.swing.*;
 //
 //        if(c.equalsIgnoreCase("y")) { // item is perishable
 //            System.out.print("Enter expiry date of the item: "); expiryDate = scn.nextLine();
-//            return new Perishable(name, sellingPrice, dateReceived, owner, expiryDate);
+//            return new classes.Perishable(name, sellingPrice, dateReceived, owner, expiryDate);
 //        }
 //        else { // item is non-perishable
-//            return new NonPerishable(name, sellingPrice, dateReceived, owner);
+//            return new classes.NonPerishable(name, sellingPrice, dateReceived, owner);
 //        }
 //    }
 //
-//    private Item removeItem(Scanner scn, List<Item> items) {
+//    private classes.Item removeItem(Scanner scn, List<classes.Item> items) {
 //        System.out.println("===== Remove an item =====");
 //        for(int i = 0; i < items.size(); i++) {
-//            Item item = items.get(i);
+//            classes.Item item = items.get(i);
 //            System.out.println("[" + i + "] " + item.getName() + " | id: " + item.getItemID());
 //        }
 //        System.out.println("\n[0] Cancel");

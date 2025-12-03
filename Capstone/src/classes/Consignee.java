@@ -1,3 +1,5 @@
+package classes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class Consignee extends Entity {
 
     public void addConsignor(Consignor consignor) {
         if (consignor == null)
-            throw new NullPointerException("Consignor cannot be null.");
+            throw new NullPointerException("classes.Consignor cannot be null.");
         consignorList.add(consignor);
     }
 
@@ -36,7 +38,7 @@ public class Consignee extends Entity {
 
     public void addItem(Item item) {
         if (item == null)
-            throw new NullPointerException("Item cannot be null.");
+            throw new NullPointerException("classes.Item cannot be null.");
         itemList.add(item);
     }
 

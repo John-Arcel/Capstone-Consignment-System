@@ -1,3 +1,5 @@
+package classes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class Consignor extends Entity {
     // Record a transaction
     public void addTransaction(Transaction t) {
         if (t == null)
-            throw new NullPointerException("Transaction cannot be null.");
+            throw new NullPointerException("classes.Transaction cannot be null.");
         transactionHistory.add(t);
     }
 }

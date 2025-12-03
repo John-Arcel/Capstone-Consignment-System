@@ -1,3 +1,5 @@
+package classes;
+
 import java.util.Comparator;
 
 public class ItemComparators {
@@ -25,7 +27,7 @@ public class ItemComparators {
             return pa.getExpiryDate().compareTo(pb.getExpiryDate());
         }
 
-        // NonPerishable goes last
+        // classes.NonPerishable goes last
         if (aPer && !bPer) return -1;
         if (!aPer && bPer) return 1;
 
