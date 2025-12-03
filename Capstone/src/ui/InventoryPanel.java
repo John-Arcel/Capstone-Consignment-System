@@ -21,7 +21,7 @@ public class InventoryPanel extends JPanel {
     private JButton addItemButton;
     private JButton deleteItemButton;
 
-    private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Return Date", "Item Type"};
+    private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Expiry/Return Date", "Item Type"};
     private Object[][] data = {
             {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
             {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},

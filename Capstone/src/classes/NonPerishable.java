@@ -1,7 +1,12 @@
 package classes;
 
 public class NonPerishable extends Item{
-    public NonPerishable(String name, double sellingPrice, String dateReceived, Consignee owner){
-        super(name, sellingPrice, dateReceived, owner);
+    public NonPerishable(String itemID, String name, Consignor owner, int quantity, double sellingPrice, double commissionRate, String dateReceived) {
+        super(itemID, name, owner, quantity, sellingPrice, commissionRate, dateReceived, 60);
+    }
+
+    @Override
+    public String toCSV() {
+        return super.toCSV() + "," + "Non-Perishable";
     }
 }

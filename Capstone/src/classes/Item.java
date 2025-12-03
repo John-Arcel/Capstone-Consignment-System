@@ -1,55 +1,51 @@
 package classes;
 
+import java.time.LocalDate;
+
 public abstract class Item {
-    private static int ctr = 0;
     private final String itemID;
     private String name;
+    private final Consignor owner;
+    private int quantity;
     private double sellingPrice;
-    private final String dateReceived;
-    private final Consignee owner;
+    private double commissionRate;
+    private final LocalDate dateReceived;
+    private final LocalDate returnDate;
 
-
-    public Item(String name, double sellingPrice, String dateReceived, Consignee owner){
+    public Item(String itemID, String name, Consignor owner, int quantity, double sellingPrice, double commissionRate, String dateReceived, int daysToSell){
         //super if extended sa entity
+        this.itemID = itemID;
         this.name = name;
-        this.sellingPrice = sellingPrice;
-        this.dateReceived = dateReceived;
         this.owner = owner;
-
-        ctr++;
-        this.itemID = String.format("I-%07d", ctr); // sets it so that between the string ang the ctr naay 0 na mo buffer
-
+        this.quantity = quantity;
+        this.sellingPrice = sellingPrice;
+        this.commissionRate = commissionRate;
+        this.dateReceived = LocalDate.parse(dateReceived);
+        returnDate = this.dateReceived.plusDays(daysToSell);
     }
 
-    public Consignee getOwner(){
+    public Consignor getOwner(){
         return owner;
     }
-
     public String getItemID(){
         return itemID;
     }
-
     public String getName() {
         return name;
     }
-
     public double getSellingPrice() {
         return sellingPrice;
     }
-
-    public String getDateReceived() {
+    public LocalDate getDateReceived() {
         return dateReceived;
     }
-
-    public void setSellingPrice(double sellingPrice){
-        this.sellingPrice = sellingPrice;
-    }
+    public LocalDate getReturnDate(){ return returnDate; }
 
     public double calculateOwnerShare(){
-        return sellingPrice * 0.75; // supplier/owner gets 75% of the sale
+        return sellingPrice * commissionRate; // supplier/owner gets 75% of the sale
     }
 
-    public void returnItem(Item i){
-        owner.removeItem(i); // calls remove item from the consignee
+    public String toCSV(){
+        return name + "," + itemID + "," + owner.getName() + "," + quantity + "," + String.format("%.2f", sellingPrice) + "," + dateReceived + "," + returnDate;
     }
 }

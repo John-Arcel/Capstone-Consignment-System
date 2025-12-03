@@ -43,9 +43,4 @@ public class Transaction {
         System.out.println("Store Revenue: " + String.format("%.2f", storeRevenue));
         System.out.println("classes.Consignor Share: " + String.format("%.2f", consignorShare));
     }
-
-    public static void main(String[] args) {
-
-    }
-
 }
