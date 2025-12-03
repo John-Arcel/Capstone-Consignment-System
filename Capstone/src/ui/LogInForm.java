@@ -340,6 +340,7 @@ public class LogInForm extends JFrame {
 
                         // tokenized userID, username, password, etc.
                         String[] inputArr = line.split(",");
+                        String id = inputArr[0];
                         String fileUser = inputArr[1];
                         String filePass = inputArr[2];
 
@@ -352,7 +353,7 @@ public class LogInForm extends JFrame {
 
                                 // Todo once the details are registered it will go to dashboard
                                 // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
-                                new MainProgram();
+                                new MainProgram(id);
                                 LogInForm.this.dispose();
                             }
 
