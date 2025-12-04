@@ -21,6 +21,7 @@ public class InventoryHandler {
         loadInventory();
     }
 
+    // reads from csv file to array of items
     private void loadInventory(){
         inventory_list.clear();
         File file = new File(path);
@@ -30,29 +31,37 @@ public class InventoryHandler {
             while((line = br.readLine()) != null){
                 String[] data = line.split(",");
 
+
+                String itemID = data[0];
+                String itemName = data[1];
                 String ownerID = data[2];
                 Consignor owner = supplierHandler.getConsignorByID(ownerID);
+                String quantity = data[3];
+                String sellingPrice = data[4];
+                String dateReceived = data[5];
+                String dateReturn = data[6];
+                String itemType = data[7];
 
                 Item item;
-                if(data[7].equals("Perishable")){
+                if(itemType.equals("Perishable")){
                     item = new Perishable(
-                            data[0],
-                            data[1],
+                            itemID,
+                            itemName,
                             owner,
-                            Integer.parseInt(data[3]),
-                            Double.parseDouble(data[4]),
-                            data[5],
-                            (int) ChronoUnit.DAYS.between(LocalDate.parse(data[5]), LocalDate.parse(data[6]))
+                            Integer.parseInt(quantity),
+                            Double.parseDouble(sellingPrice),
+                            dateReceived,
+                            (int) ChronoUnit.DAYS.between(LocalDate.parse(dateReceived), LocalDate.parse(dateReturn))
                     );
                 }
                 else{
                     item = new NonPerishable(
-                            data[0],
-                            data[1],
+                            itemID,
+                            itemName,
                             owner,
-                            Integer.parseInt(data[3]),
-                            Double.parseDouble(data[4]),
-                            data[5]
+                            Integer.parseInt(quantity),
+                            Double.parseDouble(sellingPrice),
+                            dateReceived
                     );
                 }
                 inventory_list.add(item);
@@ -62,6 +71,7 @@ public class InventoryHandler {
         }
     }
 
+    // writes from item array to csv file
     public void saveInventory(){
         File file = new File(path);
 
@@ -75,6 +85,7 @@ public class InventoryHandler {
         }
     }
 
+    // converts array of Item object to a primitive matrix with its raw data and returns
     public Object[][] getAllItems(){
         Object[][] matrix = new Object[inventory_list.size()][8];
         for(int i = 0; i<inventory_list.size(); i++){

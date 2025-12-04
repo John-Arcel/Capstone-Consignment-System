@@ -143,10 +143,10 @@ public class AddItemDialog extends JDialog {
         }
     }
 
-    //purpose: returns a string format (MM/dd/yyyy) on the date n-days ahead of today
+    //purpose: returns a string format (MM-dd-yyyy) on the date n-days ahead of today
     private static String getDatePlusDays(int days) {
         LocalDate futureDate = LocalDate.now().plusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
         return futureDate.format(formatter);
     }
 
