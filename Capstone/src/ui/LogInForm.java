@@ -191,7 +191,7 @@ public class LogInForm extends JFrame {
                     while ((line = br.readLine()) != null) {
                         String[] parts = line.split(",");
 
-                        // Todo make this work
+
                         if (parts.length > 1 && parts[1].trim().equals(userName.trim())) {
                             Register_Flag.setText("Username already exists");
                             return;
