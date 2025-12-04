@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class PayoutsPanel extends JFrame{
 
     private JPanel content;
@@ -69,6 +70,7 @@ public class PayoutsPanel extends JFrame{
 
         setLocationRelativeTo(null);
         setVisible(true);
+        transferButton.requestFocusInWindow();
 
         // if transfer button is selected then it will add the amount of pending payout to payout list
         transferButton.addActionListener(new ActionListener() {
@@ -82,27 +84,51 @@ public class PayoutsPanel extends JFrame{
             }
         });
 
-        Search.addKeyListener(new java.awt.event.KeyAdapter() {
-            static boolean first = false;
-
-            // Giset nako ang field to display search payout, if this is invoked it will clear that para makatype
-            // if na invoke nakaisa then it will not clear again para dili sya mo print "" after every other key
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if(first == false){
+        Search.setText("Search Payout ID");
+        Search.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                if (Search.getText().equals("Search Payout ID")) {
                     Search.setText("");
-                    first = true;
-                }else{
-                    return;
                 }
             }
 
-            // gets the text once nakaenter naka after typing
             @Override
-            public void keyTyped(java.awt.event.KeyEvent e) {
-                SelectFilter(Search.getText());
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (Search.getText().trim().isEmpty()) {
+                    Search.setText("Search Payout ID");
+                }
             }
-
         });
+
+        Search.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runCombinedSearch(); // This will call SelectFilter(Search.getText())
+            }
+        });
+
+        //Search.addKeyListener(new java.awt.event.KeyAdapter() {
+//            static boolean first = false;
+//
+//            // Giset nako ang field to display search payout, if this is invoked it will clear that para makatype
+//            // if na invoke nakaisa then it will not clear again para dili sya mo print "" after every other key
+//            public void keyPressed(java.awt.event.KeyEvent e) {
+//                if(first == false){
+//                    Search.setText("");
+//                    first = true;
+//                }else{
+//                    return;
+//                }
+//            }
+//
+//            // gets the text once nakaenter naka after typing
+//            @Override
+//            public void keyTyped(java.awt.event.KeyEvent e) {
+//                SelectFilter(Search.getText());
+//            }
+//
+//        });
     }
 
 
@@ -110,7 +136,18 @@ public class PayoutsPanel extends JFrame{
 
     // -------------------------------Search Functions-------------------------------
     // this code accepts the string from text field and filters that specific item and updates table accordingly
+    private void runCombinedSearch() {
+        String idText = Search.getText().trim();
 
+        boolean noID = idText.isEmpty() || idText.equals("Search Payout ID");
+
+//         If empty → reset dataTable
+        if (noID) {
+            return;
+        }
+
+        SelectFilter(idText);
+    }
     private void SelectFilter(String text){
         historyDataList.clear();
 
@@ -141,8 +178,6 @@ public class PayoutsPanel extends JFrame{
                 }
             });
         }
-
-
 
         updateHistoryTable();
     }
@@ -243,7 +278,7 @@ public class PayoutsPanel extends JFrame{
     // -------------------------------Pending Table Creator-------------------------------
     // Custom create the Pending table
 
-    private class PendingTableModel extends AbstractTableModel {
+    private static class PendingTableModel extends AbstractTableModel {
         private List<Object[]> data;
         private String[] columnNames;
 
@@ -303,12 +338,24 @@ public class PayoutsPanel extends JFrame{
         return p;
     }
 
+
+
     // -------------------------------Elements Radius editor-------------------------------
     //
     private void createUIComponents() {
         Search = new Style.RoundedTextField(40);
         transferButton = new Style.RoundedButton(40);
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -352,6 +399,7 @@ public class PayoutsPanel extends JFrame{
     public static Consignee createDummyConsignee() {
         Consignee c = new Consignee();
         c.transactions = new ArrayList<>();
+        c.transactions.add(new Payout());
         c.transactions.add(new Payout());
         c.transactions.add(new Transaction());
         c.transactions.add(new Transaction());
