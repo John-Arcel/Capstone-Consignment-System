@@ -2,10 +2,7 @@ package handlers;
 
 import classes.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -63,5 +60,35 @@ public class InventoryHandler {
         } catch (IOException e) {
             System.out.println("This is an error");
         }
+    }
+
+    public void saveInventory(){
+        File file = new File(path);
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
+            for(Item i : inventory_list){
+                bw.write(i.toCSV());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("This is an error");
+        }
+    }
+
+    public Object[][] getAllItems(){
+        Object[][] matrix = new Object[inventory_list.size()][8];
+        for(int i = 0; i<inventory_list.size(); i++){
+            Item item = inventory_list.get(i);
+            matrix[i][0] = item.getName();
+            matrix[i][1] = item.getItemID();
+            matrix[i][2] = item.getOwner().getName();
+            matrix[i][3] = item.getQuantity();
+            matrix[i][4] = item.getSellingPrice();
+            matrix[i][5] = item.getDateReceived().toString();
+            matrix[i][6] = item.getReturnDate().toString();
+            matrix[i][7] = (item instanceof Perishable) ? "Perishable" : "Non-Perishable";
+        }
+
+        return matrix;
     }
 }

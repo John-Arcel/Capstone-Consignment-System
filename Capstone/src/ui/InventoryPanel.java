@@ -1,5 +1,8 @@
 package ui;
 
+import handlers.InventoryHandler;
+import handlers.SupplierHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,23 +25,25 @@ public class InventoryPanel extends JPanel {
     private JButton deleteItemButton;
 
     private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Expiry/Return Date", "Item Type"};
-    private Object[][] data = {
-            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
-            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},
-            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026", "Perishable"},
-            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026", "Perishable"},
-            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026", "Perishable"},
-            {"Metal",         "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026", "Non-Perishable"},
-            {"Screw",      "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026", "Non-Perishable"},
-            {"Iron",    "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026", "Non-Perishable"},
-            {"Gold",     "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026", "Non-Perishable"},
-            {"Diamond",   "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026", "Non-Perishable"}
-    };
+//    private Object[][] data = {
+//            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
+//            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},
+//            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026", "Perishable"},
+//            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026", "Perishable"},
+//            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026", "Perishable"},
+//            {"Metal",         "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026", "Non-Perishable"},
+//            {"Screw",      "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026", "Non-Perishable"},
+//            {"Iron",    "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026", "Non-Perishable"},
+//            {"Gold",     "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026", "Non-Perishable"},
+//            {"Diamond",   "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026", "Non-Perishable"}
+//    };
+    private Object[][] data;
 
-    public InventoryPanel() {
+    public InventoryPanel(InventoryHandler inventoryHandler, SupplierHandler supplierHandler) {
         setLayout(new BorderLayout());
-
         add(contentPane, BorderLayout.CENTER);
+
+        data = inventoryHandler.getAllItems();
 
         dataTable.setRowHeight(30);
         dataTable.setBounds(0,0,100,200);
