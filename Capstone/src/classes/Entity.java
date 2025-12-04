@@ -7,7 +7,7 @@ public abstract class Entity {
     private String contactNumber;
     private final String entityID;
 
-    public  Entity(String name, String contactNumber, String entityID){
+    public Entity(String name, String contactNumber, String entityID){
         this.name = name;
         this.contactNumber = contactNumber;
         this.entityID = entityID;

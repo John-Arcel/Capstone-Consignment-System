@@ -109,4 +109,12 @@ public class InventoryHandler {
         }
         return null;
     }
+
+    public void addItem(String name, String owner, String quantity, String price, String dateReceived, String daysToSell){
+        Consignor consignor = supplierHandler.getConsignorByName(owner);
+
+        if(consignor == null){
+            consignor = supplierHandler.addConsignor(owner);
+        }
+    }
 }

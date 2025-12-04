@@ -12,7 +12,7 @@ public class PayoutsHandler {
     private String path;
     private List<Payout> payout_list;
 
-    public PayoutsHandler(String entityID){
+    public PayoutsHandler(String entityID, TransactionsHandler transactionsHandler){
         path = "data/" + entityID + "/payouts.csv";
         payout_list = new ArrayList<>();
 

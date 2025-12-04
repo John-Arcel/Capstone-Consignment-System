@@ -51,11 +51,24 @@ public class SupplierHandler {
     }
 
     public Consignor getConsignorByID(String ownerID) {
-        for(Consignor S : suppliers_list){
-            if(S.getID().equals(ownerID))
-                return S;
+        for(Consignor s : suppliers_list){
+            if(s.getID().equals(ownerID))
+                return s;
         }
 
         return null;
+    }
+
+    public Consignor getConsignorByName(String name) {
+        for(Consignor s : suppliers_list){
+            if(s.getName().equals(name))
+                return s;
+        }
+
+        return null;
+    }
+
+    public Consignor addConsignor(String name) {
+        Consignor newConsignor = new Consignor(name, )
     }
 }
