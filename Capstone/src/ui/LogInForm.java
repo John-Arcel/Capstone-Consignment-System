@@ -265,8 +265,24 @@ public class LogInForm extends JFrame {
                 // purpose: convert percentage to decimal (example: 10 → 0.10)
                 commission = commission / 100;
 
-                // initialized consignee
-                Entity new_user = new Consignee(userName,contactNumberText,password);
+                // purpose: find the number of existing consignee
+                int ConsigneeCounter = 0;
+                try(BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))){
+
+                    String line;
+                    br.readLine();
+                    while((line = br.readLine()) != null){
+                        ConsigneeCounter++;
+                    }
+                }
+                catch (IOException e1){
+                    System.out.println("This is an error");
+                }
+
+                ConsigneeCounter++;
+
+                //initialized
+                Entity new_user = new Consignee(userName,contactNumberText,password,String.format("V-%07d", ConsigneeCounter));
 
 
                 // -------------------------------File Handling-------------------------------

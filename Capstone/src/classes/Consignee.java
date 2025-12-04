@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Consignee extends Entity {
-    private static int counter = 1;
 
     private final String password;
     private List<Consignor> consignorList;
     private List<Item> itemList;
 
-    public Consignee(String name, String contactNumber, String password) {
-        super(name, contactNumber, String.format("V-%07d", counter++));
+    public Consignee(String name, String contactNumber, String password, String entityID) {
+        super(name, contactNumber,entityID);
 
         if (password == null || password.isBlank())
             throw new NullPointerException("Password cannot be null or empty.");
