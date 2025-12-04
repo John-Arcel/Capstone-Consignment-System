@@ -50,6 +50,7 @@ public class TransactionsPanel extends JPanel{
         table.setModel(new DefaultTableModel(data, columnNames));
 
         // add placeholder to textfield
+        searchTextField.setText("Search Transaction ID");
         searchTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
@@ -69,12 +70,16 @@ public class TransactionsPanel extends JPanel{
         table.setRowHeight(30);
         prettifyTable();
 
+        //Search Transaction ID
+        searchTextField.addActionListener(e->runCombinedSearch());
+
         //labels for each box
         totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
         totalStoreRevenueLabel.setText("$" + Double.toString(getTotalStoreRevenue()));
         totalConsignorShareLabel.setText("$" + Double.toString(getTotalConsignorShare()));
 //        pack();
 //        setVisible(true);
+
 
         //purpose: focus on window first (default is focus on text field)
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
@@ -159,6 +164,59 @@ public class TransactionsPanel extends JPanel{
         }
 
         return total;
+    }
+
+    private void runCombinedSearch() {
+        String idText = searchTextField.getText().trim();
+
+        boolean noID = idText.isEmpty() || idText.equals("Search Transaction ID");
+
+        // If both empty → reset dataTable
+        if (noID) {
+            table.setModel(new DefaultTableModel(data, columnNames));
+            prettifyTable();
+            return;
+        }
+
+        filterTable(idText);
+    }
+
+    private void filterTable(String idFilter) {
+        List<Object[]> filtered = new ArrayList<>();
+
+        for (Object[] row : data) {
+            String itemID = row[0].toString().toLowerCase();
+
+            // filters dataTable for transaction id
+            boolean idMatches = idFilter.isEmpty() || idFilter.equals("Search Transaction ID")
+                    || itemID.contains(idFilter.toLowerCase());
+
+            if (idMatches) {
+                filtered.add(row);
+            }
+        }
+
+        for(Object[] a: filtered){
+            System.out.println(a[0]);
+        }
+
+        // Convert list → Object[][]
+        Object[][] filteredData = new Object[filtered.size()][];
+        for (int i = 0; i < filtered.size(); i++) {
+            filteredData[i] = filtered.get(i);
+        }
+
+
+
+        // Update dataTable
+        table.setModel(new DefaultTableModel(filteredData, columnNames));
+        prettifyTable();
+    }
+
+    private void createUIComponents() {
+        int roundRadius = 30;
+        searchTextField = new Style.RoundedTextField(roundRadius);
+
     }
 
 //    public static void main(String[] args) {
