@@ -30,7 +30,7 @@ public class SupplierHandler {
         File file = new File(path);
 
         try(BufferedReader br = new BufferedReader(new FileReader(file))){
-            String line = br.readLine();
+            String line;
             while((line = br.readLine()) != null){
                 String[] data = line.split(",");
 
