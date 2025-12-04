@@ -102,7 +102,7 @@ public class TransactionsPanel extends JPanel{
         list.add(id);
         list.add(i.getName());
         LocalDateTime date = LocalDateTime.now();
-        list.add(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        list.add(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         list.add(i.getSellingPrice());
         list.add(i.getSellingPrice()-i.calculateOwnerShare());
         list.add(i.calculateOwnerShare());
