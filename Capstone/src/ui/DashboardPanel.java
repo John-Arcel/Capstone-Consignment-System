@@ -3,6 +3,8 @@ package ui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,21 @@ public class DashboardPanel extends JPanel {
 
     private List<Item> inventory = new ArrayList<>();
     private List<Transaction> transactionList = new ArrayList<>();
+
+    private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Expiry/Return Date", "Item Type"};
+    private Object[][] data = {
+            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
+            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},
+            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026", "Perishable"},
+            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026", "Perishable"},
+            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026", "Perishable"},
+            {"Metal",       "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026", "Non-Perishable"},
+            {"Screw",       "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026", "Non-Perishable"},
+            {"Iron",        "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026", "Non-Perishable"},
+            {"Gold",        "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026", "Non-Perishable"},
+            {"Diamond",     "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026", "Non-Perishable"}
+    };
+
 
     // -----------------------------------------------------
     // Constructor
@@ -80,6 +97,20 @@ public class DashboardPanel extends JPanel {
         updateTotals(); // initial calculation
 
         // -----------------------------------------------------
+        // AUTO-FILL ITEM ID WHEN TABLE ROW CLICKED
+        // -----------------------------------------------------
+        itemsDue.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = itemsDue.getSelectedRow();
+                if (selectedRow >= 0) {
+                    String itemId = itemsDue.getValueAt(selectedRow, 0).toString(); // Column 0 = Item ID
+                    itemIDField.setText(itemId);
+                }
+            }
+        });
+
+
+        // -----------------------------------------------------
         // FIND ITEM
         // -----------------------------------------------------
         findItemButton.addActionListener(e -> {
@@ -90,19 +121,21 @@ public class DashboardPanel extends JPanel {
                 return;
             }
 
-            Item found = null;
-
-            for (Item it : inventory) {
-                if (it.id.equalsIgnoreCase(id)) {
-                    found = it;
-                    break;
-                }
-            }
+            Item found = inventory.stream()
+                    .filter(it -> it.id.equalsIgnoreCase(id))
+                    .findFirst()
+                    .orElse(null);
 
             if (found == null) {
                 JOptionPane.showMessageDialog(this, "Item not found");
                 return;
             }
+
+            // Calculate sold quantity dynamically
+            long soldQty = transactionList.stream()
+                    .filter(t -> t.itemID.equalsIgnoreCase(found.id))
+                    .count();
+            int stockLeft = found.quantity - (int) soldQty;
 
             String[] cols = {"Field", "Value"};
             String[][] rows = {
@@ -110,53 +143,52 @@ public class DashboardPanel extends JPanel {
                     {"Name", found.name},
                     {"Price", String.format("₱%.2f", found.price)},
                     {"Quantity", String.valueOf(found.quantity)},
-                    {"Sold Quantity", String.valueOf(found.soldQuantity)},
-                    {"Stock Left", String.valueOf(found.quantity - found.soldQuantity)},
+                    {"Sold Quantity", String.valueOf(soldQty)},
+                    {"Stock Left", String.valueOf(stockLeft)},
                     {"Expiry", found.expiry}
             };
 
             itemDetail.setModel(new DefaultTableModel(rows, cols));
         });
 
+
         // -----------------------------------------------------
         // SELL ITEM
         // -----------------------------------------------------
         sellItemButton.addActionListener(e -> {
-
             String id = itemIDField.getText().trim();
-
             if (id.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Enter Item ID");
                 return;
             }
 
-            for (Item it : inventory) {
+            Item foundItem = inventory.stream()
+                    .filter(it -> it.id.equalsIgnoreCase(id))
+                    .findFirst()
+                    .orElse(null);
 
-                if (it.id.equalsIgnoreCase(id)) {
-
-                    if (it.isSoldOut()) {
-                        JOptionPane.showMessageDialog(this, "No more stock available!");
-                        return;
-                    }
-
-                    // increase sold stock
-                    it.soldQuantity++;
-
-                    // Add transaction
-                    transactionList.add(new Transaction(id, "2025-11-30", it.price));
-
-                    // Update dashboard totals and tables
-                    updateTotals();
-                    loadTransactionTable();
-                    loadItemsDueTable();
-
-                    JOptionPane.showMessageDialog(this, "Item Sold!");
-                    return;
-                }
+            if (foundItem == null) {
+                JOptionPane.showMessageDialog(this, "Item ID not found.");
+                return;
             }
 
-            JOptionPane.showMessageDialog(this, "Item ID not found.");
+            if (foundItem.isSoldOut(transactionList)) {
+                JOptionPane.showMessageDialog(this, "No more stock available!");
+                return;
+            }
+
+            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+            transactionList.add(new Transaction(id, today, foundItem.price));
+
+            updateTotals();
+            loadTransactionTable();
+            loadItemsDueTable();
+
+            JOptionPane.showMessageDialog(this, "Item Sold!");
         });
+
+
+
 
     }
 
@@ -164,57 +196,84 @@ public class DashboardPanel extends JPanel {
     // SAMPLE DATA
     // -----------------------------------------------------
     private void loadSampleData() {
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-        inventory.add(new Item("A101", "Blue Shirt", 350.00, 10, 1, "2025-12-05"));
-        inventory.add(new Item("A102", "White Pants", 550.00, 5, 0, "2025-12-01"));
-        inventory.add(new Item("A103", "Black Shoes", 999.00, 3, 1, "2025-11-29"));
-        inventory.add(new Item("A104", "Red Jacket", 1200.00, 4, 0, "2025-11-30"));
-        inventory.add(new Item("A105", "Green Hat", 220.00, 8, 0, "2025-11-28")); // nearest expiry
+        for (Object[] row : data) {
+            String name = (String) row[0];
+            String id = (String) row[1];
+            String consignor = (String) row[2];
+            int qty = (int) row[3];
+            double price = (double) row[4];
+            String dateReceived = (String) row[5];
+            String expiry = (String) row[6];
+            String itemType = (String) row[7];
 
-        transactionList.add(new Transaction("A101", "2025-11-29", 350.00));
-        transactionList.add(new Transaction("A103", "2025-11-29", 999.00));
+            inventory.add(new Item(id, name, consignor, price, qty, dateReceived, expiry, itemType));
+        }
+
+        // Example transactions
+        transactionList.add(new Transaction("I-0000001", "11/29/2025", 100.50));
+        transactionList.add(new Transaction("I-0000003", "11/29/2025", 30.02));
     }
+
 
 
     // -----------------------------------------------------
     // ITEMS DUE - SORT BY NEAREST EXPIRY
     // -----------------------------------------------------
     private void loadItemsDueTable() {
+        ArrayList<Item> due = new ArrayList<>();
 
-        ArrayList<Item> due = new ArrayList<>(inventory);
+        // Only items with stock > 0 AND not expired
+        for (Item it : inventory) {
+            if (it.stockLeft(transactionList) > 0 && !it.isExpired()) {
+                due.add(it);
+            }
+        }
 
-        due.sort((a, b) -> a.expiry.compareTo(b.expiry));
+        DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        due.sort((a, b) -> LocalDate.parse(a.expiry, f)
+                .compareTo(LocalDate.parse(b.expiry, f)));
 
-        String[] cols = {"Item ID", "Name", "Expiry", "Stock Left"};
-        String[][] rows = new String[due.size()][4];
+        String[] cols = {"Item ID", "Name", "Consignor", "Expiry", "Stock Left", "Price", "Item Type"};
+        String[][] rows = new String[due.size()][cols.length];
 
         for (int i = 0; i < due.size(); i++) {
             Item it = due.get(i);
             rows[i][0] = it.id;
             rows[i][1] = it.name;
-            rows[i][2] = it.expiry;
-            rows[i][3] = String.valueOf(it.quantity - it.soldQuantity);
+            rows[i][2] = it.consignor;
+            rows[i][3] = it.expiry;
+            rows[i][4] = String.valueOf(it.stockLeft(transactionList));
+            rows[i][5] = String.format("₱%.2f", it.price);
+            rows[i][6] = it.itemType;
         }
 
         itemsDue.setModel(new DefaultTableModel(rows, cols));
     }
 
 
+
+
+
     // -----------------------------------------------------
     // UPDATE TOTALS
     // -----------------------------------------------------
     private void updateTotals() {
-
-        int soldCount = 0;
+        int soldCount = transactionList.size();
         double earningsSum = 0;
         double pendingSum = 0;
 
-        for (Item it : inventory) {
+        for (Transaction t : transactionList) {
+            Item item = inventory.stream()
+                    .filter(i -> i.id.equalsIgnoreCase(t.itemID))
+                    .findFirst()
+                    .orElse(null);
 
-            soldCount += it.soldQuantity;
-
-            earningsSum += it.soldQuantity * it.price * AppConfig.storeCutPercent;
-            pendingSum  += it.soldQuantity * it.price * (1 - AppConfig.storeCutPercent);
+            if (item != null) {
+                earningsSum += t.amount * AppConfig.storeCutPercent;
+                pendingSum  += t.amount * (1 - AppConfig.storeCutPercent);
+            }
         }
 
         itemSold.setText(String.valueOf(soldCount));
@@ -222,6 +281,8 @@ public class DashboardPanel extends JPanel {
         pendingPayout.setText(String.format("₱%.2f", pendingSum));
         totalSales.setText(String.valueOf(transactionList.size()));
     }
+
+
 
 
     // -----------------------------------------------------
@@ -290,24 +351,45 @@ public class DashboardPanel extends JPanel {
     static class Item {
         String id;
         String name;
+        String consignor;
         double price;
-        int quantity;        // total stock
-        int soldQuantity;    // how many sold
+        int quantity;       // total stock
+        String dateReceived;
         String expiry;
+        String itemType;
 
-        Item(String id, String name, double price, int quantity, int soldQuantity, String expiry) {
+        Item(String id, String name, String consignor, double price, int quantity,
+             String dateReceived, String expiry, String itemType) {
             this.id = id;
             this.name = name;
+            this.consignor = consignor;
             this.price = price;
             this.quantity = quantity;
-            this.soldQuantity = soldQuantity;
+            this.dateReceived = dateReceived;
             this.expiry = expiry;
+            this.itemType = itemType;
         }
 
-        boolean isSoldOut() {
-            return soldQuantity >= quantity;
+        // Stock left is dynamically calculated from transactions
+        int stockLeft(List<Transaction> transactions) {
+            long soldCount = transactions.stream()
+                    .filter(t -> t.itemID.equalsIgnoreCase(this.id))
+                    .count();
+            return quantity - (int) soldCount;
+        }
+
+        boolean isSoldOut(List<Transaction> transactions) {
+            return stockLeft(transactions) <= 0;
+        }
+
+        boolean isExpired() {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            LocalDate expiryDate = LocalDate.parse(expiry, f);
+            return expiryDate.isBefore(LocalDate.now());
         }
     }
+
+
 
 
     static class Transaction {
