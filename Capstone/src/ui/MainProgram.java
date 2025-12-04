@@ -30,11 +30,11 @@ public class MainProgram extends JFrame{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMain);
 
-        inventoryHandler = new InventoryHandler(entityID);
+
         transactionsHandler = new TransactionsHandler(entityID);
         supplierHandler = new SupplierHandler(entityID);
         payoutsHandler = new PayoutsHandler(entityID);
-
+        inventoryHandler = new InventoryHandler(entityID, supplierHandler);
          cardLayout = (CardLayout) MainContentPanel.getLayout();
 
        // MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");

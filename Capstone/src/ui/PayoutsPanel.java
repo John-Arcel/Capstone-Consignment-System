@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -31,12 +32,16 @@ public class PayoutsPanel extends JFrame{
     int countPending = 0; // for the total pending display
     int countPayout = 0; // for the total payout displayed
 
-    public PayoutsPanel(Consignee consignee){
-//        setLayout(new BorderLayout());
-//
-//        add(content, BorderLayout.CENTER);
+    public PayoutsPanel(){
 
-        this.consignee = consignee;
+
+
+        setLayout(new BorderLayout());
+        add(content, BorderLayout.CENTER);
+
+        // Todo this is a temporary consignee
+        // Todo implement file handling :D
+        this.consignee = new Consignee();
 
         setSize(800,700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -309,12 +314,12 @@ public class PayoutsPanel extends JFrame{
 
     // DUMMY PSVM FOR MOCK RUNNING
 
-    public static void main(String[] args) {
-        // Dummy data for testing the structure
-        Consignee dummyConsignee = createDummyConsignee();
-
-        SwingUtilities.invokeLater(() -> new PayoutsPanel(dummyConsignee));
-    }
+//    public static void main(String[] args) {
+//        // Dummy data for testing the structure
+//        Consignee dummyConsignee = createDummyConsignee();
+//
+//        SwingUtilities.invokeLater(() -> new PayoutsPanel(dummyConsignee));
+//    }
 
     // Dummy classes and data for compilation/testing
     // These must exist in your project for the code to compile

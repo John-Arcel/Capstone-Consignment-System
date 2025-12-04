@@ -12,8 +12,8 @@ public class Consignor extends Entity {
 
     private final List<Transaction> transactionHistory;
 
-    public Consignor(String name, String contactNumber, String location) {
-        super(name, contactNumber, String.format("S-%07d", counter++));
+    public Consignor(String name, String contactNumber, String location, String entityID) {
+        super(name, contactNumber, entityID);
 
         if (location == null || location.isBlank())
             throw new NullPointerException("Location cannot be null or empty.");
@@ -65,5 +65,10 @@ public class Consignor extends Entity {
         if (t == null)
             throw new NullPointerException("Transaction cannot be null.");
         transactionHistory.add(t);
+    }
+
+    //setter
+    public void setPayableBalance(double amount){
+        payableBalance = amount;
     }
 }
