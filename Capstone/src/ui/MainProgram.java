@@ -32,9 +32,10 @@ public class MainProgram extends JFrame{
 
 
         supplierHandler = new SupplierHandler(entityID);
-        payoutsHandler = new PayoutsHandler(entityID);
         inventoryHandler = new InventoryHandler(entityID, supplierHandler);
         transactionsHandler = new TransactionsHandler(entityID, inventoryHandler);
+        payoutsHandler = new PayoutsHandler(entityID, transactionsHandler);
+
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
         MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");

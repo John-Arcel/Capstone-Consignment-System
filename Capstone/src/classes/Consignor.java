@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Consignor extends Entity {
-    private static int counter = 1;
 
     private double payableBalance;
     private boolean isActive;
