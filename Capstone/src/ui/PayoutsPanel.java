@@ -1,7 +1,7 @@
 package ui;
 
-import handlers.TransactionsHandler;
-import handlers.PayoutsHandler;
+import handlers.*;
+import classes.*;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
@@ -159,7 +159,7 @@ public class PayoutsPanel extends JPanel {
         if (input.isEmpty()) {
             AllPayout.forEach(p -> {
                 historyDataList.add(new Object[]{
-                        p.getPayoutID(),
+                        p.getPayoutId(),
                         p.getConsignor(),
                         p.getAmountPaid(),
                         p.getPayoutDate()});
@@ -169,12 +169,12 @@ public class PayoutsPanel extends JPanel {
             AllPayout.forEach(p -> {
 
                 String ID = null;
-                if (p.getPayoutID() != null) {
-                    ID = p.getPayoutID().toLowerCase();
+                if (p.getPayoutId() != null) {
+                    ID = p.getPayoutId().toLowerCase();
                 }
                 if (ID.contains(input)) {
                     historyDataList.add(new Object[]{
-                            p.getPayoutID(),
+                            p.getPayoutId(),
                             p.getConsignor(),
                             p.getAmountPaid(),
                             p.getPayoutDate()});
@@ -199,7 +199,7 @@ public class PayoutsPanel extends JPanel {
                     countPayout++;
                     AllPayout.add((Payout) a);
                     historyDataList.add(new Object[]{
-                            ((Payout) a).getPayoutID(),
+                            ((Payout) a).getPayoutId(),
                             ((Payout) a).getConsignor(),
                             ((Payout) a).getAmountPaid(),
                             ((Payout) a).getPayoutDate()});
@@ -253,7 +253,7 @@ public class PayoutsPanel extends JPanel {
                 countPayout++;
                 AllPayout.add(newPayout);
                 historyDataList.add(new Object[]{
-                        newPayout.getPayoutID(),
+                        newPayout.getPayoutId(),
                         newPayout.getConsignor(),
                         newPayout.getAmountPaid(),
                         newPayout.getPayoutDate()});
@@ -387,7 +387,7 @@ public class PayoutsPanel extends JPanel {
 //            this.payID = "P0-00" + ctr;
 //            ctr++;
 //        }
-//        String getPayoutID() {
+//        String getPayoutId() {
 //
 //            return payID; }
 //        String getConsignor() { return "Jane Doe"; }
@@ -409,3 +409,7 @@ public class PayoutsPanel extends JPanel {
 //
 //
 //}
+    public static void main(String[] args) {
+
+    }
+}

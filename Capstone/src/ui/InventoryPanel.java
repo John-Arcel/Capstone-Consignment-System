@@ -39,11 +39,18 @@ public class InventoryPanel extends JPanel {
 //    };
     private Object[][] data;
 
+    private InventoryHandler inventoryHandler;
+    private SupplierHandler supplierHandler;
+
     public InventoryPanel(InventoryHandler inventoryHandler, SupplierHandler supplierHandler) {
         setLayout(new BorderLayout());
         add(contentPane, BorderLayout.CENTER);
 
+        this.inventoryHandler = inventoryHandler;
+        this.supplierHandler = supplierHandler;
         data = inventoryHandler.getAllItems();
+
+        // Todo: connect data from InventoryHandler
 
         dataTable.setRowHeight(30);
         dataTable.setBounds(0,0,100,200);

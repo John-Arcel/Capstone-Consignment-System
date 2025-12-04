@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupplierHandler {
-    private String path;
+    private final String path;
     private List<Consignor> suppliers_list;
 
     public SupplierHandler(String entityID){
@@ -36,10 +36,9 @@ public class SupplierHandler {
 
                 String ownerID = data[0];
                 String name = data[1];
-                String location = data[2];
-                double amount = Double.parseDouble(data[3]);
+                double amount = Double.parseDouble(data[2]);
 
-                Consignor Supplier = new Consignor(name,location,ownerID);
+                Consignor Supplier = new Consignor(name,ownerID);
                 Supplier.setPayableBalance(amount);
                 suppliers_list.add(Supplier);
 
@@ -54,7 +53,6 @@ public class SupplierHandler {
             if(s.getID().equals(ownerID))
                 return s;
         }
-
         return null;
     }
 
@@ -63,11 +61,22 @@ public class SupplierHandler {
             if(s.getName().equals(name))
                 return s;
         }
-
         return null;
     }
 
     public Consignor addConsignor(String name) {
-        Consignor newConsignor = new Consignor(name, )
+        int newID = 0;
+        for(Consignor c : suppliers_list){
+            int currentID = Integer.parseInt(c.getID().split("-")[1]);
+            if(currentID > newID){
+                newID = currentID;
+            }
+        }
+        newID++;
+
+        Consignor newConsignor = new Consignor(name, "S-" + String.format("%07d", newID));
+
+        suppliers_list.add(newConsignor);
+        return newConsignor;
     }
 }

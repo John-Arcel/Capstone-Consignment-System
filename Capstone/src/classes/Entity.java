@@ -2,7 +2,6 @@ package classes;
 
 public abstract class Entity {
 
-
     private final String name;
 
     private final String entityID;

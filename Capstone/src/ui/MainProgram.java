@@ -34,14 +34,14 @@ public class MainProgram extends JFrame{
         supplierHandler = new SupplierHandler(entityID);
         inventoryHandler = new InventoryHandler(entityID, supplierHandler);
         transactionsHandler = new TransactionsHandler(entityID, inventoryHandler);
-        payoutsHandler = new PayoutsHandler(entityID, transactionsHandler);
+//        payoutsHandler = new PayoutsHandler(entityID, transactionsHandler);
 
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
         MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
         MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
-        MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
+//        MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
 
         ActionListener listener = new ActionListener() {
             @Override

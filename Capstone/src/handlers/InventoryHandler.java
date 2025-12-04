@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryHandler {
-    private String path;
+    private final String path;
     private List<Item> inventory_list;
     private SupplierHandler supplierHandler;
 
@@ -30,7 +30,6 @@ public class InventoryHandler {
             String line;
             while((line = br.readLine()) != null){
                 String[] data = line.split(",");
-
 
                 String itemID = data[0];
                 String itemName = data[1];
@@ -103,18 +102,55 @@ public class InventoryHandler {
         return matrix;
     }
 
+    public void addItem(String name, String owner, String quantity, String price, String dateReceived, String daysToSell, boolean isPerishable){
+        Consignor consignor = supplierHandler.getConsignorByName(owner);
+        if(consignor == null){
+            consignor = supplierHandler.addConsignor(owner);
+        }
+
+        int newID = 0;
+        for(Item i : inventory_list){
+            int currentID = Integer.parseInt(i.getItemID().split("-")[1]);
+            if(currentID > newID){
+                newID = currentID;
+            }
+        }
+        newID++;
+
+        Item item;
+        if(isPerishable){
+            item = new Perishable(
+                    "I-" + String.format("%07d", newID),
+                    name,
+                    consignor,
+                    Integer.parseInt(quantity),
+                    Double.parseDouble(price),
+                    dateReceived,
+                    Integer.parseInt(daysToSell)
+            );
+        }
+        else{
+            item = new NonPerishable(
+                    "I-" + String.format("%07d", newID),
+                    name,
+                    consignor,
+                    Integer.parseInt(quantity),
+                    Double.parseDouble(price),
+                    dateReceived
+            );
+        }
+        inventory_list.add(item);
+    }
+
+    public void deleteItem(String itemID){
+        Item item = getItemFromID(itemID);
+        inventory_list.remove(item);
+    }
+
     protected Item getItemFromID(String itemID) {
         for(Item i : inventory_list) {
             if(i.getItemID().equals(itemID)) return i;
         }
         return null;
-    }
-
-    public void addItem(String name, String owner, String quantity, String price, String dateReceived, String daysToSell){
-        Consignor consignor = supplierHandler.getConsignorByName(owner);
-
-        if(consignor == null){
-            consignor = supplierHandler.addConsignor(owner);
-        }
     }
 }

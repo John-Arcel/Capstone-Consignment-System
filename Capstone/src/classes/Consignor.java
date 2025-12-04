@@ -7,17 +7,10 @@ public class Consignor extends Entity {
 
     private double payableBalance;
     private boolean isActive;
-    private String location;
-
     private final List<Transaction> transactionHistory;
 
-    public Consignor(String name,String location, String entityID) {
+    public Consignor(String name, String entityID) {
         super(name,entityID);
-
-        if (location == null || location.isBlank())
-            throw new NullPointerException("Location cannot be null or empty.");
-
-        this.location = location;
         this.payableBalance = 0.0;
         this.isActive = true;
         this.transactionHistory = new ArrayList<>();
@@ -33,10 +26,6 @@ public class Consignor extends Entity {
         return isActive;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
     public List<Transaction> getSalesHistory() {
         return transactionHistory;
     }
@@ -50,13 +39,6 @@ public class Consignor extends Entity {
     // Toggle active/inactive
     public void changeActive() {
         this.isActive = !isActive;
-    }
-
-    // Change supplier location
-    public void changeLocation(String newLocation) {
-        if (newLocation == null || newLocation.isBlank())
-            throw new NullPointerException("New location cannot be null or empty.");
-        this.location = newLocation;
     }
 
     // Record a transaction
