@@ -19,4 +19,7 @@ public class SupplierHandler {
     private void loadSuppliers() {
 
     }
+
+    public Consignor getConsignorByID(String ownerID) {
+    }
 }

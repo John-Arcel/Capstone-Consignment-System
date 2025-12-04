@@ -1,21 +1,25 @@
 package handlers;
 
-import classes.Item;
+import classes.*;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryHandler {
     private String path;
     private List<Item> inventory_list;
+    private SupplierHandler supplierHandler;
 
-    public InventoryHandler(String entityID){
+    public InventoryHandler(String entityID, SupplierHandler supplierHandler){
         path = "data/" + entityID + "/inventory.csv";
         inventory_list = new ArrayList<>();
+        this.supplierHandler = supplierHandler;
 
         loadInventory();
     }
@@ -26,16 +30,35 @@ public class InventoryHandler {
 
         try(BufferedReader br = new BufferedReader(new FileReader(file))){
             String line;
-            String[] data;
             while((line = br.readLine()) != null){
-                data = line.split(",");
+                String[] data = line.split(",");
 
-                // TO-DO: make data[2] a consignor
-//                Item item = new Item(
-//                        data[0],
-//                        data[1],
-//                        data[2],
-//                );
+                String ownerID = data[2];
+                Consignor owner = supplierHandler.getConsignorByID(ownerID);
+
+                Item item;
+                if(data[7].equals("Perishable")){
+                    item = new Perishable(
+                            data[0],
+                            data[1],
+                            owner,
+                            Integer.parseInt(data[3]),
+                            Double.parseDouble(data[4]),
+                            data[5],
+                            (int) ChronoUnit.DAYS.between(LocalDate.parse(data[5]), LocalDate.parse(data[6]))
+                    );
+                }
+                else{
+                    item = new NonPerishable(
+                            data[0],
+                            data[1],
+                            owner,
+                            Integer.parseInt(data[3]),
+                            Double.parseDouble(data[4]),
+                            data[5]
+                    );
+                }
+                inventory_list.add(item);
             }
         } catch (IOException e) {
             System.out.println("This is an error");
