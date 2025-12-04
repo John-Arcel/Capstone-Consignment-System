@@ -1,6 +1,8 @@
 package ui;
 
 import classes.Item;
+import handlers.TransactionsHandler;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -21,35 +23,35 @@ public class TransactionsPanel extends JPanel{
     private Object[][] data;
     private final String[] columnNames = {"Transaction ID", "Items", "Date", "Total", "Store Revenue", "Consignor Share"};
 
-    public TransactionsPanel(){
+    public TransactionsPanel(TransactionsHandler transactionsHandler){
 //        setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        setContentPane(contentPane);
-
         setLayout(new BorderLayout());
-
         add(contentPane, BorderLayout.CENTER);
-        data = new Object[][] {
-                // remove lang nya ni
-                {"T-0000001", "Apple", "2025-01-06", 1.57, 0.39, 1.18},
-                {"T-0000002", "Banana", "2025-01-06", 0.89, 0.22, 0.67},
-                {"T-0000003", "Grapes (lb)", "2025-01-07", 4.99, 1.25, 3.74},
-                {"T-0000004", "Milk (gallon)", "2025-01-07", 3.25, 0.81, 2.44},
-                {"T-0000005", "Eggs (dozen)", "2025-01-08", 2.78, 0.70, 2.08},
-                {"T-0000006", "Bread", "2025-01-08", 2.19, 0.55, 1.64},
-                {"T-0000007", "Cheese Block", "2025-01-09", 5.50, 1.38, 4.12},
-                {"T-0000008", "Chicken Breast (lb)", "2025-01-09", 8.10, 2.02, 6.08},
-                {"T-0000009", "Tomato", "2025-01-10", 0.75, 0.19, 0.56},
-                {"T-0000010", "Potato Bag", "2025-01-10", 3.50, 0.88, 2.62},
-                {"T-0000011", "Orange Juice", "2025-01-11", 4.15, 1.04, 3.11},
-                {"T-0000012", "Cereal Box", "2025-01-11", 3.88, 0.97, 2.91},
-                {"T-0000013", "Salmon Fillet", "2025-01-12", 12.99, 3.25, 9.74},
-                {"T-0000014", "Spinach Bag", "2025-01-12", 1.99, 0.50, 1.49},
-                {"T-0000015", "Ground Coffee", "2025-01-13", 7.45, 1.86, 5.59}
-        };
+//        data = new Object[][] {
+//                // remove lang nya ni
+////                {"T-0000001", "Apple", "2025-01-06", 1.57, 0.39, 1.18},
+////                {"T-0000002", "Banana", "2025-01-06", 0.89, 0.22, 0.67},
+////                {"T-0000003", "Grapes (lb)", "2025-01-07", 4.99, 1.25, 3.74},
+////                {"T-0000004", "Milk (gallon)", "2025-01-07", 3.25, 0.81, 2.44},
+////                {"T-0000005", "Eggs (dozen)", "2025-01-08", 2.78, 0.70, 2.08},
+////                {"T-0000006", "Bread", "2025-01-08", 2.19, 0.55, 1.64},
+////                {"T-0000007", "Cheese Block", "2025-01-09", 5.50, 1.38, 4.12},
+////                {"T-0000008", "Chicken Breast (lb)", "2025-01-09", 8.10, 2.02, 6.08},
+////                {"T-0000009", "Tomato", "2025-01-10", 0.75, 0.19, 0.56},
+////                {"T-0000010", "Potato Bag", "2025-01-10", 3.50, 0.88, 2.62},
+////                {"T-0000011", "Orange Juice", "2025-01-11", 4.15, 1.04, 3.11},
+////                {"T-0000012", "Cereal Box", "2025-01-11", 3.88, 0.97, 2.91},
+////                {"T-0000013", "Salmon Fillet", "2025-01-12", 12.99, 3.25, 9.74},
+////                {"T-0000014", "Spinach Bag", "2025-01-12", 1.99, 0.50, 1.49},
+////                {"T-0000015", "Ground Coffee", "2025-01-13", 7.45, 1.86, 5.59}
+//        };
+        data = transactionsHandler.getAllTransactions();
+
         // create the table with column name and data
         table.setModel(new DefaultTableModel(data, columnNames));
 
-        // add placeholder to textfield
+        // add placeholder to text-field
         searchTextField.setText("Search Transaction ID");
         searchTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override

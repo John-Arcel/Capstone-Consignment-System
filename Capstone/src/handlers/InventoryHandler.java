@@ -102,4 +102,11 @@ public class InventoryHandler {
 
         return matrix;
     }
+
+    protected Item getItemFromID(String itemID) {
+        for(Item i : inventory_list) {
+            if(i.getItemID().equals(itemID)) return i;
+        }
+        return null;
+    }
 }

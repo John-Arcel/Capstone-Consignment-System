@@ -59,7 +59,7 @@
             </constraints>
             <properties>
               <font size="28" style="1"/>
-              <text value="Add classes.Item"/>
+              <text value="Add Item"/>
             </properties>
           </component>
           <component id="3cb" class="javax.swing.JTextField" binding="itemNameField">

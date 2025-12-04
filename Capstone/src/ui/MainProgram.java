@@ -31,15 +31,15 @@ public class MainProgram extends JFrame{
         setContentPane(panelMain);
 
 
-        transactionsHandler = new TransactionsHandler(entityID);
         supplierHandler = new SupplierHandler(entityID);
         payoutsHandler = new PayoutsHandler(entityID);
         inventoryHandler = new InventoryHandler(entityID, supplierHandler);
-         cardLayout = (CardLayout) MainContentPanel.getLayout();
+        transactionsHandler = new TransactionsHandler(entityID, inventoryHandler);
+        cardLayout = (CardLayout) MainContentPanel.getLayout();
 
 //        MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
-        MainContentPanel.add(new TransactionsPanel(), "KEY_TRANSACTIONS");
+        MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
         //MainContentPanel.add(new PayoutsPanel(), "KEY_PAYOUTS");
 
         ActionListener listener = new ActionListener() {
