@@ -12,8 +12,8 @@ public class Consignor extends Entity {
 
     private final List<Transaction> transactionHistory;
 
-    public Consignor(String name, String contactNumber, String location, String entityID) {
-        super(name, contactNumber, entityID);
+    public Consignor(String name,String location, String entityID) {
+        super(name,entityID);
 
         if (location == null || location.isBlank())
             throw new NullPointerException("Location cannot be null or empty.");

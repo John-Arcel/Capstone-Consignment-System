@@ -9,8 +9,8 @@ public class Consignee extends Entity {
     private List<Consignor> consignorList;
     private List<Item> itemList;
 
-    public Consignee(String name, String contactNumber, String password, String entityID) {
-        super(name, contactNumber,entityID);
+    public Consignee(String name, String password, String entityID) {
+        super(name, entityID);
 
         if (password == null || password.isBlank())
             throw new NullPointerException("Password cannot be null or empty.");

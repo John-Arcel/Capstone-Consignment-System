@@ -168,14 +168,13 @@ public class LogInForm extends JFrame {
                 //purpose: get all information of the text fields
                 String userName = Register_Username_Text_Field.getText();
                 String password = Register_Password_TextField.getText();
-                String contactNumberText = Contact_Number_Text_Field.getText();
                 String commissionText = Commision_Rate_TextField.getText();
 
 
                 //--------purpose: Validate all registration input fields--------
 
                 // purpose: check if any required field is empty
-                if (userName.isEmpty() || password.isEmpty() || commissionText.isEmpty() || contactNumberText.isEmpty()) {
+                if (userName.isEmpty() || password.isEmpty() || commissionText.isEmpty()) {
                     Register_Flag.setText("Please enter missing fields");
                     return;
                 }
@@ -187,11 +186,13 @@ public class LogInForm extends JFrame {
                 try (BufferedReader br = new BufferedReader(new FileReader("Capstone/data/admin_registry.csv"))) {
 
                     String line;
-
+                    br.readLine();
                     // checks line by line in admin_registry
                     while ((line = br.readLine()) != null) {
                         String[] parts = line.split(",");
 
+                        // Todo make this work
+                        System.out.println(parts[1]);
                         if (parts[1].equals(userName)) {
                             Register_Flag.setText("Username already exists");
                             return;
@@ -228,22 +229,6 @@ public class LogInForm extends JFrame {
                     Register_Flag.setText("Password must contain at least 1 special character");
                     return;
                 }
-
-
-                //--------purpose: validate contact number format--------
-
-                // purpose: check if contact number contains digits only
-                if (!contactNumberText.matches("\\d+")) {
-                    Register_Flag.setText("Contact number must be digits only");
-                    return;
-                }
-
-                // purpose: check if contact number is exactly 11 digits long
-                else if (contactNumberText.length() != 11) {
-                    Register_Flag.setText("Contact number must be 11 digits long");
-                    return;
-                }
-
 
                 //--------purpose: validate commission rate--------
 
@@ -282,7 +267,7 @@ public class LogInForm extends JFrame {
                 ConsigneeCounter++;
 
                 //initialized
-                Entity new_user = new Consignee(userName,contactNumberText,password,String.format("V-%07d", ConsigneeCounter));
+                Entity new_user = new Consignee(userName,password,String.format("V-%07d", ConsigneeCounter));
 
 
                 // -------------------------------File Handling-------------------------------
@@ -293,12 +278,14 @@ public class LogInForm extends JFrame {
 
                 //purpose: creating files
                 File config = new File(userFolder, "config.txt");
+                File consignors = new File(userFolder," consignors.csv");
                 File inventory = new File(userFolder, "inventory.csv");
                 File transactions = new File(userFolder, "transactions.csv");
                 File payouts = new File(userFolder, "payouts.csv");
 
                 try{
                    config.createNewFile();
+                   consignors.createNewFile();
                    inventory.createNewFile();
                    transactions.createNewFile();
                    payouts.createNewFile();

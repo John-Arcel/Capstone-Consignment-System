@@ -36,11 +36,10 @@ public class SupplierHandler {
 
                 String ownerID = data[0];
                 String name = data[1];
-                String contactNumber = data[2];
-                String location = data[3];
-                double amount = Double.parseDouble(data[4]);
+                String location = data[2];
+                double amount = Double.parseDouble(data[3]);
 
-                Consignor Supplier = new Consignor(name,contactNumber,location,ownerID);
+                Consignor Supplier = new Consignor(name,location,ownerID);
                 Supplier.setPayableBalance(amount);
                 suppliers_list.add(Supplier);
 
