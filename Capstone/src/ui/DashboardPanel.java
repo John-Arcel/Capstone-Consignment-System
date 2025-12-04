@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardPanel extends JFrame {
+public class DashboardPanel extends JPanel {
 
     // ---------------------------
     // TEMPORARY APP CONFIG
@@ -43,20 +43,19 @@ public class DashboardPanel extends JFrame {
     // -----------------------------------------------------
     public DashboardPanel() {
 
-        setContentPane(dashboardPanel);
-        setTitle("Dashboard");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        add(dashboardPanel, BorderLayout.CENTER);
 
         itemsDueScrollPane.setViewportView(itemsDue);
 
         // Make the text visible (white)
-        itemIDField.setForeground(Color.WHITE);
-        itemIDField.setCaretColor(Color.WHITE);
-        itemIDField.setBackground(new Color(40,40,40));
+//        itemIDField.setForeground(Color.WHITE);
+//        itemIDField.setCaretColor(Color.WHITE);
+//        itemIDField.setBackground(new Color(40,40,40));
 
         itemsDue.setOpaque(false);
         itemsDue.setBackground(new Color(0, 0, 0, 0));
-        itemsDue.setShowGrid(false);
+        itemsDue.setShowGrid(true);
 
         itemsDueScrollPane.setOpaque(false);
         itemsDueScrollPane.getViewport().setOpaque(false);
@@ -65,14 +64,13 @@ public class DashboardPanel extends JFrame {
 
         itemsDue.getTableHeader().setOpaque(false);
         itemsDue.getTableHeader().setBackground(new Color(0,0,0,0));
+        itemsDue.setRowHeight(30);
 // -------------------------------------------------------
 
-        itemIDField.setForeground(Color.WHITE);
-        itemIDField.setCaretColor(Color.WHITE);
-        itemIDField.setBackground(new Color(40,40,40));
+//        itemIDField.setForeground(Color.WHITE);
+//        itemIDField.setCaretColor(Color.WHITE);
+//        itemIDField.setBackground(new Color(40,40,40));
 
-        pack();
-        setLocationRelativeTo(null);
 
         makeTransparent(dashboardPanel);
 
@@ -282,9 +280,9 @@ public class DashboardPanel extends JFrame {
     // -----------------------------------------------------
     // MAIN
     // -----------------------------------------------------
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new DashboardPanel().setVisible(true));
-    }
+//    public static void main(String[] args) {
+//        SwingUtilities.invokeLater(() -> new DashboardPanel().setVisible(true));
+//    }
 
     // -----------------------------------------------------
     // DATA CLASSES

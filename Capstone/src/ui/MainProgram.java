@@ -37,7 +37,7 @@ public class MainProgram extends JFrame{
         transactionsHandler = new TransactionsHandler(entityID, inventoryHandler);
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
-//        MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
+        MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
         MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
         //MainContentPanel.add(new PayoutsPanel(), "KEY_PAYOUTS");
