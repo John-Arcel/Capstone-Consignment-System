@@ -35,10 +35,10 @@ public class Payout {
 
     public void generateReceipt() {
         System.out.println("PAYOUT RECEIPT");
-        System.out.println("classes.Payout ID: " + payoutId);
-        System.out.println("classes.Consignor: " + consignor.getName());
+        System.out.println("Payout ID: " + payoutId);
+        System.out.println("Consignor: " + consignor.getName());
         System.out.println("AmountPaid: ₱" + String.format("%.2f", amountPaid));
-        System.out.println("classes.Payout Date: " + payoutDate);
+        System.out.println("Payout Date: " + payoutDate);
     }
 }
 

@@ -40,7 +40,7 @@ public class MainProgram extends JFrame{
         MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
         MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
-        //MainContentPanel.add(new PayoutsPanel(), "KEY_PAYOUTS");
+        MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
 
         ActionListener listener = new ActionListener() {
             @Override

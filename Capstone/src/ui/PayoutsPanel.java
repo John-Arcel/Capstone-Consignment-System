@@ -1,16 +1,21 @@
 package ui;
 
+import handlers.TransactionsHandler;
+import handlers.PayoutsHandler;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class PayoutsPanel extends JFrame{
+public class PayoutsPanel extends JPanel{
 
     private JPanel content;
     private JTextField Search;
@@ -33,20 +38,17 @@ public class PayoutsPanel extends JFrame{
     int countPending = 0; // for the total pending display
     int countPayout = 0; // for the total payout displayed
 
-    public PayoutsPanel(){
-
-
-
+    public PayoutsPanel(TransactionsHandler t, PayoutsHandler p){
         setLayout(new BorderLayout());
         add(content, BorderLayout.CENTER);
 
         // Todo this is a temporary consignee
         // Todo implement file handling :D
-        this.consignee = new Consignee();
+        //this.consignee = new Consignee();
 
-        setSize(800,700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(content);
+//        setSize(800,700);
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setContentPane(content);
 
         processConsigneeTransactions();
 
@@ -68,8 +70,8 @@ public class PayoutsPanel extends JFrame{
         PayoutNum.setText("" + countPayout);
         PendingNum.setText(""+ countPending);
 
-        setLocationRelativeTo(null);
-        setVisible(true);
+//        setLocationRelativeTo(null);
+//        setVisible(true);
         transferButton.requestFocusInWindow();
 
         // if transfer button is selected then it will add the amount of pending payout to payout list
@@ -186,7 +188,10 @@ public class PayoutsPanel extends JFrame{
     // This function goes through the consignee's list of transactions and goes through everything, if it's a transaction(pending) or is already a payout
     // stores the payouts in history while transactions are put in the pending
 
-    private void processConsigneeTransactions(){
+    private void processConsigneeTransactions() {
+//        BufferedReader t = new BufferedReader(new FileReader("transactions.csv"));
+//        BufferedReader p = new BufferedReader(new FileReader("payouts.csv"));
+
         if(consignee != null && consignee.transactions!= null){// getter medthod for consignee's list of transactions
             for(Transaction a : consignee.transactions){
                 if (a instanceof Payout){ // if the transactions is already a payout
@@ -354,11 +359,6 @@ public class PayoutsPanel extends JFrame{
 
 
 
-
-
-
-
-
     // DUMMY PSVM FOR MOCK RUNNING
 
 //    public static void main(String[] args) {
@@ -367,44 +367,44 @@ public class PayoutsPanel extends JFrame{
 //
 //        SwingUtilities.invokeLater(() -> new PayoutsPanel(dummyConsignee));
 //    }
-
-    // Dummy classes and data for compilation/testing
-    // These must exist in your project for the code to compile
-    public static class Transaction {
-        String getTransactionID() { return "TXN-1"; }
-        double getTotalAmount() { return 100.00; }
-        double getConsignorShare() { return 70.00; }
-    }
-    public static class Payout extends Transaction {
-        //public Payout(Consignor c, )
-        String payID;
-        //String consignor = "Jane Doe";
-        //double amountPaid = 500.00;
-        //String payDate = "2025-11-28";
-        static int ctr = 0;
-        public Payout(){
-            this.payID = "P0-00" + ctr;
-            ctr++;
-        }
-        String getPayoutID() {
-
-            return payID; }
-        String getConsignor() { return "Jane Doe"; }
-        double getAmountPaid() { return 500.00; }
-        String getPayoutDate() { return "2025-11-28"; }
-    }
-    public static class Consignee {
-        List<Transaction> transactions;
-    }
-    public static Consignee createDummyConsignee() {
-        Consignee c = new Consignee();
-        c.transactions = new ArrayList<>();
-        c.transactions.add(new Payout());
-        c.transactions.add(new Payout());
-        c.transactions.add(new Transaction());
-        c.transactions.add(new Transaction());
-        return c;
-    }
-
-
-}
+//
+//    // Dummy classes and data for compilation/testing
+//    // These must exist in your project for the code to compile
+//    public static class Transaction {
+//        String getTransactionID() { return "TXN-1"; }
+//        double getTotalAmount() { return 100.00; }
+//        double getConsignorShare() { return 70.00; }
+//    }
+//    public static class Payout extends Transaction {
+//        //public Payout(Consignor c, )
+//        String payID;
+//        //String consignor = "Jane Doe";
+//        //double amountPaid = 500.00;
+//        //String payDate = "2025-11-28";
+//        static int ctr = 0;
+//        public Payout(){
+//            this.payID = "P0-00" + ctr;
+//            ctr++;
+//        }
+//        String getPayoutID() {
+//
+//            return payID; }
+//        String getConsignor() { return "Jane Doe"; }
+//        double getAmountPaid() { return 500.00; }
+//        String getPayoutDate() { return "2025-11-28"; }
+//    }
+//    public static class Consignee {
+//        List<Transaction> transactions;
+//    }
+//    public static Consignee createDummyConsignee() {
+//        Consignee c = new Consignee();
+//        c.transactions = new ArrayList<>();
+//        c.transactions.add(new Payout());
+//        c.transactions.add(new Payout());
+//        c.transactions.add(new Transaction());
+//        c.transactions.add(new Transaction());
+//        return c;
+//    }
+//
+//
+//}
