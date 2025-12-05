@@ -7,7 +7,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 // ============================================================
@@ -22,14 +24,14 @@ public class AddItemDialog extends JDialog {
     private JTextField consignorField;
     private JTextField quantityField;
     private JTextField priceField;
-    private JTextField dateReceivedField;
+    private JSpinner dateReceivedField;
     private JTextField daysToSellField;
     private JRadioButton perishableRadioButton;
     private JRadioButton nonPerishableRadioButton;
 
     private boolean confirmed = false;
 
-    private final JTextField[] fields;
+    private final JComponent[] fields;
 
     private final Border RED_BORDER = BorderFactory.createLineBorder(Color.RED, 1);
     private final Border DEFAULT_BORDER = UIManager.getBorder("TextField.border");
@@ -41,7 +43,12 @@ public class AddItemDialog extends JDialog {
         setLocationRelativeTo(null);
         getRootPane().setDefaultButton(buttonOK);
 
-        fields = new JTextField[]{
+        ButtonGroup radioButtons = new ButtonGroup();
+        radioButtons.add(perishableRadioButton);
+        radioButtons.add(nonPerishableRadioButton);
+        perishableRadioButton.setSelected(true);
+
+        fields = new JComponent[]{
                 itemNameField,
                 consignorField,
                 quantityField,
@@ -50,12 +57,7 @@ public class AddItemDialog extends JDialog {
                 daysToSellField
         };
 
-        ButtonGroup radioButtons = new ButtonGroup();
-        radioButtons.add(perishableRadioButton);
-        radioButtons.add(nonPerishableRadioButton);
-        perishableRadioButton.setSelected(true);
-
-        //purpose: adds integer-only and double-only filters to price, quantity, and days to sell fields
+                //purpose: adds integer-only and double-only filters to price, quantity, and days to sell fields
         ((AbstractDocument) quantityField.getDocument()).setDocumentFilter(new TextFieldFilter.IntegerFilter());
         ((AbstractDocument) priceField.getDocument()).setDocumentFilter(new TextFieldFilter.DoubleFilter());
         ((AbstractDocument) daysToSellField.getDocument()).setDocumentFilter(new TextFieldFilter.IntegerFilter());
@@ -67,7 +69,8 @@ public class AddItemDialog extends JDialog {
                 ((JTextField) e.getSource()).setBorder(DEFAULT_BORDER);
             }
         };
-        for (JTextField f : fields) {
+
+        for (JComponent f : fields) {
             f.addKeyListener(resetBorder);
         }
 
@@ -95,41 +98,33 @@ public class AddItemDialog extends JDialog {
     //purpose: returns an arraylist of all the input in the fields
     public ArrayList<Object> getAllFieldInput() {
         ArrayList<Object> output = new ArrayList<>();
-        for(int i = 0; i < fields.length; i++) {
-            JTextField f = fields[i];
-            String s = f.getText();
 
-            if(i == 0 || i == 1) { //purpose: 0 = Item name | 1 = Consignor
-                //purpose: capitalizes first letter of a string
-                s = s.substring(0,1).toUpperCase() + s.substring(1);
-                output.add(s);
-            }
-            else if(i == 2) { //purpose: 2 = Quantity (integer)
-                output.add(Integer.parseInt(s));
-            }
-            else if(i == 3) { //purpose: 3 = Price (double)
-                output.add(Double.parseDouble(s));
-            }
-            else if(i == 5) { //purpose: 5 = Days to Sell (integer)
-                String returnDate = getDatePlusDays(Integer.parseInt(s));
-                output.add(returnDate);
-            }
-            else {
-                output.add(s);
-            }
-        }
-        if(perishableRadioButton.isSelected()) output.add("Perishable");
-        else output.add("Non-Perishable");
+        output.add(itemNameField.getText());
+        output.add(consignorField.getText());
+        output.add(quantityField.getText());
+        output.add(priceField.getText());
+
+        Date utilDate = (Date) dateReceivedField.getValue();
+        LocalDate localDate = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        output.add(localDate.toString());
+
+        output.add(daysToSellField.getText());
+        output.add(perishableRadioButton.isSelected());
+
         return output;
     }
 
     //purpose: returns an array of all the text field objects that the user left blank
-    private JTextField[] getBlankFields() {
-        List<JTextField> blanks = new ArrayList<>();
-        for (JTextField f : fields) {
-            if (f.getText().isBlank()) blanks.add(f);
+    private boolean isFilled() {
+        for (JComponent f : fields) {
+            if (f instanceof JTextField){
+                if(((JTextField) f).getText().isEmpty()){
+                    return false;
+                }
+            }
         }
-        return blanks.toArray(new JTextField[0]);
+
+        return true;
     }
 
 
@@ -138,7 +133,7 @@ public class AddItemDialog extends JDialog {
     // ============================================================
 
     private void resetFieldBorders() {
-        for (JTextField f : fields) {
+        for (JComponent f : fields) {
             f.setBorder(DEFAULT_BORDER);
         }
     }
@@ -157,17 +152,16 @@ public class AddItemDialog extends JDialog {
     // ============================================================
 
     private void onOK() {
-        JTextField[] blankFields = getBlankFields();
-
-        //purpose: if all fields are filled, continue with ok button (closes the dialog)
-        if (blankFields.length == 0) {
+        boolean ifAllFilled = isFilled();
+       //purpose: if all fields are filled, continue with ok button (closes the dialog)
+        if (ifAllFilled) {
             confirmed = true;
             dispose();
         }
         //purpose: if not all fields are filled, put red border on unfilled fields and show message dialog
         else {
             resetFieldBorders();
-            for (JTextField f : blankFields) { f.setBorder(RED_BORDER); }
+            for (JComponent f : fields) { f.setBorder(RED_BORDER); }
 
             JOptionPane.showMessageDialog(this,
                     "Please fill in all required fields.",
@@ -178,6 +172,15 @@ public class AddItemDialog extends JDialog {
 
     private void onCancel() {
         dispose();
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        SpinnerDateModel model = new SpinnerDateModel();
+        dateReceivedField = new JSpinner(model);
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(dateReceivedField, "yyyy-MM-dd");
+        dateReceivedField.setEditor(editor);
+        dateReceivedField.setValue(new Date());
     }
 
 //    public static void main(String[] args) {

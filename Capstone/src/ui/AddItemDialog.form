@@ -126,14 +126,6 @@
             </constraints>
             <properties/>
           </component>
-          <component id="5fb5f" class="javax.swing.JTextField" binding="dateReceivedField">
-            <constraints>
-              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-            </constraints>
-            <properties/>
-          </component>
           <component id="5ed02" class="javax.swing.JLabel">
             <constraints>
               <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -165,6 +157,12 @@
             <properties>
               <text value=" "/>
             </properties>
+          </component>
+          <component id="e169f" class="javax.swing.JSpinner" binding="dateReceivedField" custom-create="true">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
           </component>
         </children>
       </grid>

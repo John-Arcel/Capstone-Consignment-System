@@ -57,10 +57,8 @@ public class InventoryPanel extends JPanel {
         drawTable(data, headers);
         prettifyTable();
 
-        int totalItems = getTotalItems();
-        int totalConsignors = getTotalConsignors();
-        totalItemsLabel.setText(Integer.toString(totalItems));
-        totalConsignorsLabel.setText(Integer.toString(totalConsignors));
+        totalItemsLabel.setText(Integer.toString(inventoryHandler.getTotalItems()));
+        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getTotalConsignors()));
         addTextFieldPlaceholderText();
 
         //purpose: adds functionality to search by item id and consignor
@@ -74,10 +72,17 @@ public class InventoryPanel extends JPanel {
 
             if(dialog.isConfirmed()) {
                 ArrayList<Object> newItemData = dialog.getAllFieldInput();
-                String newItemID = generateID('I', getMaxID(data)+1);
-                newItemData.add(1, newItemID);
-                addRow(newItemData);
+                inventoryHandler.addItem(
+                        (String) newItemData.getFirst(),
+                        (String) newItemData.get(1),
+                        (String) newItemData.get(2),
+                        (String) newItemData.get(3),
+                        (String) newItemData.get(4),
+                        (String) newItemData.get(5),
+                        (boolean) newItemData.get(6)
+                );
             }
+            data = updateData();
             drawTable(data, headers);
             prettifyTable();
         });
@@ -212,6 +217,10 @@ public class InventoryPanel extends JPanel {
             if (num > max) max = num;
         }
         return max;
+    }
+
+    private Object[][] updateData(){
+        return inventoryHandler.getAllItems();
     }
 
     //purpose: draws the dataTable using original data and headers

@@ -5,10 +5,7 @@ import classes.Item;
 import classes.NonPerishable;
 import classes.Perishable;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -19,7 +16,7 @@ public class SupplierHandler {
     private List<Consignor> suppliers_list;
 
     public SupplierHandler(String entityID){
-        path = "data/" + entityID + "/consignors.csv";
+        path = "Capstone/data/" + entityID + "/consignors.csv";
         suppliers_list = new ArrayList<>();
 
         loadSuppliers();
@@ -48,6 +45,20 @@ public class SupplierHandler {
         }
     }
 
+    // writes from item array to csv file
+    public void saveSuppliers(){
+        File file = new File(path);
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
+            for(Consignor c : suppliers_list){
+                bw.write(c.toCSV());
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("This is an error");
+        }
+    }
+
     public Consignor getConsignorByID(String ownerID) {
         for(Consignor s : suppliers_list){
             if(s.getID().equals(ownerID))
@@ -62,6 +73,10 @@ public class SupplierHandler {
                 return s;
         }
         return null;
+    }
+
+    public int getTotalConsignors(){
+        return suppliers_list.size();
     }
 
     public Consignor addConsignor(String name) {

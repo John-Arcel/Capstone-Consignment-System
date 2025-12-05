@@ -52,4 +52,8 @@ public class Consignor extends Entity {
     public void setPayableBalance(double amount){
         payableBalance = amount;
     }
+
+    public String toCSV() {
+        return getID() + "," + getName() + "," + payableBalance;
+    }
 }

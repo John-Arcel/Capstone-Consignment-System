@@ -14,7 +14,7 @@ public class InventoryHandler {
     private SupplierHandler supplierHandler;
 
     public InventoryHandler(String entityID, SupplierHandler supplierHandler){
-        path = "data/" + entityID + "/inventory.csv";
+        path = "Capstone/data/" + entityID + "/inventory.csv";
         inventory_list = new ArrayList<>();
         this.supplierHandler = supplierHandler;
 
@@ -100,6 +100,10 @@ public class InventoryHandler {
         }
 
         return matrix;
+    }
+
+    public int getTotalItems(){
+        return inventory_list.size();
     }
 
     public void addItem(String name, String owner, String quantity, String price, String dateReceived, String daysToSell, boolean isPerishable){

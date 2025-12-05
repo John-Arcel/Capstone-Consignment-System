@@ -67,6 +67,22 @@ public class MainProgram extends JFrame{
         transactionsButton.addActionListener(listener);
         payoutsButton.addActionListener(listener);
 
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                // calling save methods
+
+                inventoryHandler.saveInventory();
+                supplierHandler.saveSuppliers();
+                // transactionsHandler.saveTransactions();
+                // payoutsHandler.savePayouts();
+
+                // killing the program
+                dispose();
+                System.exit(0);
+            }
+        });
+
         setLocationRelativeTo(null);
         setVisible(true);
     }
