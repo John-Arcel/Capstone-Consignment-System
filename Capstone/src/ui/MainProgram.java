@@ -25,12 +25,11 @@ public class MainProgram extends JFrame{
     private SupplierHandler supplierHandler;
     private PayoutsHandler payoutsHandler;
 
-    public MainProgram(String entityID){
+    public MainProgram(String entityID, String name){
         setTitle("Consignment System - Main");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMain);
-
 
         supplierHandler = new SupplierHandler(entityID);
         inventoryHandler = new InventoryHandler(entityID, supplierHandler);
@@ -45,6 +44,9 @@ public class MainProgram extends JFrame{
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
         MainContentPanel.add(t, "KEY_TRANSACTIONS");
         MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
+
+        greetTextField.setText("Welcome, " + name);
+        adminID.setText("ID: " + entityID);
 
         ActionListener listener = new ActionListener() {
             @Override

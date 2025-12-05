@@ -149,6 +149,7 @@ public class InventoryHandler {
     public void deleteItem(String itemID){
         Item item = getItemFromID(itemID);
         inventory_list.remove(item);
+
     }
 
     protected Item getItemFromID(String itemID) {

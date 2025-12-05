@@ -82,7 +82,7 @@ public class InventoryPanel extends JPanel {
                         (boolean) newItemData.get(6)
                 );
             }
-            data = updateData();
+            updateData();
             drawTable(data, headers);
             prettifyTable();
         });
@@ -110,8 +110,9 @@ public class InventoryPanel extends JPanel {
 
             //purpose: if deletion is confirmed, delete the row and update total items/consignors
             if (result == JOptionPane.YES_OPTION) {
-                deleteRow(selectedRow);
+                inventoryHandler.deleteItem(dataTable.getValueAt(selectedRow, 1).toString());
 
+                updateData();
                 drawTable(data, headers);
                 prettifyTable();
                 totalItemsLabel.setText(Integer.toString(getTotalItems()));
@@ -219,8 +220,10 @@ public class InventoryPanel extends JPanel {
         return max;
     }
 
-    private Object[][] updateData(){
-        return inventoryHandler.getAllItems();
+    private void updateData(){
+        data = inventoryHandler.getAllItems();
+        totalItemsLabel.setText(Integer.toString(inventoryHandler.getTotalItems()));
+        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getTotalConsignors()));
     }
 
     //purpose: draws the dataTable using original data and headers

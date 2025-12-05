@@ -37,6 +37,7 @@ public class AddItemDialog extends JDialog {
     private final Border DEFAULT_BORDER = UIManager.getBorder("TextField.border");
 
     public AddItemDialog() {
+        setTitle("Add Item");
         setContentPane(contentPane);
         setModal(true);
         setResizable(false);
