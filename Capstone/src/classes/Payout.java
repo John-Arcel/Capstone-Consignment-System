@@ -10,8 +10,15 @@ public class Payout {
     private LocalDate payoutDate;
     private static int ctr;
 
-    public Payout(Consignor consignor, double amountPaid, LocalDate payoutDate) {
-        this.payoutId = "T-" + String.format("%07d", ++ctr);
+//    public Payout(Consignor consignor, double amountPaid, LocalDate payoutDate) {
+//        this.payoutId = "T-" + String.format("%07d", ++ctr);
+//        this.consignor = consignor;
+//        this.amountPaid = amountPaid;
+//        this.payoutDate = payoutDate;
+//    }
+
+    public Payout(Consignor consignor, double amountPaid, LocalDate payoutDate, String payoutId) {
+        this.payoutId = payoutId;
         this.consignor = consignor;
         this.amountPaid = amountPaid;
         this.payoutDate = payoutDate;
@@ -39,6 +46,10 @@ public class Payout {
         System.out.println("Consignor: " + consignor.getName());
         System.out.println("AmountPaid: ₱" + String.format("%.2f", amountPaid));
         System.out.println("Payout Date: " + payoutDate);
+    }
+
+    public String toCSV(){
+        return payoutId + "," +consignor.getName()+ consignor.getID() + "," + String.format("%.2f", amountPaid) + "," + payoutDate;
     }
 }
 

@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +28,13 @@ public class PayoutsPanel extends JPanel {
     private JLabel PendingNum;
     private JButton transferButton;
 
-    private List<Transaction> Check = new ArrayList<>(); // list that stores all transactions that are not initially payouts
-    private List<Payout> AllPayout = new ArrayList<>(); // list of payouts
     private List<Object[]> historyDataList = new ArrayList<>(); // list of objects na makita sa history
     private List<Object[]> pendingDataList = new ArrayList<>(); // list of objects na makita sa pending
-    private Consignee consignee; // the admin
+    private TransactionsHandler transactionsHandler;
+    private PayoutsHandler payoutsHandler;
     private final String[] HistoryHeaders = {"Payout ID", "Consignor", "Amount Paid", "Date"};
-    private final String[] PendingHeaders = {"Select", "Transaction ID", "Total Amount", "Consignor Share"};
 
+    public static int payoutIdCtr;
     int countPending = 0; // for the total pending display
     int countPayout = 0; // for the total payout displayed
 
@@ -42,25 +42,18 @@ public class PayoutsPanel extends JPanel {
         setLayout(new BorderLayout());
         add(content, BorderLayout.CENTER);
 
-        // Todo this is a temporary consignee
-        // Todo implement file handling :D
-        //this.consignee = new Consignee();
-
-//        setSize(800,700);
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setContentPane(content);
-
-        processConsigneeTransactions();
+        this.transactionsHandler = t;
+        this.payoutsHandler = p;
+        processConsigneeTransactions(transactionsHandler.getAllTransactions(), payoutsHandler.getAllPayouts());
 
         Object[][] HistoryData = historyDataList.toArray(new Object[0][]);
         HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
         HistoryTable.setRowHeight(30);
-        //HistoryTable.setBounds(0,0,100,150);
 
-        PendingTableModel pendingModel = new PendingTableModel(this.pendingDataList, PendingHeaders);
+        String[] pendingHeaders = {"Select", "Transaction ID", "Total Amount", "Consignor Share"};
+        PendingTableModel pendingModel = new PendingTableModel(this.pendingDataList, pendingHeaders);
         PendingTable.setModel(pendingModel);
         HistoryTable.setRowHeight(30);
-        //HistoryTable.setBounds(0,0,100,150);
 
         // Initial count of total payout and pending
         if (countPayout <= 0 || countPending <= 0) {
@@ -70,8 +63,7 @@ public class PayoutsPanel extends JPanel {
         PayoutNum.setText("" + countPayout);
         PendingNum.setText("" + countPending);
 
-//        setLocationRelativeTo(null);
-//        setVisible(true);
+
         transferButton.requestFocusInWindow();
 
         // if transfer button is selected then it will add the amount of pending payout to payout list
@@ -86,7 +78,6 @@ public class PayoutsPanel extends JPanel {
             }
         });
 
-        Search.setText("Search Payout ID");
         Search.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
@@ -157,62 +148,47 @@ public class PayoutsPanel extends JPanel {
         String input = text.trim().toLowerCase();
 
         if (input.isEmpty()) {
-            AllPayout.forEach(p -> {
-                historyDataList.add(new Object[]{
-                        p.getPayoutId(),
-                        p.getConsignor(),
-                        p.getAmountPaid(),
-                        p.getPayoutDate()});
-
-            });
+            return;
         } else {
-            AllPayout.forEach(p -> {
 
-                String ID = null;
-                if (p.getPayoutId() != null) {
-                    ID = p.getPayoutId().toLowerCase();
-                }
-                if (ID.contains(input)) {
+            Object[][] arr = payoutsHandler.getAllPayouts();
+
+            for(int i = 0; i < arr.length; i++){
+                String comp = (String)arr[i][0];
+                if(comp.contains(input)){
                     historyDataList.add(new Object[]{
-                            p.getPayoutId(),
-                            p.getConsignor(),
-                            p.getAmountPaid(),
-                            p.getPayoutDate()});
+                            arr[i][0],
+                            arr[i][1],
+                            arr[i][2],
+                            arr[i][3]
+                    });
                 }
-            });
+            }
+
+            updateHistoryTable();
         }
 
-        updateHistoryTable();
     }
 
     // -------------------------------Process Transaction Function -------------------------------
     // This function goes through the consignee's list of transactions and goes through everything, if it's a transaction(pending) or is already a payout
     // stores the payouts in history while transactions are put in the pending
 
-    private void processConsigneeTransactions() {
-//        BufferedReader t = new BufferedReader(new FileReader("transactions.csv"));
-//        BufferedReader p = new BufferedReader(new FileReader("payouts.csv"));
+    private void processConsigneeTransactions(Object[][] allTransactions, Object[][] allPayouts) {
 
-        if (consignee != null && consignee.transactions != null) {// getter medthod for consignee's list of transactions
-            for (Transaction a : consignee.transactions) {
-                if (a instanceof Payout) { // if the transactions is already a payout
-                    countPayout++;
-                    AllPayout.add((Payout) a);
-                    historyDataList.add(new Object[]{
-                            ((Payout) a).getPayoutId(),
-                            ((Payout) a).getConsignor(),
-                            ((Payout) a).getAmountPaid(),
-                            ((Payout) a).getPayoutDate()});
-                } else { // if transaction is not a payout
-                    countPending++;
-                    Check.add(a);
-                    pendingDataList.add(new Object[]
-                            {Boolean.FALSE,//the first part of the table row contains checkboxes,
-                                    a.getTransactionID(),
-                                    a.getTotalAmount(),
-                                    a.getConsignorShare()});
-                }
-            }
+        for(Object[] payoutRow : allPayouts){
+            historyDataList.add(payoutRow);
+            countPayout++;
+        }
+
+        for(Object[] transactionRow : allTransactions){
+            pendingDataList.add(new Object[]{
+                    Boolean.FALSE,
+                    transactionRow[0],
+                    transactionRow[3],
+                    transactionRow[5]
+            });
+            countPending++;
         }
     }
 
@@ -227,41 +203,63 @@ public class PayoutsPanel extends JPanel {
             }
         }
 
+        if(selectedItems.isEmpty()){
+            JOptionPane.showMessageDialog(this, "No transactions selected for payout");
+            return;
+        }
+
         for (Object[] item : selectedItems) {
-            Object transactionID = item[1];
-            for (int j = 0; j < pendingDataList.size(); j++) {
-                if (pendingDataList.get(j)[1].equals(transactionID)) {
-                    pendingDataList.remove(item);
+            String transactionID = (String) item[1];
+            double consignorShare = (double) item[1];
+            String consignorName = "N/A";
+
+            Payout newPayout = toPayout(transactionID, consignorShare, consignorName);
+
+            countPayout++;
+
+            historyDataList.add(new Object[]{
+                    newPayout.getPayoutId(),
+                    newPayout.getConsignor(),
+                    newPayout.getAmountPaid(),
+                    newPayout.getPayoutDate()
+            });
+
+            payoutsHandler.addPayoutAndSave(newPayout);
+
+
+            for(int i = 0; i < pendingDataList.size(); i++){
+                if(pendingDataList.get(i)[1].equals(transactionID)){
+                    pendingDataList.remove(i);
                     countPending--;
                     break;
                 }
             }
-
-            addHistory(transactionID);
         }
+
 
         model.fireTableDataChanged();
-        JOptionPane.showMessageDialog(this, "Initiating payout for " + selectedItems.size() + " transactions");
+        updateHistoryTable();
+        JOptionPane.showMessageDialog(this, "Successfully initiated payout for " + selectedItems.size() + " transactions");
     }
 
-    // -------------------------------Add To History-------------------------------
-    // this function add to the history data List that show up at the table
-    public void addHistory(Object transactionId) {
-        for (PayoutsPanel.Transaction a : Check) {
-            if (a.getTransactionID().equals(transactionId)) {
-                PayoutsPanel.Payout newPayout = toPayout(a);
-                countPayout++;
-                AllPayout.add(newPayout);
-                historyDataList.add(new Object[]{
-                        newPayout.getPayoutId(),
-                        newPayout.getConsignor(),
-                        newPayout.getAmountPaid(),
-                        newPayout.getPayoutDate()});
-                break;
-            }
-        }
-
-    }
+//    // -------------------------------Add To History-------------------------------
+//    // this function add to the history data List that show up at the table
+//    public void addHistory(Object transactionId) {
+//        for (PayoutsPanel.Transaction a : Check) {
+//            if (a.getTransactionID().equals(transactionId)) {
+//                PayoutsPanel.Payout newPayout = toPayout(a);
+//                countPayout++;
+//                AllPayout.add(newPayout);
+//                historyDataList.add(new Object[]{
+//                        newPayout.getPayoutId(),
+//                        newPayout.getConsignor(),
+//                        newPayout.getAmountPaid(),
+//                        newPayout.getPayoutDate()});
+//                break;
+//            }
+//        }
+//
+//    }
 
     // -------------------------------Update History Table-------------------------------
     // if a new payout is added to the history or a specific payout is searched, this function updates what is shown in the table
@@ -284,7 +282,7 @@ public class PayoutsPanel extends JPanel {
     // -------------------------------Pending Table Creator-------------------------------
     // Custom create the Pending table
 
-    private static class PendingTableModel extends AbstractTableModel {
+    public static class PendingTableModel extends AbstractTableModel {
         private List<Object[]> data;
         private String[] columnNames;
 
@@ -337,11 +335,14 @@ public class PayoutsPanel extends JPanel {
     }
 
 
-    // -------------------------------Transaction to Payout Transformer-------------------------------
+    // -------------------------------Transaction to Payout-------------------------------
     // Accepts a transaction and makes it into a Payout
-    public Payout toPayout(Transaction t) {
-        Payout p = new Payout();
-        return p;
+    public Payout toPayout(String transactionId, double amount, String consignorName) {
+        String consignorID = "T-" + String.format("%07d", ++payoutIdCtr);
+
+        Consignor tempConsignor = new Consignor(consignorName, consignorID);
+
+        return new Payout(tempConsignor, amount, LocalDate.now(), transactionId);
     }
 
 
@@ -355,61 +356,7 @@ public class PayoutsPanel extends JPanel {
 
 
 
-
-
-
-
-
-    // DUMMY PSVM FOR MOCK RUNNING
-
 //    public static void main(String[] args) {
-//        // Dummy data for testing the structure
-//        Consignee dummyConsignee = createDummyConsignee();
 //
-//        SwingUtilities.invokeLater(() -> new PayoutsPanel(dummyConsignee));
 //    }
-//
-//    // Dummy classes and data for compilation/testing
-//    // These must exist in your project for the code to compile
-//    public static class Transaction {
-//        String getTransactionID() { return "TXN-1"; }
-//        double getTotalAmount() { return 100.00; }
-//        double getConsignorShare() { return 70.00; }
-//    }
-//    public static class Payout extends Transaction {
-//        //public Payout(Consignor c, )
-//        String payID;
-//        //String consignor = "Jane Doe";
-//        //double amountPaid = 500.00;
-//        //String payDate = "2025-11-28";
-//        static int ctr = 0;
-//        public Payout(){
-//            this.payID = "P0-00" + ctr;
-//            ctr++;
-//        }
-//        String getPayoutId() {
-//
-//            return payID; }
-//        String getConsignor() { return "Jane Doe"; }
-//        double getAmountPaid() { return 500.00; }
-//        String getPayoutDate() { return "2025-11-28"; }
-//    }
-//    public static class Consignee {
-//        List<Transaction> transactions;
-//    }
-//    public static Consignee createDummyConsignee() {
-//        Consignee c = new Consignee();
-//        c.transactions = new ArrayList<>();
-//        c.transactions.add(new Payout());
-//        c.transactions.add(new Payout());
-//        c.transactions.add(new Transaction());
-//        c.transactions.add(new Transaction());
-//        return c;
-//    }
-//
-//
-//}
-    public static void main(String[] args) {
-
-    }
 }
