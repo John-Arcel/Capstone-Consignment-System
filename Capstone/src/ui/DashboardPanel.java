@@ -1,5 +1,7 @@
 package ui;
 
+import classes.*;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -38,20 +40,26 @@ public class DashboardPanel extends JPanel {
 
 
     private List<Item> inventory = new ArrayList<>();
+
+
+
     private List<Transaction> transactionList = new ArrayList<>();
 
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
     private final String[] headers = {"Item Name", "Item ID", "Consignor", "Quantity", "Price", "Date Received", "Expiry/Return Date", "Item Type"};
     private Object[][] data = {
-            {"Apple",       "I-0000001", "John", 1, 100.50, "01/01/2025", "01/01/2026", "Perishable"},
-            {"Banana",      "I-0000002", "Mary", 2, 50.01, "02/01/2025", "02/01/2026", "Perishable"},
-            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "03/01/2025", "03/01/2026", "Perishable"},
-            {"Dates",       "I-0000004", "Bob", 4, 200.34, "04/01/2025", "04/01/2026", "Perishable"},
-            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "05/01/2025", "05/01/2026", "Perishable"},
-            {"Metal",       "I-0000006", "John", 6, 150.00, "06/01/2025", "06/01/2026", "Non-Perishable"},
-            {"Screw",       "I-0000007", "Mary", 7, 120.00, "07/01/2025", "07/01/2026", "Non-Perishable"},
-            {"Iron",        "I-0000008", "Alice", 8, 180.11, "08/01/2025", "08/01/2026", "Non-Perishable"},
-            {"Gold",        "I-0000009", "Bob", 9, 60.01, "09/01/2025", "09/01/2026", "Non-Perishable"},
-            {"Diamond",     "I-0000010", "Eve", 10, 300.69, "10/01/2025", "10/01/2026", "Non-Perishable"}
+            {"Apple",       "I-0000001", "John", 1, 100.50, "2025-01-01", "2026-01-01", "Perishable"},
+            {"Banana",      "I-0000002", "Mary", 2, 50.01, "2025-02-01", "2026-02-01", "Perishable"},
+            {"Carrot",      "I-0000003", "Alice", 3, 30.02, "2025-03-01", "2026-03-01", "Perishable"},
+            {"Dates",       "I-0000004", "Bob", 4, 200.34, "2025-04-01", "2026-04-01", "Perishable"},
+            {"Eggplant",    "I-0000005", "Eve", 5, 80.76, "2025-05-01", "2026-05-01", "Perishable"},
+            {"Metal",       "I-0000006", "John", 6, 150.00, "2025-06-01", "2026-06-01", "Non-Perishable"},
+            {"Screw",       "I-0000007", "Mary", 7, 120.00, "2025-07-01", "2026-07-01", "Non-Perishable"},
+            {"Iron",        "I-0000008", "Alice", 8, 180.11, "2025-08-01", "2026-08-01", "Non-Perishable"},
+            {"Gold",        "I-0000009", "Bob", 9, 60.01, "2025-09-01", "2026-09-01", "Non-Perishable"},
+            {"Diamond",     "I-0000010", "Eve", 10, 300.69, "2025-10-01", "2026-10-01", "Non-Perishable"}
     };
 
 
@@ -123,7 +131,7 @@ public class DashboardPanel extends JPanel {
             }
 
             Item found = inventory.stream()
-                    .filter(it -> it.id.equalsIgnoreCase(id))
+                    .filter(it -> it.getItemID().equalsIgnoreCase(id))
                     .findFirst()
                     .orElse(null);
 
@@ -134,19 +142,19 @@ public class DashboardPanel extends JPanel {
 
             // Calculate sold quantity dynamically
             long soldQty = transactionList.stream()
-                    .filter(t -> t.itemID.equalsIgnoreCase(found.id))
+                    .filter(t -> t.getSoldItem().getItemID().equalsIgnoreCase(found.getItemID()))
                     .count();
-            int stockLeft = found.quantity - (int) soldQty;
+            int stockLeft = found.getQuantity() - (int) soldQty;
 
             String[] cols = {"Field", "Value"};
             String[][] rows = {
-                    {"Item ID", found.id},
-                    {"Name", found.name},
-                    {"Price", String.format("₱%.2f", found.price)},
-                    {"Quantity", String.valueOf(found.quantity)},
+                    {"Item ID", found.getItemID()},
+                    {"Name", found.getName()},
+                    {"Price", String.format("₱%.2f", found.getSellingPrice())},
+                    {"Quantity", String.valueOf(found.getQuantity())},
                     {"Sold Quantity", String.valueOf(soldQty)},
                     {"Stock Left", String.valueOf(stockLeft)},
-                    {"Expiry", found.expiry}
+                    {"Expiry", String.valueOf(found.getReturnDate())}
             };
 
             drawTable(itemDetail, rows, cols);
@@ -164,7 +172,7 @@ public class DashboardPanel extends JPanel {
             }
 
             Item foundItem = inventory.stream()
-                    .filter(it -> it.id.equalsIgnoreCase(id))
+                    .filter(it -> it.getItemID().equalsIgnoreCase(id))
                     .findFirst()
                     .orElse(null);
 
@@ -173,13 +181,15 @@ public class DashboardPanel extends JPanel {
                 return;
             }
 
-            if (foundItem.isSoldOut(transactionList)) {
+            if (isSoldOut(foundItem)) {
                 JOptionPane.showMessageDialog(this, "No more stock available!");
                 return;
             }
 
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            transactionList.add(new Transaction(id, today, foundItem.price));
+            Transaction t = new Transaction(id, foundItem);
+            transactionList.add(t);
+
 
             updateTotals();
             loadTransactionTable();
@@ -209,12 +219,14 @@ public class DashboardPanel extends JPanel {
             String expiry = (String) row[6];
             String itemType = (String) row[7];
 
-            inventory.add(new Item(id, name, consignor, price, qty, dateReceived, expiry, itemType));
+//            //todo remove later
+            inventory.add(new Perishable(id, name, new Consignor(consignor, "12345"), qty, price, dateReceived, 1));
+//            inventory.add(new NonPerishable(id, name, new Consignor("Josh", "123"), qty, price, dateReceived));
         }
 
         // Example transactions
-        transactionList.add(new Transaction("I-0000001", "11/29/2025", 100.50));
-        transactionList.add(new Transaction("I-0000003", "11/29/2025", 30.02));
+//        transactionList.add(new Transaction("I-0000001", "11/29/2025", 100.50));
+//        transactionList.add(new Transaction("I-0000003", "11/29/2025", 30.02));
     }
 
 
@@ -227,29 +239,30 @@ public class DashboardPanel extends JPanel {
 
         // Only items with stock > 0 AND not expired
         for (Item it : inventory) {
-            if (it.stockLeft(transactionList) > 0 && !it.isExpired()) {
+            if (stockLeft(it) > 0 ) {
                 due.add(it);
             }
         }
 
         DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        due.sort((a, b) -> LocalDate.parse(a.expiry, f)
-                .compareTo(LocalDate.parse(b.expiry, f)));
+        due.sort((a, b) -> a.getReturnDate()
+                .compareTo(b.getReturnDate()));
 
         String[] cols = {"Item ID", "Name", "Consignor", "Expiry", "Stock Left", "Price", "Item Type"};
         String[][] rows = new String[due.size()][cols.length];
 
         for (int i = 0; i < due.size(); i++) {
             Item it = due.get(i);
-            rows[i][0] = it.id;
-            rows[i][1] = it.name;
-            rows[i][2] = it.consignor;
-            rows[i][3] = it.expiry;
-            rows[i][4] = String.valueOf(it.stockLeft(transactionList));
-            rows[i][5] = String.format("₱%.2f", it.price);
-            rows[i][6] = it.itemType;
+            rows[i][0] = it.getItemID();
+            rows[i][1] = it.getName();
+            rows[i][2] = it.getOwner().getName();
+            rows[i][3] = String.valueOf(it.getReturnDate());
+            rows[i][4] = String.valueOf(stockLeft(it));
+            rows[i][5] = String.format("₱%.2f", it.getSellingPrice());
+            if(it instanceof Perishable) {
+                rows[i][6] = "Perishable";
+            }else rows[i][6] = "Non-Perishable";
         }
-
         drawTable(itemsDue, rows, cols);
     }
 
@@ -267,13 +280,13 @@ public class DashboardPanel extends JPanel {
 
         for (Transaction t : transactionList) {
             Item item = inventory.stream()
-                    .filter(i -> i.id.equalsIgnoreCase(t.itemID))
+                    .filter(i -> i.getItemID().equalsIgnoreCase(t.getSoldItem().getItemID()))
                     .findFirst()
                     .orElse(null);
 
             if (item != null) {
-                earningsSum += t.amount * AppConfig.storeCutPercent;
-                pendingSum  += t.amount * (1 - AppConfig.storeCutPercent);
+                earningsSum += t.getTotalAmount() * AppConfig.storeCutPercent;
+                pendingSum  += t.getTotalAmount() * (1 - AppConfig.storeCutPercent);
             }
         }
 
@@ -304,9 +317,9 @@ public class DashboardPanel extends JPanel {
 
         for (int i = 0; i < size; i++) {
             Transaction t = transactionList.get(start + i);
-            rows[i][0] = t.itemID;
-            rows[i][1] = t.date;
-            rows[i][2] = String.format("₱%.2f", t.amount);
+            rows[i][0] = t.getSoldItem().getItemID();
+            rows[i][1] = String.valueOf(t.getSaleDate());
+            rows[i][2] = String.format("₱%.2f", t.getTotalAmount());
         }
 
         drawTable(transactions, rows, cols);
@@ -319,8 +332,7 @@ public class DashboardPanel extends JPanel {
     // -----------------------------------------------------
     public static void makeTransparent(JComponent container) {
         for (Component c : container.getComponents()) {
-            if (c instanceof JComponent) {
-                JComponent jc = (JComponent) c;
+            if (c instanceof JComponent jc) {
 
                 if (jc.getComponentCount() > 0) {
                     makeTransparent(jc);
@@ -347,64 +359,30 @@ public class DashboardPanel extends JPanel {
 //        SwingUtilities.invokeLater(() -> new DashboardPanel().setVisible(true));
 //    }
 
-    // -----------------------------------------------------
-    // DATA CLASSES
-    // -----------------------------------------------------
-    static class Item {
-        String id;
-        String name;
-        String consignor;
-        double price;
-        int quantity;       // total stock
-        String dateReceived;
-        String expiry;
-        String itemType;
 
-        Item(String id, String name, String consignor, double price, int quantity,
-             String dateReceived, String expiry, String itemType) {
-            this.id = id;
-            this.name = name;
-            this.consignor = consignor;
-            this.price = price;
-            this.quantity = quantity;
-            this.dateReceived = dateReceived;
-            this.expiry = expiry;
-            this.itemType = itemType;
-        }
+    // Stock left is dynamically calculated from transactions
+    int stockLeft(Item i) {
+        long soldCount;
+        soldCount = transactionList.stream()
+                .filter(t -> t.getSoldItem().getItemID().equalsIgnoreCase(i.getItemID())).count();
+        return i.getQuantity() - (int) soldCount;
+    }
 
-        // Stock left is dynamically calculated from transactions
-        int stockLeft(List<Transaction> transactions) {
-            long soldCount = transactions.stream()
-                    .filter(t -> t.itemID.equalsIgnoreCase(this.id))
-                    .count();
-            return quantity - (int) soldCount;
-        }
+    boolean isSoldOut(Item i) {
+        return stockLeft(i) <= 0;
+    }
 
-        boolean isSoldOut(List<Transaction> transactions) {
-            return stockLeft(transactions) <= 0;
-        }
-
-        boolean isExpired() {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            LocalDate expiryDate = LocalDate.parse(expiry, f);
-            return expiryDate.isBefore(LocalDate.now());
-        }
+    boolean isExpired(Item i) {
+//        DateTimeFormatter f = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        LocalDate expiryDate = i.getReturnDate();
+        return expiryDate.isBefore(LocalDate.now());
     }
 
 
 
 
-    static class Transaction {
-        String itemID;
-        String date;
-        double amount;
 
-        Transaction(String itemID, String date, double amount) {
-            this.itemID = itemID;
-            this.date = date;
-            this.amount = amount;
-        }
-    }
+
 
     // -----------------------------------------------------
     // Needed when using IntelliJ .form custom components

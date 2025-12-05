@@ -1,6 +1,7 @@
 package ui;
 
 import classes.Item;
+import classes.Transaction;
 import handlers.TransactionsHandler;
 
 import javax.swing.*;
@@ -97,6 +98,27 @@ public class TransactionsPanel extends JPanel{
         return total;
     }
 
+    public void updateTransactionList(List<Transaction> transactionList){
+        int headerAmount = 6;
+        Object[][] matrix = new Object[transactionList.size()][headerAmount];
+        for(int i = 0; i < transactionList.size(); i++) {
+            Transaction t = transactionList.get(i);
+            matrix[i][0] = t.getTransactionId();
+            matrix[i][1] = t.getSoldItem().getName();
+            matrix[i][2] = t.getSaleDate().toString().substring(0,9);
+            matrix[i][3] = t.getTotalAmount();
+            matrix[i][4] = t.getStoreRevenue();
+            matrix[i][5] = t.getConsignorShare();
+        }
+
+        data = matrix;
+        table.setModel(new DefaultTableModel(data, columnNames));
+        prettifyTable();
+        totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
+        totalStoreRevenueLabel.setText("$" + Double.toString(getTotalStoreRevenue()));
+        totalConsignorShareLabel.setText("$" + Double.toString(getTotalConsignorShare()));
+
+    }
     // create a transaction and add in the array
     public void transact(Item i){
         ArrayList<Object> list = new ArrayList<Object>();

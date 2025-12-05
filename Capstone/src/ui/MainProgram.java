@@ -1,5 +1,6 @@
 package ui;
 
+import classes.Transaction;
 import handlers.*;
 import javax.swing.*;
 import java.awt.*;
@@ -38,9 +39,11 @@ public class MainProgram extends JFrame{
 
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
-        MainContentPanel.add(new DashboardPanel(), "KEY_DASHBOARD");
+        DashboardPanel d = new DashboardPanel();
+        TransactionsPanel t = new TransactionsPanel(transactionsHandler);
+        MainContentPanel.add(d, "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
-        MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
+        MainContentPanel.add(t, "KEY_TRANSACTIONS");
         MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
 
         ActionListener listener = new ActionListener() {
@@ -55,6 +58,7 @@ public class MainProgram extends JFrame{
                 }
                 else if (e.getSource() == transactionsButton) {
                     cardLayout.show(MainContentPanel, "KEY_TRANSACTIONS");
+                    t.updateTransactionList(d.getTransactionList());
                 }
                 else if (e.getSource() == payoutsButton) {
                     cardLayout.show(MainContentPanel, "KEY_PAYOUTS");
