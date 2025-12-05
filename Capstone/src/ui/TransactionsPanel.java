@@ -105,7 +105,7 @@ public class TransactionsPanel extends JPanel{
             Transaction t = transactionList.get(i);
             matrix[i][0] = t.getTransactionId();
             matrix[i][1] = t.getSoldItem().getName();
-            matrix[i][2] = t.getSaleDate().toString().substring(0,9);
+            matrix[i][2] = t.getSaleDate().toString().substring(0,10);
             matrix[i][3] = t.getTotalAmount();
             matrix[i][4] = t.getStoreRevenue();
             matrix[i][5] = t.getConsignorShare();

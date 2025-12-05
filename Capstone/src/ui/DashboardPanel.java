@@ -41,7 +41,7 @@ public class DashboardPanel extends JPanel {
 
     private List<Item> inventory = new ArrayList<>();
 
-
+    private int ctr;
 
     private List<Transaction> transactionList = new ArrayList<>();
 
@@ -160,7 +160,7 @@ public class DashboardPanel extends JPanel {
             drawTable(itemDetail, rows, cols);
         });
 
-
+        ctr = transactionList.size();
         // -----------------------------------------------------
         // SELL ITEM
         // -----------------------------------------------------
@@ -187,7 +187,7 @@ public class DashboardPanel extends JPanel {
             }
 
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            Transaction t = new Transaction(id, foundItem);
+            Transaction t = new Transaction("T-" + String.format("%07d", ++ctr), foundItem);
             transactionList.add(t);
 
 
@@ -239,7 +239,7 @@ public class DashboardPanel extends JPanel {
 
         // Only items with stock > 0 AND not expired
         for (Item it : inventory) {
-            if (stockLeft(it) > 0 ) {
+            if (stockLeft(it) > 0 /* !isExpired(it) */) {
                 due.add(it);
             }
         }
