@@ -49,7 +49,7 @@ public class TransactionsPanel extends JPanel{
         data = transactionsHandler.getAllTransactions();
 
         // create the table with column name and data
-        table.setModel(new DefaultTableModel(data, columnNames));
+        drawTable(data, columnNames);
 
         // add placeholder to text-field
         searchTextField.setText("Search Transaction ID");
@@ -109,7 +109,7 @@ public class TransactionsPanel extends JPanel{
         list.add(i.getSellingPrice()-i.calculateOwnerShare());
         list.add(i.calculateOwnerShare());
         addTransaction(list);
-        table.setModel(new DefaultTableModel(data, columnNames));
+        drawTable(data, columnNames);
         prettifyTable();
 
     }
@@ -119,6 +119,17 @@ public class TransactionsPanel extends JPanel{
         List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
         dataList.add(transaction.toArray());
         data = dataList.toArray(new Object[0][]);
+    }
+
+    public void drawTable(Object[][] rows, Object[] headers) {
+        //purpose: disables cell editing
+        DefaultTableModel model = new DefaultTableModel(rows, headers) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table.setModel(model);
     }
 
     private void prettifyTable() {
@@ -175,7 +186,7 @@ public class TransactionsPanel extends JPanel{
 
         // If both empty → reset dataTable
         if (noID) {
-            table.setModel(new DefaultTableModel(data, columnNames));
+            drawTable(data, columnNames);
             prettifyTable();
             return;
         }
@@ -211,7 +222,7 @@ public class TransactionsPanel extends JPanel{
 
 
         // Update dataTable
-        table.setModel(new DefaultTableModel(filteredData, columnNames));
+        drawTable(filteredData, columnNames);
         prettifyTable();
     }
 

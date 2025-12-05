@@ -4,12 +4,10 @@ import handlers.*;
 import classes.*;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +45,8 @@ public class PayoutsPanel extends JPanel {
         processConsigneeTransactions(transactionsHandler.getAllTransactions(), payoutsHandler.getAllPayouts());
 
         Object[][] HistoryData = historyDataList.toArray(new Object[0][]);
-        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+//        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+        drawHistoryTable(HistoryData, HistoryHeaders); // placed it in a function
         HistoryTable.setRowHeight(30);
 
         String[] pendingHeaders = {"Select", "Transaction ID", "Total Amount", "Consignor Share"};
@@ -274,7 +273,8 @@ public class PayoutsPanel extends JPanel {
         PendingNum.setText("" + countPending);
 
         Object[][] HistoryData = historyDataList.toArray(new Object[0][0]);
-        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+//        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
+        drawHistoryTable(HistoryData, HistoryHeaders); // placed into a helper function
         HistoryTable.setRowHeight(30);
     }
 
@@ -353,6 +353,19 @@ public class PayoutsPanel extends JPanel {
         transferButton = new Style.RoundedButton(40);
     }
 
+    // -------------------------------Draws the History Table------------------------------
+    //
+    private void drawHistoryTable(Object[][] rowData, Object[] headers) {
+
+        //purpose: disables cell editing
+        DefaultTableModel model = new DefaultTableModel(rowData, headers) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        HistoryTable.setModel(model);
+    }
 
 
 

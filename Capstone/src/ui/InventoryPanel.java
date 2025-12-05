@@ -235,6 +235,11 @@ public class InventoryPanel extends JPanel {
                     default -> String.class; // rest of the columns
                 };
             }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         });
         dataTable.getTableHeader().setReorderingAllowed(false);
     }

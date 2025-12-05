@@ -149,7 +149,7 @@ public class DashboardPanel extends JPanel {
                     {"Expiry", found.expiry}
             };
 
-            itemDetail.setModel(new DefaultTableModel(rows, cols));
+            drawTable(itemDetail, rows, cols);
         });
 
 
@@ -250,7 +250,7 @@ public class DashboardPanel extends JPanel {
             rows[i][6] = it.itemType;
         }
 
-        itemsDue.setModel(new DefaultTableModel(rows, cols));
+        drawTable(itemsDue, rows, cols);
     }
 
 
@@ -309,7 +309,7 @@ public class DashboardPanel extends JPanel {
             rows[i][2] = String.format("₱%.2f", t.amount);
         }
 
-        transactions.setModel(new DefaultTableModel(rows, cols));
+        drawTable(transactions, rows, cols);
         transactions.setRowHeight(30);
     }
 
@@ -418,5 +418,21 @@ public class DashboardPanel extends JPanel {
         transactions = new JTable();
         itemDetail = new JTable();
 
+    }
+
+
+    // -----------------------------------------------------
+    // Helper functions
+    // -----------------------------------------------------
+    private void drawTable(JTable table, Object[][] rowData, Object[] headers) {
+
+        //purpose: disables cell editing
+        DefaultTableModel model = new DefaultTableModel(rowData, headers) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        table.setModel(model);
     }
 }
