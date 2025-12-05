@@ -31,10 +31,10 @@ public class InventoryHandler {
             while((line = br.readLine()) != null){
                 String[] data = line.split(",");
 
-                String itemID = data[0];
-                String itemName = data[1];
-                String ownerID = data[2];
-                Consignor owner = supplierHandler.getConsignorByID(ownerID);
+                String itemName= data[0];
+                String itemID = data[1];
+                String ownerName = data[2];
+                Consignor owner = supplierHandler.getConsignorByName(ownerName);
                 String quantity = data[3];
                 String sellingPrice = data[4];
                 String dateReceived = data[5];
