@@ -82,6 +82,7 @@ public class DashboardPanel extends JPanel {
         itemsDue.getTableHeader().setOpaque(false);
         itemsDue.getTableHeader().setBackground(new Color(0,0,0,0));
         itemsDue.setRowHeight(30);
+
 // -------------------------------------------------------
 
 //        itemIDField.setForeground(Color.WHITE);
@@ -309,6 +310,7 @@ public class DashboardPanel extends JPanel {
         }
 
         transactions.setModel(new DefaultTableModel(rows, cols));
+        transactions.setRowHeight(30);
     }
 
 
