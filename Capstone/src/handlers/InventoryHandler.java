@@ -147,9 +147,20 @@ public class InventoryHandler {
     }
 
     public void deleteItem(String itemID){
+        boolean isPresent = false;
+
         Item item = getItemFromID(itemID);
         inventory_list.remove(item);
 
+        for(Item i : inventory_list){
+            if(i.getOwner().equals(item.getOwner())){
+                isPresent = true;
+                break;
+            }
+        }
+        if(!isPresent){
+            supplierHandler.inactiveConsignor(item.getOwner());
+        }
     }
 
     protected Item getItemFromID(String itemID) {

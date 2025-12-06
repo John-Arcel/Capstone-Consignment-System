@@ -40,7 +40,7 @@ public class PayoutsHandler {
                 LocalDate date = LocalDate.parse(dateString);
 
                 // Create a Consignor object (assuming the handler uses the name as a key) ---
-                Consignor consignor = new Consignor(consignorName, consignorID);
+                Consignor consignor = new Consignor(consignorName, consignorID, true);
 
                 Payout payout;
                 payout = new Payout(

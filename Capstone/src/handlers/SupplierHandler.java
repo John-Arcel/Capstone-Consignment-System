@@ -34,8 +34,9 @@ public class SupplierHandler {
                 String ownerID = data[0];
                 String name = data[1];
                 double amount = Double.parseDouble(data[2]);
+                boolean active = Boolean.parseBoolean(data[3]);
 
-                Consignor Supplier = new Consignor(name,ownerID);
+                Consignor Supplier = new Consignor(name,ownerID, active);
                 Supplier.setPayableBalance(amount);
                 suppliers_list.add(Supplier);
 
@@ -75,8 +76,15 @@ public class SupplierHandler {
         return null;
     }
 
-    public int getTotalConsignors(){
-        return suppliers_list.size();
+    public int getActiveConsignors(){
+        int counter = 0;
+        for(Consignor c : suppliers_list){
+            if (c.IsActive()){
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     public Consignor addConsignor(String name) {
@@ -89,9 +97,13 @@ public class SupplierHandler {
         }
         newID++;
 
-        Consignor newConsignor = new Consignor(name, "S-" + String.format("%07d", newID));
+        Consignor newConsignor = new Consignor(name, "S-" + String.format("%07d", newID), true);
 
         suppliers_list.add(newConsignor);
         return newConsignor;
+    }
+
+    public void inactiveConsignor(Consignor c){
+        suppliers_list.get(suppliers_list.indexOf(c)).changeActive();
     }
 }

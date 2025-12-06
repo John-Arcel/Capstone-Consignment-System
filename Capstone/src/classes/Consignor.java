@@ -9,10 +9,10 @@ public class Consignor extends Entity {
     private boolean isActive;
     private final List<Transaction> transactionHistory;
 
-    public Consignor(String name, String entityID) {
+    public Consignor(String name, String entityID, boolean isActive) {
         super(name,entityID);
         this.payableBalance = 0.0;
-        this.isActive = true;
+        this.isActive = isActive;
         this.transactionHistory = new ArrayList<>();
     }
 
@@ -38,7 +38,7 @@ public class Consignor extends Entity {
 
     // Toggle active/inactive
     public void changeActive() {
-        this.isActive = !isActive;
+        isActive = false;
     }
 
     // Record a transaction
@@ -54,6 +54,6 @@ public class Consignor extends Entity {
     }
 
     public String toCSV() {
-        return getID() + "," + getName() + "," + payableBalance;
+        return getID() + "," + getName() + "," + payableBalance + "," + isActive;
     }
 }

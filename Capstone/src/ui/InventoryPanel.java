@@ -58,7 +58,7 @@ public class InventoryPanel extends JPanel {
         prettifyTable();
 
         totalItemsLabel.setText(Integer.toString(inventoryHandler.getTotalItems()));
-        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getTotalConsignors()));
+        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getActiveConsignors()));
         addTextFieldPlaceholderText();
 
         //purpose: adds functionality to search by item id and consignor
@@ -223,7 +223,7 @@ public class InventoryPanel extends JPanel {
     private void updateData(){
         data = inventoryHandler.getAllItems();
         totalItemsLabel.setText(Integer.toString(inventoryHandler.getTotalItems()));
-        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getTotalConsignors()));
+        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getActiveConsignors()));
     }
 
     //purpose: draws the dataTable using original data and headers

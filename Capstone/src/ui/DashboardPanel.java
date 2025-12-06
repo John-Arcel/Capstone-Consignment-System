@@ -220,7 +220,7 @@ public class DashboardPanel extends JPanel {
             String itemType = (String) row[7];
 
 //            //todo remove later
-            inventory.add(new Perishable(id, name, new Consignor(consignor, "12345"), qty, price, dateReceived, 1));
+            inventory.add(new Perishable(id, name, new Consignor(consignor, "12345", true), qty, price, dateReceived, 1));
 //            inventory.add(new NonPerishable(id, name, new Consignor("Josh", "123"), qty, price, dateReceived));
         }
 

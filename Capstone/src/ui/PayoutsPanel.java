@@ -340,7 +340,7 @@ public class PayoutsPanel extends JPanel {
     public Payout toPayout(String transactionId, double amount, String consignorName) {
         String consignorID = "T-" + String.format("%07d", ++payoutIdCtr);
 
-        Consignor tempConsignor = new Consignor(consignorName, consignorID);
+        Consignor tempConsignor = new Consignor(consignorName, consignorID, true);
 
         return new Payout(tempConsignor, amount, LocalDate.now(), transactionId);
     }
