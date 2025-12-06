@@ -12,11 +12,13 @@ public class InventoryHandler {
     private final String path;
     private List<Item> inventory_list;
     private SupplierHandler supplierHandler;
+    private double commissionRate;
 
-    public InventoryHandler(String entityID, SupplierHandler supplierHandler){
+    public InventoryHandler(String entityID, SupplierHandler supplierHandler, double commissionRate){
         path = "Capstone/data/" + entityID + "/inventory.csv";
         inventory_list = new ArrayList<>();
         this.supplierHandler = supplierHandler;
+        this.commissionRate = commissionRate;
 
         loadInventory();
     }
@@ -39,7 +41,8 @@ public class InventoryHandler {
                 String sellingPrice = data[4];
                 String dateReceived = data[5];
                 String dateReturn = data[6];
-                String itemType = data[7];
+                String status = data[7];
+                String itemType = data[8];
 
                 Item item;
                 if(itemType.equals("Perishable")){
@@ -49,8 +52,10 @@ public class InventoryHandler {
                             owner,
                             Integer.parseInt(quantity),
                             Double.parseDouble(sellingPrice),
+                            commissionRate,
                             dateReceived,
-                            (int) ChronoUnit.DAYS.between(LocalDate.parse(dateReceived), LocalDate.parse(dateReturn))
+                            (int) ChronoUnit.DAYS.between(LocalDate.parse(dateReceived), LocalDate.parse(dateReturn)),
+                            status
                     );
                 }
                 else{
@@ -60,7 +65,9 @@ public class InventoryHandler {
                             owner,
                             Integer.parseInt(quantity),
                             Double.parseDouble(sellingPrice),
-                            dateReceived
+                            commissionRate,
+                            dateReceived,
+                            status
                     );
                 }
                 inventory_list.add(item);
@@ -86,24 +93,36 @@ public class InventoryHandler {
 
     // converts array of Item object to a primitive matrix with its raw data and returns
     public Object[][] getAllItems(){
-        Object[][] matrix = new Object[inventory_list.size()][8];
+        int size = getAvailableItems();
+
+        Object[][] matrix = new Object[size][8];
+        int ctr = 0;
         for(int i = 0; i<inventory_list.size(); i++){
             Item item = inventory_list.get(i);
-            matrix[i][0] = item.getName();
-            matrix[i][1] = item.getItemID();
-            matrix[i][2] = item.getOwner().getName();
-            matrix[i][3] = item.getQuantity();
-            matrix[i][4] = item.getSellingPrice();
-            matrix[i][5] = item.getDateReceived().toString();
-            matrix[i][6] = item.getReturnDate().toString();
-            matrix[i][7] = (item instanceof Perishable) ? "Perishable" : "Non-Perishable";
+            if(item.getStatus().equals("AVAILABLE")){
+                matrix[ctr][0] = item.getName();
+                matrix[ctr][1] = item.getItemID();
+                matrix[ctr][2] = item.getOwner().getName();
+                matrix[ctr][3] = item.getQuantity();
+                matrix[ctr][4] = item.getSellingPrice();
+                matrix[ctr][5] = item.getDateReceived().toString();
+                matrix[ctr][6] = item.getReturnDate().toString();
+                matrix[ctr][7] = (item instanceof Perishable) ? "Perishable" : "Non-Perishable";
+                ctr++;
+            }
         }
 
         return matrix;
     }
 
-    public int getTotalItems(){
-        return inventory_list.size();
+    public int getAvailableItems(){
+        int counter = 0;
+        for(Item i : inventory_list){
+            if(i.getStatus().equals("AVAILABLE")){
+                counter++;
+            }
+        }
+        return counter;
     }
 
     public void addItem(String name, String owner, String quantity, String price, String dateReceived, String daysToSell, boolean isPerishable){
@@ -129,8 +148,10 @@ public class InventoryHandler {
                     consignor,
                     Integer.parseInt(quantity),
                     Double.parseDouble(price),
+                    commissionRate,
                     dateReceived,
-                    Integer.parseInt(daysToSell)
+                    Integer.parseInt(daysToSell),
+                    "AVAILABLE"
             );
         }
         else{
@@ -140,7 +161,9 @@ public class InventoryHandler {
                     consignor,
                     Integer.parseInt(quantity),
                     Double.parseDouble(price),
-                    dateReceived
+                    commissionRate,
+                    dateReceived,
+                    "AVAILABLE"
             );
         }
         inventory_list.add(item);
@@ -168,5 +191,9 @@ public class InventoryHandler {
             if(i.getItemID().equals(itemID)) return i;
         }
         return null;
+    }
+
+    public List<Item> getInventoryList(){
+        return inventory_list;
     }
 }

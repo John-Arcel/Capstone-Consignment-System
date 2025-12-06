@@ -355,7 +355,7 @@ public class LogInForm extends JFrame {
 
                                 // Todo once the details are registered it will go to dashboard
                                 // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
-                                new MainProgram(id, fileUser);
+                                new MainProgram(id);
                                 LogInForm.this.dispose();
                             }
 

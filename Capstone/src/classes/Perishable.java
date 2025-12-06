@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Perishable extends Item{
-    public Perishable(String itemID, String name, Consignor owner, int quantity, double sellingPrice, String dateReceived, int daysToSell) {
-        super(itemID, name, owner, quantity, sellingPrice, dateReceived, daysToSell);
+    public Perishable(String itemID, String name, Consignor owner, int quantity, double sellingPrice, double commissionRate, String dateReceived, int daysToSell, String status) {
+        super(itemID, name, owner, quantity, sellingPrice, commissionRate, dateReceived, daysToSell, status);
     }
 
     public boolean isExpired(){

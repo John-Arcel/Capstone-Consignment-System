@@ -36,9 +36,9 @@ public class SupplierHandler {
                 double amount = Double.parseDouble(data[2]);
                 boolean active = Boolean.parseBoolean(data[3]);
 
-                Consignor Supplier = new Consignor(name,ownerID, active);
-                Supplier.setPayableBalance(amount);
-                suppliers_list.add(Supplier);
+                Consignor supplier = new Consignor(name,ownerID, active);
+                supplier.setPayableBalance(amount);
+                suppliers_list.add(supplier);
 
             }
         } catch (IOException e) {
@@ -85,6 +85,10 @@ public class SupplierHandler {
         }
 
         return counter;
+    }
+
+    public List<Consignor> getSupplierList() {
+        return suppliers_list;
     }
 
     public Consignor addConsignor(String name) {

@@ -12,22 +12,13 @@ public class Transaction {
     private double consignorShare;
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-//    public Transaction(Item soldItem){
-//        this.transactionId = "T-" + String.format("%07d", ++counter);
-//        this.soldItem = soldItem;
-//        this.saleDate = LocalDateTime.now();
-//        this.totalAmount = soldItem.getSellingPrice(); //add getSellingPrice() sa classes.Item
-//        this.storeRevenue = soldItem.getSellingPrice() - soldItem.calculateOwnerShare();
-//        this.consignorShare = soldItem.calculateOwnerShare();
-//    }
-    public Transaction(String transactionID, Item soldItem){
+    public Transaction(String transactionID, Item soldItem, LocalDateTime saleDate){
         this.transactionId = transactionID;
         this.soldItem = soldItem;
-        this.saleDate = LocalDateTime.now();
-        this.totalAmount = soldItem.getSellingPrice(); //add getSellingPrice() sa classes.Item
-        this.storeRevenue = soldItem.getSellingPrice() - soldItem.calculateOwnerShare();
-        this.consignorShare = soldItem.calculateOwnerShare();
-
+        this.saleDate = saleDate;
+        this.totalAmount = soldItem.getSellingPrice(); //add getSellingPrice() sa Item
+        this.storeRevenue = soldItem.getSellingPrice() - soldItem.calculateConsignorShare();
+        this.consignorShare = soldItem.calculateConsignorShare();
     }
 
     public String getTransactionId() {
@@ -54,16 +45,8 @@ public class Transaction {
         return storeRevenue;
     }
 
-    public void generateReceipt(){
-        System.out.println("classes.Transaction No.: " + transactionId);
-        System.out.println("classes.Item: " + soldItem.getName());
-        System.out.println("Date: " + saleDate.format(format));
-        System.out.println("Total Amount: " + String.format("%.2f", totalAmount));
-        System.out.println("Store Revenue: " + String.format("%.2f", storeRevenue));
-        System.out.println("classes.Consignor Share: " + String.format("%.2f", consignorShare));
-    }
 
     public String toCSV() {
-        return transactionId + "," + soldItem.getItemID() + "," + saleDate + "," + totalAmount + "," + storeRevenue + "," + consignorShare;
+        return transactionId + "," + soldItem.getItemID() + "," + saleDate.format(format);
     }
 }

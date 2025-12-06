@@ -30,6 +30,9 @@ public class Consignor extends Entity {
         return transactionHistory;
     }
 
+    public void setPayableBalance(double amount) {
+        payableBalance = amount;
+    }
 
     // Add or subtract from balance
     public void updateBalance(double amount) {
@@ -39,18 +42,6 @@ public class Consignor extends Entity {
     // Toggle active/inactive
     public void changeActive() {
         isActive = false;
-    }
-
-    // Record a transaction
-    public void addTransaction(Transaction t) {
-        if (t == null)
-            throw new NullPointerException("Transaction cannot be null.");
-        transactionHistory.add(t);
-    }
-
-    //setter
-    public void setPayableBalance(double amount){
-        payableBalance = amount;
     }
 
     public String toCSV() {

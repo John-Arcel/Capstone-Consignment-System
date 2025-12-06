@@ -1,9 +1,13 @@
 package handlers;
 
+import classes.Consignor;
 import classes.Item;
 import classes.Transaction;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,10 +15,12 @@ public class TransactionsHandler {
     private String path;
     private List<Transaction> transaction_list;
     private InventoryHandler inventoryHandler;
+    private SupplierHandler supplierHandler;
 
-    public TransactionsHandler(String entityID, InventoryHandler inventoryHandler){
+    public TransactionsHandler(String entityID, InventoryHandler inventoryHandler, SupplierHandler supplierHandler){
         this.inventoryHandler = inventoryHandler;
-        path = "data/" + entityID + "/transactions.csv";
+        this.supplierHandler = supplierHandler;
+        path = "Capstone/data/" + entityID + "/transactions.csv";
         transaction_list = new ArrayList<>();
 
         loadTransactions();
@@ -25,6 +31,8 @@ public class TransactionsHandler {
         transaction_list.clear();
         File file = new File(path);
 
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while((line = br.readLine()) != null) {
@@ -32,10 +40,14 @@ public class TransactionsHandler {
 
                 String transactionID = data[0];
                 String itemID = data[1];
-
+                String saleDate = data[2];
 
                 Item item = inventoryHandler.getItemFromID(itemID);
-                Transaction transaction = new Transaction(transactionID, item);
+                Transaction transaction = new Transaction(
+                        transactionID,
+                        item,
+                        LocalDateTime.parse(saleDate, format)
+                );
 
                 transaction_list.add(transaction);
             }
@@ -46,7 +58,7 @@ public class TransactionsHandler {
     }
 
     // writes from transaction array to csv file
-    private void saveTransactions() {
+    public void saveTransactions() {
         File file = new File(path);
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
@@ -58,6 +70,10 @@ public class TransactionsHandler {
         catch(IOException e) {
             System.out.println("Error: during saving of transaction");
         }
+    }
+
+    public List<Transaction> getTransactionList(){
+        return transaction_list;
     }
 
     // converts array of transaction objects to matrix of raw data and returns matrix
@@ -75,5 +91,27 @@ public class TransactionsHandler {
         }
 
         return matrix;
+    }
+
+    public void processSale(String itemID){
+        Item item = inventoryHandler.getItemFromID(itemID);
+
+        int newID = 0;
+        for(Transaction t : transaction_list){
+            int currentID = Integer.parseInt(t.getTransactionId().split("-")[1]);
+            if(currentID > newID){
+                newID = currentID;
+            }
+        }
+        newID++;
+
+        Transaction transaction = new Transaction("T-" + String.format("%07d", newID), item, LocalDateTime.now());
+        transaction_list.add(transaction);
+
+        item.setStatus(Item.State.SOLD);
+
+        double share = item.calculateConsignorShare();
+        Consignor owner = supplierHandler.getConsignorByID(item.getOwner().getID());
+        owner.updateBalance(share);
     }
 }

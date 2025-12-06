@@ -6,6 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class MainProgram extends JFrame{
     private final CardLayout cardLayout;
@@ -25,24 +30,36 @@ public class MainProgram extends JFrame{
     private SupplierHandler supplierHandler;
     private PayoutsHandler payoutsHandler;
 
-    public MainProgram(String entityID, String name){
+    public MainProgram(String entityID){
         setTitle("Consignment System - Main");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMain);
 
+        String name = "";
+        double commissionRate = 0.0;
+        try(BufferedReader br = new BufferedReader(new FileReader("Capstone/data/" + entityID + "/config.txt"))){
+            String line;
+            while((line = br.readLine()) != null){
+                String[] data = line.split(",");
+
+                name = data[0];
+                commissionRate = Double.parseDouble(data[1]);
+            }
+        } catch (IOException e) {
+
+        }
+
         supplierHandler = new SupplierHandler(entityID);
-        inventoryHandler = new InventoryHandler(entityID, supplierHandler);
-        transactionsHandler = new TransactionsHandler(entityID, inventoryHandler);
+        inventoryHandler = new InventoryHandler(entityID, supplierHandler, commissionRate);
+        transactionsHandler = new TransactionsHandler(entityID, inventoryHandler, supplierHandler);
         payoutsHandler = new PayoutsHandler(entityID, transactionsHandler);
 
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
-        DashboardPanel d = new DashboardPanel();
-        TransactionsPanel t = new TransactionsPanel(transactionsHandler);
-        MainContentPanel.add(d, "KEY_DASHBOARD");
+        MainContentPanel.add(new DashboardPanel(inventoryHandler, transactionsHandler, supplierHandler), "KEY_DASHBOARD");
         MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
-        MainContentPanel.add(t, "KEY_TRANSACTIONS");
+        MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
         MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
 
         greetTextField.setText("Welcome, " + name);
@@ -60,7 +77,6 @@ public class MainProgram extends JFrame{
                 }
                 else if (e.getSource() == transactionsButton) {
                     cardLayout.show(MainContentPanel, "KEY_TRANSACTIONS");
-                    t.updateTransactionList(d.getTransactionList());
                 }
                 else if (e.getSource() == payoutsButton) {
                     cardLayout.show(MainContentPanel, "KEY_PAYOUTS");
@@ -72,18 +88,36 @@ public class MainProgram extends JFrame{
         inventoryButton.addActionListener(listener);
         transactionsButton.addActionListener(listener);
         payoutsButton.addActionListener(listener);
+        
+        logoutButton.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to log out?",
+                    "Confirm Logout",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE
+            );
 
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                // calling save methods
-
+            // 2. Check the User's Choice
+            if (choice == JOptionPane.YES_OPTION) {
                 inventoryHandler.saveInventory();
                 supplierHandler.saveSuppliers();
-                // transactionsHandler.saveTransactions();
+                transactionsHandler.saveTransactions();
                 // payoutsHandler.savePayouts();
 
-                // killing the program
+                dispose();
+                new LogInForm().setVisible(true);
+            }
+        });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                inventoryHandler.saveInventory();
+                supplierHandler.saveSuppliers();
+                transactionsHandler.saveTransactions();
+                // payoutsHandler.savePayouts();
+
                 dispose();
                 System.exit(0);
             }
