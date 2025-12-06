@@ -20,20 +20,18 @@ public class TransactionsPanel extends JPanel{
     private JLabel totalTransactionsLabel;
     private JLabel totalStoreRevenueLabel;
     private JLabel totalConsignorShareLabel;
-    private static int counter;
     private Object[][] data;
     private final String[] columnNames = {"Transaction ID", "Items", "Date", "Total", "Store Revenue", "Consignor Share"};
 
+    private TransactionsHandler transactionsHandler;
+
     public TransactionsPanel(TransactionsHandler transactionsHandler){
-//        setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        setContentPane(contentPane);
+        this.transactionsHandler = transactionsHandler;
+
         setLayout(new BorderLayout());
         add(contentPane, BorderLayout.CENTER);
 
-        data = transactionsHandler.getAllTransactions();
-
-        // create the table with column name and data
-        drawTable(data, columnNames);
+        refresh();
 
         // add placeholder to text-field
         searchTextField.setText("Search Transaction ID");
@@ -54,76 +52,26 @@ public class TransactionsPanel extends JPanel{
         });
 
         table.setRowHeight(30);
-        prettifyTable();
 
         //Search Transaction ID
         searchTextField.addActionListener(e->runCombinedSearch());
 
-        //labels for each box
-        totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
-        totalStoreRevenueLabel.setText("$" + Double.toString(getTotalStoreRevenue()));
-        totalConsignorShareLabel.setText("$" + Double.toString(getTotalConsignorShare()));
-//        pack();
-//        setVisible(true);
-
-
         //purpose: focus on window first (default is focus on text field)
         SwingUtilities.invokeLater(() -> contentPane.requestFocusInWindow());
-
     }
 
-    public double getTotalAmount(){
-        double total = 0;
+    public void refresh() {
+        // Get the latest matrix from the Handler
+        this.data = transactionsHandler.getAllTransactions();
 
-        for(int i=0; i<data.length;i++){
-            total = total + (double)data[i][3];
-        }
-        return total;
-    }
-
-    public void updateTransactionList(List<Transaction> transactionList){
-        int headerAmount = 6;
-        Object[][] matrix = new Object[transactionList.size()][headerAmount];
-        for(int i = 0; i < transactionList.size(); i++) {
-            Transaction t = transactionList.get(i);
-            matrix[i][0] = t.getTransactionId();
-            matrix[i][1] = t.getSoldItem().getName();
-            matrix[i][2] = t.getSaleDate().toString().substring(0,10);
-            matrix[i][3] = t.getTotalAmount();
-            matrix[i][4] = t.getStoreRevenue();
-            matrix[i][5] = t.getConsignorShare();
-        }
-
-        data = matrix;
-        table.setModel(new DefaultTableModel(data, columnNames));
-        prettifyTable();
-        totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
-        totalStoreRevenueLabel.setText("$" + Double.toString(getTotalStoreRevenue()));
-        totalConsignorShareLabel.setText("$" + Double.toString(getTotalConsignorShare()));
-
-    }
-    // create a transaction and add in the array
-    public void transact(Item i){
-        ArrayList<Object> list = new ArrayList<Object>();
-        String id = "T-" + String.format("%07d", ++counter);
-        list.add(id);
-        list.add(i.getName());
-        LocalDateTime date = LocalDateTime.now();
-        list.add(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        list.add(i.getSellingPrice());
-        list.add(i.getSellingPrice()-i.calculateConsignorShare());
-        list.add(i.calculateConsignorShare());
-        addTransaction(list);
+        // Redraw table
         drawTable(data, columnNames);
         prettifyTable();
 
-    }
-
-    //helper method to convert primitive array to arraylist and vice versa
-    private void addTransaction(ArrayList<Object> transaction) {
-        List<Object[]> dataList = new ArrayList<>(java.util.Arrays.asList(data));
-        dataList.add(transaction.toArray());
-        data = dataList.toArray(new Object[0][]);
+        // Recalculate and Update Labels
+        totalTransactionsLabel.setText(Integer.toString(getTotalTransactions()));
+        totalStoreRevenueLabel.setText(String.format("$%.2f", getTotalStoreRevenue()));
+        totalConsignorShareLabel.setText(String.format("$%.2f", getTotalConsignorShare()));
     }
 
     public void drawTable(Object[][] rows, Object[] headers) {
@@ -234,9 +182,5 @@ public class TransactionsPanel extends JPanel{
         searchTextField = new Style.RoundedTextField(roundRadius);
 
     }
-
-//    public static void main(String[] args) {
-//        new TransactionsPanel();
-//    }
 
 }

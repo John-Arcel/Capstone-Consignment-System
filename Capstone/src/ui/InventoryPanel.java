@@ -36,17 +36,12 @@ public class InventoryPanel extends JPanel {
 
         this.inventoryHandler = inventoryHandler;
         this.supplierHandler = supplierHandler;
-        data = inventoryHandler.getAllItems();
 
         // Todo: connect data from InventoryHandler
+        refresh();
 
         dataTable.setRowHeight(30);
         dataTable.setBounds(0,0,100,200);
-        drawTable(data, headers);
-        prettifyTable();
-
-        totalItemsLabel.setText(Integer.toString(inventoryHandler.getAvailableItems()));
-        totalConsignorsLabel.setText(Integer.toString(supplierHandler.getActiveConsignors()));
         addTextFieldPlaceholderText();
 
         //purpose: adds functionality to search by item id and consignor
@@ -70,9 +65,7 @@ public class InventoryPanel extends JPanel {
                         (boolean) newItemData.get(6)
                 );
             }
-            updateData();
-            drawTable(data, headers);
-            prettifyTable();
+            refresh();
         });
 
         deleteItemButton.addActionListener(e -> {
@@ -100,11 +93,7 @@ public class InventoryPanel extends JPanel {
             if (result == JOptionPane.YES_OPTION) {
                 inventoryHandler.deleteItem(dataTable.getValueAt(selectedRow, 1).toString());
 
-                updateData();
-                drawTable(data, headers);
-                prettifyTable();
-                totalItemsLabel.setText(Integer.toString(getTotalItems()));
-                totalConsignorsLabel.setText(Integer.toString(getTotalConsignors()));
+                refresh();
             }
         });
     }
@@ -165,8 +154,10 @@ public class InventoryPanel extends JPanel {
     // ------------------------------ Helper methods ----------------------------------
     // ================================================================================
 
-    private void updateData(){
+    public void refresh(){
         data = inventoryHandler.getAllItems();
+        drawTable(data, headers);
+        prettifyTable();
         totalItemsLabel.setText(Integer.toString(inventoryHandler.getAvailableItems()));
         totalConsignorsLabel.setText(Integer.toString(supplierHandler.getActiveConsignors()));
     }

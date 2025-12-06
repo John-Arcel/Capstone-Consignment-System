@@ -17,6 +17,8 @@ public class TransactionsHandler {
     private InventoryHandler inventoryHandler;
     private SupplierHandler supplierHandler;
 
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public TransactionsHandler(String entityID, InventoryHandler inventoryHandler, SupplierHandler supplierHandler){
         this.inventoryHandler = inventoryHandler;
         this.supplierHandler = supplierHandler;
@@ -30,8 +32,6 @@ public class TransactionsHandler {
     private void loadTransactions() {
         transaction_list.clear();
         File file = new File(path);
-
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try(BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -84,7 +84,7 @@ public class TransactionsHandler {
             Transaction t = transaction_list.get(i);
             matrix[i][0] = t.getTransactionId();
             matrix[i][1] = t.getSoldItem().getName();
-            matrix[i][2] = t.getSaleDate().toString();
+            matrix[i][2] = t.getSaleDate().format(format);
             matrix[i][3] = t.getTotalAmount();
             matrix[i][4] = t.getStoreRevenue();
             matrix[i][5] = t.getConsignorShare();

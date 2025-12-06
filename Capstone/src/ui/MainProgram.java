@@ -57,10 +57,15 @@ public class MainProgram extends JFrame{
 
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
-        MainContentPanel.add(new DashboardPanel(inventoryHandler, transactionsHandler, supplierHandler), "KEY_DASHBOARD");
-        MainContentPanel.add(new InventoryPanel(inventoryHandler, supplierHandler), "KEY_INVENTORY");
-        MainContentPanel.add(new TransactionsPanel(transactionsHandler), "KEY_TRANSACTIONS");
-        MainContentPanel.add(new PayoutsPanel(transactionsHandler, payoutsHandler), "KEY_PAYOUTS");
+        DashboardPanel dashboardPanel = new DashboardPanel(inventoryHandler, transactionsHandler, supplierHandler);
+        InventoryPanel inventoryPanel = new InventoryPanel(inventoryHandler, supplierHandler);
+        TransactionsPanel transactionsPanel = new TransactionsPanel(transactionsHandler);
+        PayoutsPanel payoutsPanel = new PayoutsPanel(transactionsHandler, payoutsHandler);
+
+        MainContentPanel.add(dashboardPanel, "KEY_DASHBOARD");
+        MainContentPanel.add(inventoryPanel, "KEY_INVENTORY");
+        MainContentPanel.add(transactionsPanel, "KEY_TRANSACTIONS");
+        MainContentPanel.add(payoutsPanel, "KEY_PAYOUTS");
 
         greetTextField.setText("Welcome, " + name);
         adminID.setText("ID: " + entityID);
@@ -70,15 +75,19 @@ public class MainProgram extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 // Compare the source of the click to your button variables
                 if (e.getSource() == dashboardButton) {
+                    dashboardPanel.refresh();
                     cardLayout.show(MainContentPanel, "KEY_DASHBOARD");
                 }
                 else if (e.getSource() == inventoryButton) {
+                    inventoryPanel.refresh();
                     cardLayout.show(MainContentPanel, "KEY_INVENTORY");
                 }
                 else if (e.getSource() == transactionsButton) {
+                    transactionsPanel.refresh();
                     cardLayout.show(MainContentPanel, "KEY_TRANSACTIONS");
                 }
                 else if (e.getSource() == payoutsButton) {
+                    // payoutsPanel.refresh();
                     cardLayout.show(MainContentPanel, "KEY_PAYOUTS");
                 }
             }

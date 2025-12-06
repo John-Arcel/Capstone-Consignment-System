@@ -6,8 +6,12 @@ import handlers.SupplierHandler;
 import handlers.TransactionsHandler;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -61,15 +65,10 @@ public class DashboardPanel extends JPanel {
         itemsDue.getTableHeader().setBackground(new Color(0,0,0,0));
         itemsDue.setRowHeight(30);
 
-// -------------------------------------------------------
-
-//        itemIDField.setForeground(Color.WHITE);
-//        itemIDField.setCaretColor(Color.WHITE);
-//        itemIDField.setBackground(new Color(40,40,40));
-
         makeTransparent(dashboardPanel);
 
-        refreshDashboard();
+        setupAutoComplete();
+        refresh();
 
         // -----------------------------------------------------
         // FIND ITEM
@@ -143,12 +142,12 @@ public class DashboardPanel extends JPanel {
 
             itemIDField.setText("");
             itemDetail.setModel(new DefaultTableModel());
-            refreshDashboard();
+            refresh();
         });
 
     }
 
-    public void refreshDashboard() {
+    public void refresh() {
         updateTotals();
         loadItemsDueTable();
         loadRecentTransactions();
@@ -161,26 +160,26 @@ public class DashboardPanel extends JPanel {
         String today = LocalDate.now().toString();
         List<Transaction> allTrans = transactionsHandler.getTransactionList();
 
-        // Filter for TODAY
-        long soldCount = allTrans.stream()
-                .filter(t -> t.getSaleDate().toLocalDate().toString().equals(today))
-                .count();
+        List<Transaction> todayTransactions = new ArrayList<>();
+        for (Transaction t : allTrans) {
+            if (t.getSaleDate().toLocalDate().toString().equals(today)) {
+                todayTransactions.add(t);
+            }
+        }
 
+        long soldCount = todayTransactions.size();
         double salesSum = 0;
         double earningsSum = 0;
-        double pendingSum = 0;
 
-        for (Transaction t : allTrans) {
+        for (Transaction t : todayTransactions) {
             salesSum += t.getTotalAmount();
             earningsSum += t.getStoreRevenue();
         }
 
-        // Calculate KPI 3: Pending Payouts (Sum of all consignor balances)
+        double pendingSum = 0;
         for (Consignor c : supplierHandler.getSupplierList()) {
             pendingSum += c.getPayableBalance();
         }
-
-        // Set Text
         totalSales.setText(String.format("$%.2f", salesSum));
         earnings.setText(String.format("$%.2f", earningsSum));
         itemSold.setText(String.valueOf(soldCount));
@@ -251,6 +250,66 @@ public class DashboardPanel extends JPanel {
         transactions.setRowHeight(25);
     }
 
+    private void setupAutoComplete() {
+        JPopupMenu suggestionPopup = new JPopupMenu();
+
+        // 1. Add Listener to the Text Field
+        itemIDField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) { updateSuggestions(); }
+            @Override
+            public void removeUpdate(DocumentEvent e) { updateSuggestions(); }
+            @Override
+            public void changedUpdate(DocumentEvent e) { updateSuggestions(); }
+
+            private void updateSuggestions() {
+                String text = itemIDField.getText().trim().toLowerCase();
+                suggestionPopup.setVisible(false);
+                suggestionPopup.removeAll();
+
+                if (text.isEmpty()) return;
+
+                // 2. Filter Inventory for Matches
+                List<Item> matches = inventoryHandler.getInventoryList().stream()
+                        .filter(item -> item.getName().toLowerCase().contains(text) ||
+                                item.getItemID().toLowerCase().contains(text))
+                        .limit(3) // Limit to max 3 suggestions
+                        .toList();
+
+                if (matches.isEmpty()) return;
+
+                // 3. Create Menu Items
+                for (Item match : matches) {
+                    // Display: "Name (ID)"
+                    String label = match.getName() + " (" + match.getItemID() + ")";
+                    JMenuItem item = new JMenuItem(label);
+
+                    // 4. Handle Selection
+                    item.addActionListener(e -> {
+                        // When clicked, fill the box with the ID only (needed for logic)
+                        itemIDField.setText(match.getItemID());
+                        suggestionPopup.setVisible(false);
+                    });
+
+                    suggestionPopup.add(item);
+                }
+
+                // 5. Show Popup below the field
+                suggestionPopup.show(itemIDField, 0, itemIDField.getHeight());
+                itemIDField.requestFocus(); // Keep focus on typing
+            }
+        });
+
+        // Optional: Hide popup when Enter is pressed
+        itemIDField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    suggestionPopup.setVisible(false);
+                }
+            }
+        });
+    }
 
     // -----------------------------------------------------
     // MAKE PANELS TRANSPARENT
@@ -274,8 +333,6 @@ public class DashboardPanel extends JPanel {
             }
         }
     }
-
-
 
     // Stock left is dynamically calculated from transactions
     int stockLeft(Item i) {
