@@ -225,6 +225,7 @@ public class PayoutsPanel extends JPanel {
             }
         }
         drawHistoryTable(filtered.toArray(new Object[0][]));
+        prettifyTables();
     }
 
     // Helper for IntelliJ Designer
