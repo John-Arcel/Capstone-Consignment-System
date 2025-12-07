@@ -92,19 +92,19 @@ public class DashboardPanel extends JPanel {
             }
 
             // Calculate sold quantity dynamically
+            // goes through and counts all the transactions object made of that item
             long soldQty = transactionsHandler.getTransactionList().stream()
                     .filter(t -> t.getSoldItem().getItemID().equalsIgnoreCase(found.getItemID()))
                     .count();
-            int stockLeft = found.getQuantity() - (int) soldQty;
 
             String[] cols = {"Field", "Value"};
             String[][] rows = {
                     {"Item ID", found.getItemID()},
                     {"Name", found.getName()},
                     {"Price", String.format("₱%.2f", found.getSellingPrice())},
-                    {"Quantity", String.valueOf(found.getQuantity())},
+                    {"Quantity", String.valueOf(found.getQuantity() + (int) soldQty)},
                     {"Sold Quantity", String.valueOf(soldQty)},
-                    {"Stock Left", String.valueOf(stockLeft)},
+                    {"Stock Left", String.valueOf(found.getQuantity())},
                     {"Expiry", String.valueOf(found.getReturnDate())}
             };
 
@@ -130,6 +130,8 @@ public class DashboardPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Item ID not found.");
                 return;
             }
+
+            System.out.println(item.getQuantity());
 
             if (isSoldOut(item)) {
                 JOptionPane.showMessageDialog(this, "No more stock available!");
@@ -339,10 +341,7 @@ public class DashboardPanel extends JPanel {
 
     // Stock left is dynamically calculated from transactions
     int stockLeft(Item i) {
-        long soldCount;
-        soldCount = transactionsHandler.getTransactionList().stream()
-                .filter(t -> t.getSoldItem().getItemID().equalsIgnoreCase(i.getItemID())).count();
-        return i.getQuantity() - (int) soldCount;
+        return i.getQuantity();
     }
 
     boolean isSoldOut(Item i) {

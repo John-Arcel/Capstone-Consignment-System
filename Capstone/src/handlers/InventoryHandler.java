@@ -73,7 +73,7 @@ public class InventoryHandler {
                 inventory_list.add(item);
             }
         } catch (IOException e) {
-            System.out.println("This is an error");
+            System.out.println("Error: Loading inventory");
         }
     }
 
@@ -87,7 +87,7 @@ public class InventoryHandler {
                 bw.newLine();
             }
         } catch (IOException e) {
-            System.out.println("This is an error");
+            System.out.println("Error: Saving inventory");
         }
     }
 

@@ -117,7 +117,8 @@ public class TransactionsHandler {
         Transaction transaction = new Transaction("T-" + String.format("%07d", newID), item, LocalDateTime.now(), false);
         transaction_list.add(transaction);
 
-        item.setStatus(Item.State.SOLD);
+        item.setQuantity(item.getQuantity()-1);
+        if(stockLeft(item) == 0) item.setStatus(Item.State.SOLD);
 
         double share = item.calculateConsignorShare();
         Consignor owner = supplierHandler.getConsignorByID(item.getOwner().getID());
@@ -131,5 +132,9 @@ public class TransactionsHandler {
                 return;
             }
         }
+    }
+
+    private int stockLeft(Item i) {
+        return i.getQuantity();
     }
 }

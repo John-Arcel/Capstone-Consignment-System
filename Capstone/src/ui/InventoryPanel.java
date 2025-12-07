@@ -37,7 +37,6 @@ public class InventoryPanel extends JPanel {
         this.inventoryHandler = inventoryHandler;
         this.supplierHandler = supplierHandler;
 
-        // Todo: connect data from InventoryHandler
         refresh();
 
         dataTable.setRowHeight(30);
@@ -183,18 +182,18 @@ public class InventoryPanel extends JPanel {
         dataTable.getTableHeader().setReorderingAllowed(false);
     }
 
-    //purpose: adds dataTable cell padding (5), center-aligns quantity, 2 decimal + ₱ to price
+    //purpose: adds dataTable cell padding (5), center-aligns quantity, 2 decimal + $ to price
     private void prettifyTable() {
         int cellPadding = 5;
         // It does:
         // 1. adds cell padding to the dataTable cell
         // 2. center-aligns integer values (quantity column)
-        // 3. adds ₱ sign in front and displays 2 decimal places for double values (price column)
+        // 3. adds $ sign in front and displays 2 decimal places for double values (price column)
 
         // Quantity → integer style
         dataTable.getColumnModel().getColumn(3).setCellRenderer(new TableFormatter.IntegerRenderer(cellPadding, cellPadding, cellPadding, cellPadding));
 
-        // Price → ₱ with 2 decimals
+        // Price → $ with 2 decimals
         dataTable.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(cellPadding,cellPadding,cellPadding,cellPadding));
 
         // Other columns → padded text

@@ -8,7 +8,7 @@ public abstract class Item {
     private final String itemID;
     private final String name;
     private final Consignor owner;
-    private final int quantity;
+    private int quantity;
     private final double sellingPrice;
     private double commissionRate;
     private final LocalDate dateReceived;
@@ -42,6 +42,11 @@ public abstract class Item {
     public int getQuantity(){
         return quantity;
     }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public double getSellingPrice() {
         return sellingPrice;
     }
