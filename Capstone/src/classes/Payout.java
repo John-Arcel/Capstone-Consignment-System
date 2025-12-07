@@ -8,14 +8,6 @@ public class Payout {
     private Consignor consignor;
     private double amountPaid;
     private LocalDate payoutDate;
-    private static int ctr;
-
-//    public Payout(Consignor consignor, double amountPaid, LocalDate payoutDate) {
-//        this.payoutId = "T-" + String.format("%07d", ++ctr);
-//        this.consignor = consignor;
-//        this.amountPaid = amountPaid;
-//        this.payoutDate = payoutDate;
-//    }
 
     public Payout(Consignor consignor, double amountPaid, LocalDate payoutDate, String payoutId) {
         this.payoutId = payoutId;
@@ -40,16 +32,8 @@ public class Payout {
         return payoutDate;
     }
 
-    public void generateReceipt() {
-        System.out.println("PAYOUT RECEIPT");
-        System.out.println("Payout ID: " + payoutId);
-        System.out.println("Consignor: " + consignor.getName());
-        System.out.println("AmountPaid: ₱" + String.format("%.2f", amountPaid));
-        System.out.println("Payout Date: " + payoutDate);
-    }
-
     public String toCSV(){
-        return payoutId + "," +consignor.getName()+ consignor.getID() + "," + String.format("%.2f", amountPaid) + "," + payoutDate;
+        return payoutId + "," + consignor.getName() + "," + consignor.getID() + "," + String.format("%.2f", amountPaid) + "," + payoutDate;
     }
 }
 

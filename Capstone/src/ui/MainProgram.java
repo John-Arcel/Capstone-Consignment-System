@@ -53,14 +53,14 @@ public class MainProgram extends JFrame{
         supplierHandler = new SupplierHandler(entityID);
         inventoryHandler = new InventoryHandler(entityID, supplierHandler, commissionRate);
         transactionsHandler = new TransactionsHandler(entityID, inventoryHandler, supplierHandler);
-        payoutsHandler = new PayoutsHandler(entityID, transactionsHandler);
+        payoutsHandler = new PayoutsHandler(entityID, transactionsHandler, supplierHandler);
 
         cardLayout = (CardLayout) MainContentPanel.getLayout();
 
         DashboardPanel dashboardPanel = new DashboardPanel(inventoryHandler, transactionsHandler, supplierHandler);
         InventoryPanel inventoryPanel = new InventoryPanel(inventoryHandler, supplierHandler);
         TransactionsPanel transactionsPanel = new TransactionsPanel(transactionsHandler);
-        PayoutsPanel payoutsPanel = new PayoutsPanel(transactionsHandler, payoutsHandler);
+        PayoutsPanel payoutsPanel = new PayoutsPanel(transactionsHandler, payoutsHandler, supplierHandler);
 
         MainContentPanel.add(dashboardPanel, "KEY_DASHBOARD");
         MainContentPanel.add(inventoryPanel, "KEY_INVENTORY");
@@ -87,7 +87,7 @@ public class MainProgram extends JFrame{
                     cardLayout.show(MainContentPanel, "KEY_TRANSACTIONS");
                 }
                 else if (e.getSource() == payoutsButton) {
-                    // payoutsPanel.refresh();
+                    payoutsPanel.refresh();
                     cardLayout.show(MainContentPanel, "KEY_PAYOUTS");
                 }
             }
@@ -112,7 +112,7 @@ public class MainProgram extends JFrame{
                 inventoryHandler.saveInventory();
                 supplierHandler.saveSuppliers();
                 transactionsHandler.saveTransactions();
-                // payoutsHandler.savePayouts();
+                payoutsHandler.savePayouts();
 
                 dispose();
                 new LogInForm().setVisible(true);
@@ -125,7 +125,7 @@ public class MainProgram extends JFrame{
                 inventoryHandler.saveInventory();
                 supplierHandler.saveSuppliers();
                 transactionsHandler.saveTransactions();
-                // payoutsHandler.savePayouts();
+                payoutsHandler.savePayouts();
 
                 dispose();
                 System.exit(0);

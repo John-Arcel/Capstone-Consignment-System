@@ -180,6 +180,7 @@ public class DashboardPanel extends JPanel {
         for (Consignor c : supplierHandler.getSupplierList()) {
             pendingSum += c.getPayableBalance();
         }
+
         totalSales.setText(String.format("$%.2f", salesSum));
         earnings.setText(String.format("$%.2f", earningsSum));
         itemSold.setText(String.valueOf(soldCount));

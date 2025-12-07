@@ -41,12 +41,14 @@ public class TransactionsHandler {
                 String transactionID = data[0];
                 String itemID = data[1];
                 String saleDate = data[2];
+                boolean isPaid = Boolean.parseBoolean(data[3]);
 
                 Item item = inventoryHandler.getItemFromID(itemID);
                 Transaction transaction = new Transaction(
                         transactionID,
                         item,
-                        LocalDateTime.parse(saleDate, format)
+                        LocalDateTime.parse(saleDate, format),
+                        isPaid
                 );
 
                 transaction_list.add(transaction);
@@ -93,6 +95,13 @@ public class TransactionsHandler {
         return matrix;
     }
 
+    protected Transaction getTransactionFromID(String transID){
+        for(Transaction t : transaction_list){
+            if(t.getTransactionId().equals(transID)) return t;
+        }
+        return null;
+    }
+
     public void processSale(String itemID){
         Item item = inventoryHandler.getItemFromID(itemID);
 
@@ -105,7 +114,7 @@ public class TransactionsHandler {
         }
         newID++;
 
-        Transaction transaction = new Transaction("T-" + String.format("%07d", newID), item, LocalDateTime.now());
+        Transaction transaction = new Transaction("T-" + String.format("%07d", newID), item, LocalDateTime.now(), false);
         transaction_list.add(transaction);
 
         item.setStatus(Item.State.SOLD);
@@ -113,5 +122,14 @@ public class TransactionsHandler {
         double share = item.calculateConsignorShare();
         Consignor owner = supplierHandler.getConsignorByID(item.getOwner().getID());
         owner.updateBalance(share);
+    }
+
+    public void markAsPaid(Transaction pending){
+        for(Transaction t : transaction_list){
+            if(t.equals(pending)){
+                t.balanceTransferred();
+                return;
+            }
+        }
     }
 }

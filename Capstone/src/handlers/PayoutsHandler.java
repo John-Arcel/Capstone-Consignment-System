@@ -13,10 +13,14 @@ import java.util.List;
 public class PayoutsHandler {
     private String path;
     private List<Payout> payout_list;
+    private TransactionsHandler transactionsHandler;
+    private SupplierHandler supplierHandler;
 
-    public PayoutsHandler(String entityID, TransactionsHandler transactionsHandler){
-        path = "data/" + entityID + "/payouts.csv";
+    public PayoutsHandler(String entityID, TransactionsHandler transactionsHandler, SupplierHandler supplierHandler){
+        path = "Capstone/data/" + entityID + "/payouts.csv";
         payout_list = new ArrayList<>();
+        this.transactionsHandler = transactionsHandler;
+        this.supplierHandler = supplierHandler;
 
         loadPayouts();
     }
@@ -58,7 +62,7 @@ public class PayoutsHandler {
     }
 
     // writes from item array to csv file
-    public void savePayoutCSV(){
+    public void savePayouts(){
         File file = new File(path);
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))){
@@ -70,7 +74,6 @@ public class PayoutsHandler {
             System.out.println("This is an error");
         }
     }
-
 
     // converts array of Item object to a primitive matrix with its raw data and returns
     public Object[][] getAllPayouts(){
@@ -87,11 +90,35 @@ public class PayoutsHandler {
         return matrix;
     }
 
-
     // Adds to payout list when transactions are turned to payouts
-    public void addPayoutAndSave(Payout newPayout){
-        this.payout_list.add(newPayout);
-        savePayoutCSV();
-    }
+    public double processPayout(String transactionID){
+        Transaction t = transactionsHandler.getTransactionFromID(transactionID);
 
+        // mark transaction as paid
+        transactionsHandler.markAsPaid(t);
+
+        // adding to the payout list
+        int newID = 0;
+        for(Payout p : payout_list){
+            int currentID = Integer.parseInt(p.getPayoutId().split("-")[1]);
+            if(currentID > newID){
+                newID = currentID;
+            }
+        }
+        newID++;
+        Consignor owner = supplierHandler.getConsignorByID(t.getSoldItem().getOwner().getID());
+        Payout p = new Payout(
+                owner,
+                t.getConsignorShare(),
+                LocalDate.now(),
+                "P-" + String.format("%07d", newID)
+        );
+        this.payout_list.add(p);
+
+        // updating supplier's balance
+        owner.updateBalance(-t.getConsignorShare());
+
+        // returns the money transferred
+        return t.getConsignorShare();
+    }
 }

@@ -22,7 +22,7 @@ public class Consignor extends Entity {
         return payableBalance;
     }
 
-    public boolean IsActive() {
+    public boolean isActive() {
         return isActive;
     }
 
@@ -41,7 +41,7 @@ public class Consignor extends Entity {
 
     // Toggle active/inactive
     public void changeActive() {
-        isActive = false;
+        isActive = !isActive;
     }
 
     public String toCSV() {

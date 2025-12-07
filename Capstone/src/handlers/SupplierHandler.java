@@ -1,13 +1,8 @@
 package handlers;
 
 import classes.Consignor;
-import classes.Item;
-import classes.NonPerishable;
-import classes.Perishable;
 
 import java.io.*;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +74,7 @@ public class SupplierHandler {
     public int getActiveConsignors(){
         int counter = 0;
         for(Consignor c : suppliers_list){
-            if (c.IsActive()){
+            if (c.isActive()){
                 counter++;
             }
         }
@@ -107,7 +102,7 @@ public class SupplierHandler {
         return newConsignor;
     }
 
-    public void inactiveConsignor(Consignor c){
+    public void changeConsignorStatus(Consignor c){
         suppliers_list.get(suppliers_list.indexOf(c)).changeActive();
     }
 }

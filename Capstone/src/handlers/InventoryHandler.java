@@ -131,6 +131,8 @@ public class InventoryHandler {
             consignor = supplierHandler.addConsignor(owner);
         }
 
+        supplierHandler.changeConsignorStatus(consignor);
+
         int newID = 0;
         for(Item i : inventory_list){
             int currentID = Integer.parseInt(i.getItemID().split("-")[1]);
@@ -182,7 +184,7 @@ public class InventoryHandler {
             }
         }
         if(!isPresent){
-            supplierHandler.inactiveConsignor(item.getOwner());
+            supplierHandler.changeConsignorStatus(item.getOwner());
         }
     }
 

@@ -49,6 +49,21 @@ public class AddItemDialog extends JDialog {
         radioButtons.add(nonPerishableRadioButton);
         perishableRadioButton.setSelected(true);
 
+        ActionListener typeListener = e -> {
+            if(nonPerishableRadioButton.isSelected()){
+                daysToSellField.setText("60");
+                daysToSellField.setEnabled(false);
+                daysToSellField.setBorder(DEFAULT_BORDER);
+            }
+            else{
+                daysToSellField.setText("");
+                daysToSellField.setEnabled(true);
+            }
+        };
+
+        perishableRadioButton.addActionListener(typeListener);
+        nonPerishableRadioButton.addActionListener(typeListener);
+
         fields = new JComponent[]{
                 itemNameField,
                 consignorField,
@@ -58,7 +73,7 @@ public class AddItemDialog extends JDialog {
                 daysToSellField
         };
 
-                //purpose: adds integer-only and double-only filters to price, quantity, and days to sell fields
+        //purpose: adds integer-only and double-only filters to price, quantity, and days to sell fields
         ((AbstractDocument) quantityField.getDocument()).setDocumentFilter(new TextFieldFilter.IntegerFilter());
         ((AbstractDocument) priceField.getDocument()).setDocumentFilter(new TextFieldFilter.DoubleFilter());
         ((AbstractDocument) daysToSellField.getDocument()).setDocumentFilter(new TextFieldFilter.IntegerFilter());
@@ -85,7 +100,6 @@ public class AddItemDialog extends JDialog {
             }
         });
     }
-
 
     // ============================================================
     // -------------------- Getter functions ----------------------
@@ -139,15 +153,6 @@ public class AddItemDialog extends JDialog {
         }
     }
 
-    //purpose: returns a string format (MM-dd-yyyy) on the date n-days ahead of today
-    private static String getDatePlusDays(int days) {
-        LocalDate futureDate = LocalDate.now().plusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-        return futureDate.format(formatter);
-    }
-
-
-
     // ============================================================
     // -------------------- Button functions ----------------------
     // ============================================================
@@ -183,11 +188,4 @@ public class AddItemDialog extends JDialog {
         dateReceivedField.setEditor(editor);
         dateReceivedField.setValue(new Date());
     }
-
-//    public static void main(String[] args) {
-//        AddItemDialog dialog = new AddItemDialog();
-//        dialog.pack();
-//        dialog.setVisible(true);
-//        System.exit(0);
-//    }
 }

@@ -26,339 +26,95 @@ public class PayoutsPanel extends JPanel {
     private JLabel PendingNum;
     private JButton transferButton;
 
-    private List<Object[]> historyDataList = new ArrayList<>(); // list of objects na makita sa history
-    private List<Object[]> pendingDataList = new ArrayList<>(); // list of objects na makita sa pending
     private TransactionsHandler transactionsHandler;
     private PayoutsHandler payoutsHandler;
-    private final String[] HistoryHeaders = {"Payout ID", "Consignor", "Amount Paid", "Date"};
+    private SupplierHandler supplierHandler;
+
+    private List<Object[]> historyDataList = new ArrayList<>(); // list of objects na makita sa history
+    private List<Object[]> pendingDataList = new ArrayList<>(); // list of objects na makita sa pending
+
+    private Object[][] historyData;
+    private final String[] historyHeaders = {"Payout ID", "Consignor", "Amount Paid", "Date"};
+    private Object[][] pendingData;
+    private final String[] pendingHeaders = {"Select", "Transaction ID", "Total Amount", "Share", "Consignor"};
 
     public static int payoutIdCtr;
     int countPending = 0; // for the total pending display
     int countPayout = 0; // for the total payout displayed
 
-    public PayoutsPanel(TransactionsHandler t, PayoutsHandler p) {
+    public PayoutsPanel(TransactionsHandler t, PayoutsHandler p, SupplierHandler s) {
+        this.transactionsHandler = t;
+        this.payoutsHandler = p;
+        this.supplierHandler = s;
+
         setLayout(new BorderLayout());
         add(content, BorderLayout.CENTER);
 
-        this.transactionsHandler = t;
-        this.payoutsHandler = p;
-        processConsigneeTransactions(transactionsHandler.getAllTransactions(), payoutsHandler.getAllPayouts());
+        // Initial Load
+        refresh();
 
-        Object[][] HistoryData = historyDataList.toArray(new Object[0][]);
-//        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
-        drawHistoryTable(HistoryData, HistoryHeaders); // placed it in a function
+        // Setup Tables
         HistoryTable.setRowHeight(30);
+        PendingTable.setRowHeight(30);
 
-        String[] pendingHeaders = {"Select", "Transaction ID", "Total Amount", "Consignor Share"};
-        PendingTableModel pendingModel = new PendingTableModel(this.pendingDataList, pendingHeaders);
-        PendingTable.setModel(pendingModel);
-        HistoryTable.setRowHeight(30);
+        // Listeners
+        transferButton.addActionListener(e -> handleTransferAction());
 
-        // Initial count of total payout and pending
-        if (countPayout <= 0 || countPending <= 0) {
-            PayoutNum.setText("" + 0);
-            PendingNum.setText("" + 0);
-        }
-        PayoutNum.setText("" + countPayout);
-        PendingNum.setText("" + countPending);
+        Search.addActionListener(e -> runCombinedSearch());
 
-
-        transferButton.requestFocusInWindow();
-
-        // if transfer button is selected then it will add the amount of pending payout to payout list
-        transferButton.addActionListener(new ActionListener() {
-            @Override
-
-            // once transfer is clicked, tanan selected na pending will be transferred to history
-            // then calls to update history table as pending table will update on its own
-            public void actionPerformed(ActionEvent e) {
-                handleTransferAction(pendingModel);
-                updateHistoryTable();
-            }
-        });
-
+        // Placeholder text logic
+        Search.setText("Search Payout ID");
         Search.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent e) {
-                if (Search.getText().equals("Search Payout ID")) {
-                    Search.setText("");
-                }
+                if (Search.getText().equals("Search Payout ID")) Search.setText("");
             }
-
             @Override
             public void focusLost(java.awt.event.FocusEvent e) {
-                if (Search.getText().trim().isEmpty()) {
-                    Search.setText("Search Payout ID");
-                }
+                if (Search.getText().isEmpty()) Search.setText("Search Payout ID");
             }
         });
-
-        Search.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                runCombinedSearch(); // This will call SelectFilter(Search.getText())
-            }
-        });
-
-        //Search.addKeyListener(new java.awt.event.KeyAdapter() {
-//            static boolean first = false;
-//
-//            // Giset nako ang field to display search payout, if this is invoked it will clear that para makatype
-//            // if na invoke nakaisa then it will not clear again para dili sya mo print "" after every other key
-//            public void keyPressed(java.awt.event.KeyEvent e) {
-//                if(first == false){
-//                    Search.setText("");
-//                    first = true;
-//                }else{
-//                    return;
-//                }
-//            }
-//
-//            // gets the text once nakaenter naka after typing
-//            @Override
-//            public void keyTyped(java.awt.event.KeyEvent e) {
-//                SelectFilter(Search.getText());
-//            }
-//
-//        });
     }
 
+    // ========================================================
+    // CORE REFRESH LOGIC
+    // ========================================================
+    public void refresh() {
+        // 1. Fetch History Data directly from Handler
+        this.historyData = payoutsHandler.getAllPayouts();
 
-    //FUNCTIONS
-
-    // -------------------------------Search Functions-------------------------------
-    // this code accepts the string from text field and filters that specific item and updates table accordingly
-    private void runCombinedSearch() {
-        String idText = Search.getText().trim();
-
-        boolean noID = idText.isEmpty() || idText.equals("Search Payout ID");
-
-//         If empty → reset dataTable
-        if (noID) {
-            return;
-        }
-
-        SelectFilter(idText);
-    }
-
-    private void SelectFilter(String text) {
-        historyDataList.clear();
-
-        String input = text.trim().toLowerCase();
-
-        if (input.isEmpty()) {
-            return;
-        } else {
-
-            Object[][] arr = payoutsHandler.getAllPayouts();
-
-            for(int i = 0; i < arr.length; i++){
-                String comp = (String)arr[i][0];
-                if(comp.contains(input)){
-                    historyDataList.add(new Object[]{
-                            arr[i][0],
-                            arr[i][1],
-                            arr[i][2],
-                            arr[i][3]
-                    });
-                }
-            }
-
-            updateHistoryTable();
-        }
-
-    }
-
-    // -------------------------------Process Transaction Function -------------------------------
-    // This function goes through the consignee's list of transactions and goes through everything, if it's a transaction(pending) or is already a payout
-    // stores the payouts in history while transactions are put in the pending
-
-    private void processConsigneeTransactions(Object[][] allTransactions, Object[][] allPayouts) {
-
-        for(Object[] payoutRow : allPayouts){
-            historyDataList.add(payoutRow);
-            countPayout++;
-        }
-
-        for(Object[] transactionRow : allTransactions){
-            pendingDataList.add(new Object[]{
-                    Boolean.FALSE,
-                    transactionRow[0],
-                    transactionRow[3],
-                    transactionRow[5]
-            });
-            countPending++;
-        }
-    }
-
-    // -------------------------------Handle Transfer-------------------------------
-    // this function updates the history table according to the transfers made from the pending table
-
-    private void handleTransferAction(PendingTableModel model) {
-        List<Object[]> selectedItems = new ArrayList<>();
-        for (int i = 0; i < model.getRowCount(); i++) {
-            if ((Boolean) model.getValueAt(i, 0)) {
-                selectedItems.add(model.getRowData(i));
+        // 2. Fetch Pending Data (Filter unpaid transactions)
+        // We convert the list to Object[][] to match the 'data' field style
+        List<Object[]> pendingList = new ArrayList<>();
+        for (Transaction tr : transactionsHandler.getTransactionList()) {
+            if (!tr.isPaid()) { // Only show unpaid items
+                pendingList.add(new Object[]{
+                        false, // Checkbox starts unchecked
+                        tr.getTransactionId(),
+                        String.format("%.2f", tr.getTotalAmount()),
+                        String.format("%.2f", tr.getConsignorShare()),
+                        tr.getSoldItem().getOwner().getName()
+                });
             }
         }
+        this.pendingData = pendingList.toArray(new Object[0][]);
 
-        if(selectedItems.isEmpty()){
-            JOptionPane.showMessageDialog(this, "No transactions selected for payout");
-            return;
-        }
+        // 3. Draw Tables
+        drawHistoryTable(historyData);
+        drawPendingTable(pendingData);
+        prettifyTables();
 
-        for (Object[] item : selectedItems) {
-            String transactionID = (String) item[1];
-            double consignorShare = (double) item[1];
-            String consignorName = "N/A";
-
-            Payout newPayout = toPayout(transactionID, consignorShare, consignorName);
-
-            countPayout++;
-
-            historyDataList.add(new Object[]{
-                    newPayout.getPayoutId(),
-                    newPayout.getConsignor(),
-                    newPayout.getAmountPaid(),
-                    newPayout.getPayoutDate()
-            });
-
-            payoutsHandler.addPayoutAndSave(newPayout);
-
-
-            for(int i = 0; i < pendingDataList.size(); i++){
-                if(pendingDataList.get(i)[1].equals(transactionID)){
-                    pendingDataList.remove(i);
-                    countPending--;
-                    break;
-                }
-            }
-        }
-
-
-        model.fireTableDataChanged();
-        updateHistoryTable();
-        JOptionPane.showMessageDialog(this, "Successfully initiated payout for " + selectedItems.size() + " transactions");
+        // 4. Update Labels
+        updateCounters();
     }
 
-//    // -------------------------------Add To History-------------------------------
-//    // this function add to the history data List that show up at the table
-//    public void addHistory(Object transactionId) {
-//        for (PayoutsPanel.Transaction a : Check) {
-//            if (a.getTransactionID().equals(transactionId)) {
-//                PayoutsPanel.Payout newPayout = toPayout(a);
-//                countPayout++;
-//                AllPayout.add(newPayout);
-//                historyDataList.add(new Object[]{
-//                        newPayout.getPayoutId(),
-//                        newPayout.getConsignor(),
-//                        newPayout.getAmountPaid(),
-//                        newPayout.getPayoutDate()});
-//                break;
-//            }
-//        }
-//
-//    }
+    // ========================================================
+    // TABLE DRAWING METHODS
+    // ========================================================
 
-    // -------------------------------Update History Table-------------------------------
-    // if a new payout is added to the history or a specific payout is searched, this function updates what is shown in the table
-    public void updateHistoryTable() {
-
-        //updated total payout and total pending
-        if (countPayout <= 0 || countPending <= 0) {
-            PayoutNum.setText("" + 0);
-            PendingNum.setText("" + 0);
-        }
-        PayoutNum.setText("" + countPayout);
-        PendingNum.setText("" + countPending);
-
-        Object[][] HistoryData = historyDataList.toArray(new Object[0][0]);
-//        HistoryTable.setModel(new javax.swing.table.DefaultTableModel(HistoryData, HistoryHeaders));
-        drawHistoryTable(HistoryData, HistoryHeaders); // placed into a helper function
-        HistoryTable.setRowHeight(30);
-    }
-
-
-    // -------------------------------Pending Table Creator-------------------------------
-    // Custom create the Pending table
-
-    public static class PendingTableModel extends AbstractTableModel {
-        private List<Object[]> data;
-        private String[] columnNames;
-
-        public PendingTableModel(List<Object[]> pendingData, String[] headers) {
-            this.data = pendingData;
-            this.columnNames = headers;
-        }
-
-        @Override
-        public int getRowCount() {
-            return data.size();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        @Override
-        public String getColumnName(int column) {
-            return columnNames[column];
-        }
-
-        @Override
-        public Class<?> getColumnClass(int columnIndex) {
-            return (columnIndex == 0) ? Boolean.class : super.getColumnClass(columnIndex);
-        }
-
-        @Override
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return columnIndex == 0;
-        }
-
-        @Override
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            return data.get(rowIndex)[columnIndex];
-        }
-
-        @Override
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            if (columnIndex == 0) {
-                data.get(rowIndex)[columnIndex] = aValue;
-                fireTableCellUpdated(rowIndex, columnIndex);
-            }
-        }
-
-        public Object[] getRowData(int i) {
-            return data.get(i);
-        }
-    }
-
-
-    // -------------------------------Transaction to Payout-------------------------------
-    // Accepts a transaction and makes it into a Payout
-    public Payout toPayout(String transactionId, double amount, String consignorName) {
-        String consignorID = "T-" + String.format("%07d", ++payoutIdCtr);
-
-        Consignor tempConsignor = new Consignor(consignorName, consignorID, true);
-
-        return new Payout(tempConsignor, amount, LocalDate.now(), transactionId);
-    }
-
-
-    // -------------------------------Elements Radius editor-------------------------------
-    //
-    private void createUIComponents() {
-        Search = new Style.RoundedTextField(40);
-        transferButton = new Style.RoundedButton(40);
-    }
-
-    // -------------------------------Draws the History Table------------------------------
-    //
-    private void drawHistoryTable(Object[][] rowData, Object[] headers) {
-
-        //purpose: disables cell editing
-        DefaultTableModel model = new DefaultTableModel(rowData, headers) {
+    private void drawHistoryTable(Object[][] rows) {
+        // Standard Read-Only Table (Same as TransactionsPanel)
+        DefaultTableModel model = new DefaultTableModel(rows, historyHeaders) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -367,9 +123,111 @@ public class PayoutsPanel extends JPanel {
         HistoryTable.setModel(model);
     }
 
+    private void drawPendingTable(Object[][] rows) {
+        // Custom Table: Column 0 (Checkbox) MUST be editable
+        DefaultTableModel model = new DefaultTableModel(rows, pendingHeaders) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0; // Only the checkbox column is editable
+            }
 
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                // Renders the first column as a Boolean Checkbox
+                return columnIndex == 0 ? Boolean.class : super.getColumnClass(columnIndex);
+            }
+        };
+        PendingTable.setModel(model);
 
-//    public static void main(String[] args) {
-//
-//    }
+        // Lock checkbox column width
+        PendingTable.getColumnModel().getColumn(0).setMaxWidth(50);
+    }
+
+    private void prettifyTables() {
+        // Apply your custom formatters (Center alignment, currency, etc.)
+
+        // History Table
+        for (int i = 0; i < HistoryTable.getColumnCount(); i++) {
+            HistoryTable.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.PaddedCellRenderer(5, 5, 5, 5));
+        }
+        // Example: Align Amount column (Index 2) to right
+        HistoryTable.getColumnModel().getColumn(2).setCellRenderer(new TableFormatter.DollarDecimalRenderer(5, 5, 5, 5));
+
+        // Pending Table
+        for (int i = 1; i < PendingTable.getColumnCount(); i++) {
+            PendingTable.getColumnModel().getColumn(i).setCellRenderer(new TableFormatter.PaddedCellRenderer(5, 5, 5, 5));
+        }
+    }
+
+    private void updateCounters() {
+        double pendingTotal = 0;
+        for (Transaction t : transactionsHandler.getTransactionList()) {
+            if (!t.isPaid()) pendingTotal += t.getConsignorShare();
+        }
+
+        PayoutNum.setText(String.valueOf(historyData.length));
+        PendingNum.setText(String.format("$%.2f", pendingTotal));
+    }
+
+    // ========================================================
+    // LOGIC ACTIONS
+    // ========================================================
+
+    private void handleTransferAction() {
+        List<String> paidIDs = new ArrayList<>();
+        double totalPaid = 0;
+
+        // Loop through the table model to see what is checked
+        for (int i = 0; i < PendingTable.getRowCount(); i++) {
+            boolean isChecked = (Boolean) PendingTable.getValueAt(i, 0);
+            if (isChecked) {
+                String transID = (String) PendingTable.getValueAt(i, 1);
+                paidIDs.add(transID);
+            }
+        }
+
+        if (paidIDs.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No items selected.");
+            return;
+        }
+
+        // Process actual payments
+        for (String id : paidIDs) {
+            totalPaid += payoutsHandler.processPayout(id);
+        }
+
+        refresh(); // Reload tables
+        JOptionPane.showMessageDialog(this, "Paid $" + String.format("%.2f", totalPaid) + " for " + paidIDs.size() + " transactions.");
+    }
+
+    private Transaction findTransaction(String id) {
+        for (Transaction t : transactionsHandler.getTransactionList()) {
+            if (t.getTransactionId().equals(id)) return t;
+        }
+        return null;
+    }
+
+    private void runCombinedSearch() {
+        String text = Search.getText().trim().toLowerCase();
+        if (text.isEmpty() || text.equals("search payout id")) {
+            drawHistoryTable(historyData); // Reset
+            return;
+        }
+
+        // Filter Logic
+        List<Object[]> filtered = new ArrayList<>();
+        for (Object[] row : historyData) {
+            String id = row[0].toString().toLowerCase(); // Column 0 is ID
+            if (id.contains(text)) {
+                filtered.add(row);
+            }
+        }
+        drawHistoryTable(filtered.toArray(new Object[0][]));
+    }
+
+    // Helper for IntelliJ Designer
+    private void createUIComponents() {
+        Search = new Style.RoundedTextField(40);
+        transferButton = new Style.RoundedButton(40);
+    }
 }

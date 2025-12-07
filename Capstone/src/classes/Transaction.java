@@ -10,12 +10,16 @@ public class Transaction {
     private double totalAmount;
     private double storeRevenue;
     private double consignorShare;
+    private boolean isPaid;
+
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public Transaction(String transactionID, Item soldItem, LocalDateTime saleDate){
+    public Transaction(String transactionID, Item soldItem, LocalDateTime saleDate, boolean isPaid){
         this.transactionId = transactionID;
         this.soldItem = soldItem;
         this.saleDate = saleDate;
+        this.isPaid = isPaid;
+
         this.totalAmount = soldItem.getSellingPrice(); //add getSellingPrice() sa Item
         this.storeRevenue = soldItem.getSellingPrice() - soldItem.calculateConsignorShare();
         this.consignorShare = soldItem.calculateConsignorShare();
@@ -24,29 +28,30 @@ public class Transaction {
     public String getTransactionId() {
         return transactionId;
     }
-
     public double getTotalAmount() {
         return totalAmount;
     }
-
     public LocalDateTime getSaleDate() {
         return saleDate;
     }
-
     public Item getSoldItem() {
         return soldItem;
     }
-
     public double getConsignorShare() {
         return consignorShare;
     }
-
     public double getStoreRevenue() {
         return storeRevenue;
     }
+    public boolean isPaid(){
+        return isPaid;
+    }
 
+    public void balanceTransferred(){
+        isPaid = true;
+    }
 
     public String toCSV() {
-        return transactionId + "," + soldItem.getItemID() + "," + saleDate.format(format);
+        return transactionId + "," + soldItem.getItemID() + "," + saleDate.format(format) + "," + isPaid;
     }
 }
