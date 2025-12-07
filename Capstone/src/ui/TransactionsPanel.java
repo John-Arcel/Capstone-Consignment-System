@@ -83,6 +83,7 @@ public class TransactionsPanel extends JPanel{
             }
         };
         table.setModel(model);
+        table.getTableHeader().setReorderingAllowed(false);
     }
 
     private void prettifyTable() {

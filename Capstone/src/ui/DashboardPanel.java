@@ -142,6 +142,7 @@ public class DashboardPanel extends JPanel {
 
             itemIDField.setText("");
             itemDetail.setModel(new DefaultTableModel());
+            itemDetail.getTableHeader().setReorderingAllowed(false);
             refresh();
         });
 
@@ -248,6 +249,7 @@ public class DashboardPanel extends JPanel {
         };
 
         transactions.setModel(model);
+        transactions.getTableHeader().setReorderingAllowed(false);
         transactions.setRowHeight(25);
     }
 
@@ -374,5 +376,6 @@ public class DashboardPanel extends JPanel {
             }
         };
         table.setModel(model);
+        table.getTableHeader().setReorderingAllowed(false);
     }
 }

@@ -121,6 +121,7 @@ public class PayoutsPanel extends JPanel {
             }
         };
         HistoryTable.setModel(model);
+        HistoryTable.getTableHeader().setReorderingAllowed(false);
     }
 
     private void drawPendingTable(Object[][] rows) {
@@ -141,6 +142,7 @@ public class PayoutsPanel extends JPanel {
 
         // Lock checkbox column width
         PendingTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        PendingTable.getTableHeader().setReorderingAllowed(false);
     }
 
     private void prettifyTables() {
