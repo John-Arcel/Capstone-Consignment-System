@@ -277,7 +277,7 @@ public class LogInForm extends JFrame {
 
                 //purpose: creating files
                 File config = new File(userFolder, "config.txt");
-                File consignors = new File(userFolder," consignors.csv");
+                File consignors = new File(userFolder,"consignors.csv");
                 File inventory = new File(userFolder, "inventory.csv");
                 File transactions = new File(userFolder, "transactions.csv");
                 File payouts = new File(userFolder, "payouts.csv");

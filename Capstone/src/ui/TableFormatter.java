@@ -18,7 +18,7 @@ public class TableFormatter {
             this.left = left;
             this.bottom = bottom;
             this.right = right;
-            setHorizontalAlignment(RIGHT); // align numbers to the right
+            setHorizontalAlignment(CENTER); // align numbers to the right
             setOpaque(true);
         }
 
@@ -78,6 +78,7 @@ public class TableFormatter {
             this.bottom = bottom;
             this.right = right;
             setOpaque(true); // important so background is visible
+            setHorizontalAlignment(CENTER);
         }
 
         @Override

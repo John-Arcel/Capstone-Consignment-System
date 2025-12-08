@@ -101,7 +101,7 @@ public class DashboardPanel extends JPanel {
             String[][] rows = {
                     {"Item ID", found.getItemID()},
                     {"Name", found.getName()},
-                    {"Price", String.format("₱%.2f", found.getSellingPrice())},
+                    {"Price", String.format("$%.2f", found.getSellingPrice())},
                     {"Quantity", String.valueOf(found.getQuantity() + (int) soldQty)},
                     {"Sold Quantity", String.valueOf(soldQty)},
                     {"Stock Left", String.valueOf(found.getQuantity())},
@@ -109,6 +109,11 @@ public class DashboardPanel extends JPanel {
             };
 
             drawTable(itemDetail, rows, cols);
+
+            // Apply simple padding
+            itemDetail.getColumnModel().getColumn(0).setCellRenderer(new TableFormatter.PaddedCellRenderer(0, 10, 0, 10));
+            // For value column, we use simple padding because data types are mixed (Strings and Numbers)
+            itemDetail.getColumnModel().getColumn(1).setCellRenderer(new TableFormatter.PaddedCellRenderer(0, 10, 0, 10));
         });
 
         // -----------------------------------------------------
@@ -216,6 +221,16 @@ public class DashboardPanel extends JPanel {
         }
 
         drawTable(itemsDue, rows, cols);
+
+        // --- APPLY RENDERERS ---
+        TableFormatter.PaddedCellRenderer centerRenderer = new TableFormatter.PaddedCellRenderer(0, 10, 0, 10);
+        itemsDue.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        itemsDue.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        itemsDue.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        itemsDue.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+
+        // Price -> Dollar Format
+        itemsDue.getColumnModel().getColumn(4).setCellRenderer(new TableFormatter.DollarDecimalRenderer(0, 10, 0, 10));
     }
 
     // -----------------------------------------------------
@@ -253,6 +268,17 @@ public class DashboardPanel extends JPanel {
         transactions.setModel(model);
         transactions.getTableHeader().setReorderingAllowed(false);
         transactions.setRowHeight(25);
+
+        // --- APPLY RENDERERS ---
+        TableFormatter.PaddedCellRenderer centerRenderer = new TableFormatter.PaddedCellRenderer(0, 10, 0, 10);
+        transactions.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        transactions.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+
+        // Amount -> Dollar Format
+        transactions.getColumnModel().getColumn(2).setCellRenderer(new TableFormatter.DollarDecimalRenderer(0, 10, 0, 10));
+
+        transactions.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+
     }
 
     private void setupAutoComplete() {

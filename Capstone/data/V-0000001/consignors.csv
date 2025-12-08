@@ -1,3 +1,4 @@
 S-0000001,Daisy,0.0,true
-S-0000002,John,8.4,true
-S-0000003,Mary,0.0,true
+S-0000002,John,0.0,true
+S-0000003,Mary,0.0,false
+S-0000004,Alex,0.0,true

@@ -2,76 +2,56 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.io.File;
+import java.util.Enumeration;
 
 public class Style {
 
-
-    //-------------This static class will make text Field Rounded-------------
+    //------------- Rounded Text Field -------------
     public static class RoundedTextField extends JTextField {
         private int cornerRadius;
 
         public RoundedTextField(int radius) {
             this.cornerRadius = radius;
-            setOpaque(false); // Make the square background transparent
-
-            // Add some padding so text doesn't touch the rounded corners
+            setOpaque(false);
             setBorder(new EmptyBorder(10, 15, 10, 15));
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
-
-            // Enable Antialiasing for smooth corners
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Draw the rounded background
             g2.setColor(getBackground());
             g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, cornerRadius, cornerRadius);
-
-            // Draw the text (super must be called AFTER we paint the background)
             super.paintComponent(g);
-
             g2.dispose();
         }
-
-
     }
 
-    //-------------This static class will make passwordField Rounded-------------
-    public static class RoundedPasswordField extends JPasswordField{
+    //------------- Rounded Password Field -------------
+    public static class RoundedPasswordField extends JPasswordField {
         private int cornerRadius;
 
         public RoundedPasswordField(int radius) {
             this.cornerRadius = radius;
-            setOpaque(false); // Make the square background transparent
-
-            // Add some padding so text doesn't touch the rounded corners
+            setOpaque(false);
             setBorder(new EmptyBorder(10, 15, 10, 15));
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
-
-            // Enable Antialiasing for smooth corners
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            // Draw the rounded background
             g2.setColor(getBackground());
             g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, cornerRadius, cornerRadius);
-
-            // Draw the text (super must be called AFTER we paint the background)
             super.paintComponent(g);
-
             g2.dispose();
         }
-
-
     }
 
-    //-------------This static class will make button Rounded-------------
+    //------------- Rounded Button -------------
     public static class RoundedButton extends JButton {
         private int cornerRadius;
 
@@ -79,12 +59,8 @@ public class Style {
             this.cornerRadius = radius;
             setOpaque(false);
             setBorder(new EmptyBorder(10, 15, 10, 15));
-
-            // THIS IS IMPORTANT:
-            // We must tell the button not to paint its own standard background
-            // so we can paint our rounded one instead.
             setContentAreaFilled(false);
-            setFocusPainted(false); // Optional: Removes the dotted line
+            setFocusPainted(false);
         }
 
         @Override
@@ -92,31 +68,92 @@ public class Style {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // 1. Check the state of the button (Hover? Clicked?)
             ButtonModel model = getModel();
-
             if (model.isPressed()) {
-                // If clicked, make the color darker
                 g2.setColor(getBackground().darker());
             } else if (model.isRollover()) {
-                // If hovered, make the color slightly brighter (or a custom color)
                 g2.setColor(getBackground().brighter());
             } else {
-                // Normal state
                 g2.setColor(getBackground());
             }
 
-            // --- NEW LOGIC ENDS HERE ---
-
-            // 2. Draw the rounded background with the chosen color
             g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, cornerRadius, cornerRadius);
-
             g2.dispose();
-
-            // 3. Draw the text/icon on top (Call super LAST)
             super.paintComponent(g);
         }
+    }
 
+    // ==========================================
+    //       FONT LOGIC (Now correctly Static)
+    // ==========================================
 
+    // FIXED: Added 'static' here so Main can call Style.applyGlobalFonts()
+    public static void applyGlobalFonts() {
+        // 1. Load the Regular font
+        String familyName = loadCustomFont("canva-sans-regular.otf");
+
+        // 2. Load the Bold font
+        loadCustomFont("canva-sans-bold.otf");
+
+        // 3. Apply it globally
+        if (familyName != null) {
+            updateUIManagerWithFont(familyName);
+        }
+    }
+
+    // --- INTERNAL HELPERS (Private) ---
+
+    private static String loadCustomFont(String filename) {
+        try {
+            String[] pathsToCheck = {
+                    "Capstone/Image/" + filename,
+                    "Image/" + filename,
+                    "src/Image/" + filename
+            };
+
+            File fontFile = null;
+            for (String path : pathsToCheck) {
+                File f = new File(path);
+                if (f.exists()) {
+                    fontFile = f;
+                    break;
+                }
+            }
+
+            if (fontFile == null) {
+                System.err.println("❌ Style Error: Could not find font file: " + filename);
+                return null;
+            }
+
+            Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+
+            return font.getFamily();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static void updateUIManagerWithFont(String newFontFamily) {
+        Enumeration<Object> keys = UIManager.getDefaults().keys();
+
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+
+            if (value instanceof FontUIResource) {
+                FontUIResource original = (FontUIResource) value;
+
+                FontUIResource newFont = new FontUIResource(
+                        newFontFamily,
+                        original.getStyle(),
+                        original.getSize()
+                );
+
+                UIManager.put(key, newFont);
+            }
+        }
     }
 }
