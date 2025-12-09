@@ -407,7 +407,7 @@
                     <properties>
                       <background color="-13726737"/>
                       <font size="16"/>
-                      <foreground color="-16777216"/>
+                      <foreground color="-854793"/>
                       <preferredSize width="400" height="55"/>
                     </properties>
                   </component>
@@ -451,7 +451,7 @@
                     <properties>
                       <background color="-13726737"/>
                       <font size="16"/>
-                      <foreground color="-16777216"/>
+                      <foreground color="-854793"/>
                       <preferredSize width="60" height="55"/>
                       <text value=""/>
                     </properties>
@@ -508,7 +508,7 @@
                     <properties>
                       <background color="-13726737"/>
                       <font size="16"/>
-                      <foreground color="-16777216"/>
+                      <foreground color="-854793"/>
                       <preferredSize width="150" height="55"/>
                       <text value=""/>
                     </properties>

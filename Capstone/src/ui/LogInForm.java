@@ -424,6 +424,17 @@ public class LogInForm extends JFrame {
         Login_Password_TextField = new Style.RoundedPasswordField(60);
 
         Log_In_Button_Directory = new Style.RoundedButton(60);
+        styleTextField(Register_Username_Text_Field);
+        styleTextField(Register_Password_TextField);
+        styleTextField(Commision_Rate_TextField);
+        styleTextField(Login_Username_TextField);
+        styleTextField(Contact_Number_Text_Field);
+        styleTextField(Login_Password_TextField);
+    }
 
+
+    private void styleTextField(JTextField field) {
+        field.setForeground(Color.WHITE);      // Makes the typed text White
+        field.setCaretColor(Color.WHITE);      // Makes the blinking cursor White
     }
 }
