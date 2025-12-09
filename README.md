@@ -56,7 +56,7 @@ From the name itself the following classes under this handle significant operati
 They essentially serves as Data Access Object (DAO) used to separate low-level data accessing operations from the high-level business logic of our system.
 It acts as a mediator between the logic behind the system and the data and files.
 
-## SupplierHandler
+### SupplierHandler
 It is responsible for handling all file input/output (I/O) operations, ensuring that the in-memory List<Consignor> remains synchronized with the persistent data stored in a CSV file. 
 The Handler's internal list facilitates the rapid pushing of data needed by the dashboard and other GUI panels. 
 
