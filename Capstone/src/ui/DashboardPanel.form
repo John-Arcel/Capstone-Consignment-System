@@ -272,7 +272,7 @@
             <properties>
               <font size="14" style="0"/>
               <foreground color="-854793"/>
-              <text value="Enter Item ID:"/>
+              <text value="Enter Item Name/ID:"/>
             </properties>
           </component>
           <component id="607ae" class="javax.swing.JTextField" binding="itemIDField" custom-create="true">

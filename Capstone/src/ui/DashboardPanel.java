@@ -52,8 +52,8 @@ public class DashboardPanel extends JPanel {
         add(dashboardPanel, BorderLayout.CENTER);
         itemsDueScrollPane.setViewportView(itemsDue);
 
-        itemsDue.setOpaque(false);
-        itemsDue.setBackground(new Color(0, 0, 0, 0));
+        itemsDue.setOpaque(true);
+        itemsDue.setBackground(new Color(255, 255, 255));
         itemsDue.setShowGrid(true);
 
         itemsDueScrollPane.setOpaque(false);
