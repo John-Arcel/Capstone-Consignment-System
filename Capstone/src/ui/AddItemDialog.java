@@ -159,17 +159,22 @@ public class AddItemDialog extends JDialog {
 
     private void onOK() {
         boolean ifAllFilled = isFilled();
-       //purpose: if all fields are filled, continue with ok button (closes the dialog)
+
         if (ifAllFilled) {
             confirmed = true;
             dispose();
         }
-        //purpose: if not all fields are filled, put red border on unfilled fields and show message dialog
         else {
             resetFieldBorders();
-            for (JComponent f : fields) { f.setBorder(RED_BORDER); }
+            // Highlight empty fields
+            for (JComponent f : fields) {
+                if (f instanceof JTextField && ((JTextField) f).getText().isEmpty()) {
+                    f.setBorder(RED_BORDER);
+                }
+            }
 
-            JOptionPane.showMessageDialog(this,
+            // REPLACED: Use your custom Style message
+            Style.showCustomMessage(this,
                     "Please fill in all required fields.",
                     "Missing Information",
                     JOptionPane.ERROR_MESSAGE);
@@ -181,11 +186,23 @@ public class AddItemDialog extends JDialog {
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
+        // 1. Setup the Date Spinner (Your existing code)
         SpinnerDateModel model = new SpinnerDateModel();
         dateReceivedField = new JSpinner(model);
         JSpinner.DateEditor editor = new JSpinner.DateEditor(dateReceivedField, "yyyy-MM-dd");
         dateReceivedField.setEditor(editor);
         dateReceivedField.setValue(new Date());
+
+        // 2. Setup Custom OK Button
+        buttonOK = new Style.RoundedButton(15); // Use your custom class
+        buttonOK.setText("OK");
+        buttonOK.setBackground(Style.BLUE_COLOR);
+        buttonOK.setForeground(Color.WHITE);
+
+        // 3. Setup Custom Cancel Button
+        buttonCancel = new Style.RoundedButton(15); // Use your custom class
+        buttonCancel.setText("Cancel");
+        buttonCancel.setBackground(Style.RED_COLOR);
+        buttonCancel.setForeground(Color.WHITE);
     }
 }

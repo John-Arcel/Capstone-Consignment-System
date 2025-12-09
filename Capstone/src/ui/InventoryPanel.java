@@ -72,7 +72,7 @@ public class InventoryPanel extends JPanel {
 
             //purpose: error dialog box if user did not select row
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this,
+                Style.showCustomMessage(this,
                         "Please select a row first!",
                         "No Selection",
                         JOptionPane.WARNING_MESSAGE);
@@ -80,17 +80,19 @@ public class InventoryPanel extends JPanel {
             }
 
             //purpose: show confirm dialog window to confirm deletion
-            int result = JOptionPane.showConfirmDialog(
-                    this,
+            boolean confirmed = Style.showCustomConfirm(this,
                     "Are you sure you want to delete the selected item?",
-                    "Confirm Deletion",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE
-            );
+                    "Confirm Deletion");
 
             //purpose: if deletion is confirmed, delete the row and update total items/consignors
-            if (result == JOptionPane.YES_OPTION) {
-                inventoryHandler.deleteItem(dataTable.getValueAt(selectedRow, 1).toString());
+            if (confirmed) {
+                // Get the ID from the selected row (Assuming ID is at column 1)
+                String itemId = dataTable.getValueAt(selectedRow, 1).toString();
+
+                inventoryHandler.deleteItem(itemId);
+
+                // Optional: Show success message
+                Style.showCustomMessage(this, "Item deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                 refresh();
             }

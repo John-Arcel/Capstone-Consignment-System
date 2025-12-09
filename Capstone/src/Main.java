@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        // 1. Delegate styling to your Style class
+        // Add custom font
         Style.applyGlobalFonts();
 
         SwingUtilities.invokeLater(LogInForm::new);

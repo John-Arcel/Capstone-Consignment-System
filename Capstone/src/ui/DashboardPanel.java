@@ -77,7 +77,7 @@ public class DashboardPanel extends JPanel {
             String id = itemIDField.getText().trim();
 
             if (id.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter a valid ID.");
+                Style.showCustomMessage(this, "Enter a valid ID.", "Input Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -87,7 +87,7 @@ public class DashboardPanel extends JPanel {
                     .orElse(null);
 
             if (found == null) {
-                JOptionPane.showMessageDialog(this, "Item not found.");
+                Style.showCustomMessage(this, "Item ID not found.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -111,9 +111,10 @@ public class DashboardPanel extends JPanel {
             drawTable(itemDetail, rows, cols);
 
             // Apply simple padding
-            itemDetail.getColumnModel().getColumn(0).setCellRenderer(new TableFormatter.PaddedCellRenderer(0, 10, 0, 10));
+            itemDetail.getColumnModel().getColumn(0).setCellRenderer(new TableFormatter.PaddedCellRenderer(10, 10, 10, 10));
             // For value column, we use simple padding because data types are mixed (Strings and Numbers)
-            itemDetail.getColumnModel().getColumn(1).setCellRenderer(new TableFormatter.PaddedCellRenderer(0, 10, 0, 10));
+            itemDetail.getColumnModel().getColumn(1).setCellRenderer(new TableFormatter.PaddedCellRenderer(10, 10, 10, 10));
+            itemDetail.setRowHeight(25);
         });
 
         // -----------------------------------------------------
@@ -121,8 +122,10 @@ public class DashboardPanel extends JPanel {
         // -----------------------------------------------------
         sellItemButton.addActionListener(e -> {
             String id = itemIDField.getText().trim();
+
+            // Validation Checks (Using Custom Style Message)
             if (id.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Enter a valid ID.");
+                Style.showCustomMessage(this, "Enter a valid ID.", "Input Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -132,27 +135,38 @@ public class DashboardPanel extends JPanel {
                     .orElse(null);
 
             if (item == null) {
-                JOptionPane.showMessageDialog(this, "Item ID not found.");
+                Style.showCustomMessage(this, "Item ID not found.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            System.out.println(item.getQuantity());
 
             if (isSoldOut(item)) {
-                JOptionPane.showMessageDialog(this, "No more stock available!");
+                Style.showCustomMessage(this, "No more stock available!", "Out of Stock", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
+            // 2. Confirmation Dialog (Using Custom Style Confirm)
+            boolean confirmed = Style.showCustomConfirm(this, "Are you sure you want to sell this item?", "Confirm Sale");
+
+            // If user clicked "Cancel" or "X", stop here.
+            if (!confirmed) {
+                return;
+            }
+
+            // Process Transaction
             transactionsHandler.processSale(item.getItemID());
 
-            JOptionPane.showMessageDialog(this, "Item Sold!");
+            // Success Message
+            Style.showCustomMessage(this, "Item Sold!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
+            // Update UI
             itemIDField.setText("");
+
+            // NOTE: This resets the table model. Ensure you re-apply your
+            // padded cell renderers inside 'refresh()' or immediately after this line.
             itemDetail.setModel(new DefaultTableModel());
             itemDetail.getTableHeader().setReorderingAllowed(false);
             refresh();
         });
-
     }
 
     public void refresh() {

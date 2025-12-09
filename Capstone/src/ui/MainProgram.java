@@ -97,18 +97,17 @@ public class MainProgram extends JFrame{
         inventoryButton.addActionListener(listener);
         transactionsButton.addActionListener(listener);
         payoutsButton.addActionListener(listener);
-        
+
         logoutButton.addActionListener(e -> {
-            int choice = JOptionPane.showConfirmDialog(
+            // Use your custom Style method for the confirmation dialog
+            boolean confirmed = Style.showCustomConfirm(
                     this,
                     "Are you sure you want to log out?",
-                    "Confirm Logout",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE
+                    "Confirm Logout"
             );
 
-            // 2. Check the User's Choice
-            if (choice == JOptionPane.YES_OPTION) {
+            // If the user clicked "Confirm", proceed with logout
+            if (confirmed) {
                 inventoryHandler.saveInventory();
                 supplierHandler.saveSuppliers();
                 transactionsHandler.saveTransactions();

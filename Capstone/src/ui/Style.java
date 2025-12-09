@@ -156,4 +156,67 @@ public class Style {
             }
         }
     }
+
+
+    // --- COLOR PALETTE ---
+    public static final Color BLUE_COLOR = new Color(46, 139, 239);
+    public static final Color RED_COLOR = new Color(239, 83, 80);
+    public static final Color GRAY_COLOR = new Color(108, 117, 125);
+
+    // --- 1. HELPER: Show a simple message (1 Button: OK) ---
+    public static void showCustomMessage(Component parent, String message, String title, int messageType) {
+        Style.RoundedButton btnOk = new Style.RoundedButton(15);
+        btnOk.setText("OK");
+        btnOk.setForeground(Color.WHITE);
+
+        // FIX: Automatically set color based on message type
+        if (messageType == JOptionPane.ERROR_MESSAGE || messageType == JOptionPane.WARNING_MESSAGE) {
+            btnOk.setBackground(Style.RED_COLOR); // Red for errors/warnings
+        } else {
+            btnOk.setBackground(Style.BLUE_COLOR); // Blue for success
+        }
+
+        // Close window logic
+        btnOk.addActionListener(evt -> SwingUtilities.getWindowAncestor(btnOk).dispose());
+
+        Object[] options = { btnOk };
+
+        JOptionPane.showOptionDialog(parent, message, title,
+                JOptionPane.DEFAULT_OPTION, messageType, null, options, btnOk);
+    }
+    // --- 2. HELPER: Show a Confirm dialog (2 Buttons: Confirm/Cancel) ---
+    // Returns TRUE if "Confirm" is clicked, FALSE otherwise.
+    public static boolean showCustomConfirm(Component parent, String message, String title) {
+        // Yes Button
+        RoundedButton btnYes = new RoundedButton(15);
+        btnYes.setText("Confirm");
+        btnYes.setBackground(BLUE_COLOR);
+        btnYes.setForeground(Color.WHITE);
+
+        // No Button
+        RoundedButton btnNo = new RoundedButton(15);
+        btnNo.setText("Cancel");
+        btnNo.setBackground(RED_COLOR);
+        btnNo.setForeground(Color.WHITE);
+
+        final boolean[] confirmed = {false};
+
+        // Close logic
+        btnYes.addActionListener(evt -> {
+            confirmed[0] = true;
+            SwingUtilities.getWindowAncestor(btnYes).dispose();
+        });
+
+        btnNo.addActionListener(evt -> {
+            confirmed[0] = false;
+            SwingUtilities.getWindowAncestor(btnNo).dispose();
+        });
+
+        Object[] options = {btnYes, btnNo};
+
+        JOptionPane.showOptionDialog(parent, message, title,
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, btnYes);
+
+        return confirmed[0];
+    }
 }

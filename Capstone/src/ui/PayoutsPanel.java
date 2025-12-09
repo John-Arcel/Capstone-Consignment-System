@@ -189,7 +189,15 @@ public class PayoutsPanel extends JPanel {
         }
 
         if (paidIDs.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No items selected.");
+            Style.showCustomMessage(this, "No items selected.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean confirmed = Style.showCustomConfirm(this,
+                "Are you sure you want to process payments for " + paidIDs.size() + " items?",
+                "Confirm Payout");
+
+        if (!confirmed) {
             return;
         }
 
@@ -199,8 +207,8 @@ public class PayoutsPanel extends JPanel {
         }
 
         refresh(); // Reload tables
-        JOptionPane.showMessageDialog(this, "Paid $" + String.format("%.2f", totalPaid) + " for " + paidIDs.size() + " transactions.");
-    }
+        String successMsg = "Paid $" + String.format("%.2f", totalPaid) + " for " + paidIDs.size() + " transactions.";
+        Style.showCustomMessage(this, successMsg, "Payout Successful", JOptionPane.INFORMATION_MESSAGE);    }
 
     private Transaction findTransaction(String id) {
         for (Transaction t : transactionsHandler.getTransactionList()) {
