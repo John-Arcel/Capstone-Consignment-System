@@ -281,7 +281,7 @@ public class LogInForm extends JFrame {
                 File inventory = new File(userFolder, "inventory.csv");
                 File transactions = new File(userFolder, "transactions.csv");
                 File payouts = new File(userFolder, "payouts.csv");
-
+                File adminFile = new File("Capstone/data/admin_registry.csv");
                 try{
                    config.createNewFile();
                    consignors.createNewFile();
@@ -296,9 +296,15 @@ public class LogInForm extends JFrame {
 
                     //purpose: append the user and password information of new user to admin_registry.csv
                     //         format of this is (id of user,username,password)  Ex. V-0000001,John,Password123!
-                    try(BufferedWriter br = new BufferedWriter((new FileWriter("Capstone/data/admin_registry.csv",true)))){
+                    boolean appendNewLine = adminFile.exists() && adminFile.length() > 0;
+                    try(BufferedWriter br = new BufferedWriter((new FileWriter(adminFile,true)))){
+
+                        if(appendNewLine){
+                            br.newLine();
+                        }
+
                         br.write(new_user.getID() + "," + userName + "," + password);
-                        br.newLine();
+
                     }
 
                 } catch (IOException ex) {
@@ -307,6 +313,7 @@ public class LogInForm extends JFrame {
 
                 // Todo once the details are registered it will go to dashboard
                 // Todo remove nala ni 2 lines of code kay temporary rana na mo balik sa welcome page
+                    backButton.setVisible(false);
                     LogInPanel.setBackground(new Color(0x1F4E79));
                     cardLayout.show(Main_Panel, "welcome");
             }
