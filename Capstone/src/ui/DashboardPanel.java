@@ -94,7 +94,8 @@ public class DashboardPanel extends JPanel {
             // Calculate sold quantity dynamically
             // goes through and counts all the transactions object made of that item
             long soldQty = transactionsHandler.getTransactionList().stream()
-                    .filter(t -> t.getSoldItem().getItemID().equalsIgnoreCase(found.getItemID()))
+                    .filter(t -> t.getSoldItem() != null && // <--- SAFETY CHECK
+                            t.getSoldItem().getItemID().equalsIgnoreCase(found.getItemID()))
                     .count();
 
             String[] cols = {"Field", "Value"};
@@ -141,6 +142,11 @@ public class DashboardPanel extends JPanel {
 
             if (isSoldOut(item)) {
                 Style.showCustomMessage(this, "No more stock available!", "Out of Stock", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if(item.getStatus().equals("EXPIRED")){
+                Style.showCustomMessage(this, "Cannot sell, item expired!", "Item Expired", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -218,8 +224,7 @@ public class DashboardPanel extends JPanel {
 
         // Filter: Item must be AVAILABLE AND ReturnDate is Today or before
         List<Item> dueItems = allItems.stream()
-                .filter(i -> i.getReturnDate().isBefore(today) || i.getReturnDate().isEqual(today))
-                .filter(i -> i.getStatus().equals("AVAILABLE"))
+                .filter(i -> i.getStatus().equals("EXPIRED"))
                 .toList();
 
         String[] cols = {"Item ID", "Name", "Owner", "Expiry Date", "Price"};
@@ -231,7 +236,7 @@ public class DashboardPanel extends JPanel {
             rows[i][1] = item.getName();
             rows[i][2] = item.getOwner().getName();
             rows[i][3] = item.getReturnDate().toString();
-            rows[i][4] = String.format("%.2f", item.getSellingPrice());
+            rows[i][4] = "$" + String.format("%.2f", item.getSellingPrice());
         }
 
         drawTable(itemsDue, rows, cols);
@@ -265,7 +270,7 @@ public class DashboardPanel extends JPanel {
             Transaction t = allTransactions.get(listIndex);
 
             data[i][0] = t.getTransactionId();
-            data[i][1] = t.getSoldItem().getName();
+            data[i][1] = t.getItemName();
             data[i][2] = String.format("$%.2f", t.getTotalAmount());
             data[i][3] = t.getSaleDate().toLocalDate().toString();
 

@@ -106,7 +106,7 @@ public class PayoutsHandler {
             }
         }
         newID++;
-        Consignor owner = supplierHandler.getConsignorByID(t.getSoldItem().getOwner().getID());
+        Consignor owner = supplierHandler.getConsignorByName(t.getConsignorName());
         Payout p = new Payout(
                 owner,
                 t.getConsignorShare(),

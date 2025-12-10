@@ -38,10 +38,6 @@ public class PayoutsPanel extends JPanel {
     private Object[][] pendingData;
     private final String[] pendingHeaders = {"Select", "Transaction ID", "Total Amount", "Share", "Consignor"};
 
-    public static int payoutIdCtr;
-    int countPending = 0; // for the total pending display
-    int countPayout = 0; // for the total payout displayed
-
     public PayoutsPanel(TransactionsHandler t, PayoutsHandler p, SupplierHandler s) {
         this.transactionsHandler = t;
         this.payoutsHandler = p;
@@ -93,7 +89,7 @@ public class PayoutsPanel extends JPanel {
                         tr.getTransactionId(),
                         String.format("%.2f", tr.getTotalAmount()),
                         String.format("%.2f", tr.getConsignorShare()),
-                        tr.getSoldItem().getOwner().getName()
+                        tr.getConsignorName()
                 });
             }
         }

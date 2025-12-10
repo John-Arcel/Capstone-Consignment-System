@@ -62,7 +62,7 @@ public abstract class Item {
     public LocalDate getReturnDate(){ return returnDate; }
 
     public double calculateConsignorShare(){
-        return sellingPrice * (1 - commissionRate); // supplier/owner gets 75% of the sale
+        return sellingPrice * (1 - commissionRate); // supplier/owner gets the other percent of the sale
     }
     public void setStatus(State s){
         status = s;

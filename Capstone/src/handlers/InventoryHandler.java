@@ -75,6 +75,8 @@ public class InventoryHandler {
         } catch (IOException e) {
             System.out.println("Error: Loading inventory");
         }
+
+        checkExpiry();
     }
 
     // writes from item array to csv file
@@ -99,7 +101,7 @@ public class InventoryHandler {
         int ctr = 0;
         for(int i = 0; i<inventory_list.size(); i++){
             Item item = inventory_list.get(i);
-            if(item.getStatus().equals("AVAILABLE")){
+            if(!item.getStatus().equals("SOLD")){
                 matrix[ctr][0] = item.getName();
                 matrix[ctr][1] = item.getItemID();
                 matrix[ctr][2] = item.getOwner().getName();
@@ -118,7 +120,7 @@ public class InventoryHandler {
     public int getAvailableItems(){
         int counter = 0;
         for(Item i : inventory_list){
-            if(i.getStatus().equals("AVAILABLE")){
+            if(!i.getStatus().equals("SOLD")){
                 counter++;
             }
         }
@@ -130,8 +132,9 @@ public class InventoryHandler {
         if(consignor == null){
             consignor = supplierHandler.addConsignor(owner);
         }
-
-        supplierHandler.changeConsignorStatus(consignor);
+        if(!consignor.isActive()){
+            supplierHandler.changeConsignorStatus(consignor);
+        }
 
         int newID = 0;
         for(Item i : inventory_list){
@@ -169,6 +172,8 @@ public class InventoryHandler {
             );
         }
         inventory_list.add(item);
+
+        checkExpiry();
     }
 
     public void deleteItem(String itemID){
@@ -193,6 +198,25 @@ public class InventoryHandler {
             if(i.getItemID().equals(itemID)) return i;
         }
         return null;
+    }
+
+    private void checkExpiry(){
+        LocalDate today = LocalDate.now();
+
+        for (Item item : inventory_list) {
+            // Only check items that are currently marked AVAILABLE
+            if (item.getStatus().equals("AVAILABLE")) {
+
+                // Check if the Return Date has passed
+                if (item.getReturnDate().isBefore(today) || item.getReturnDate().isEqual(today)) {
+
+                    // Update Status
+                    item.setStatus(Item.State.EXPIRED);
+
+                    System.out.println("Item Expired: " + item.getName());
+                }
+            }
+        }
     }
 
     public List<Item> getInventoryList(){
