@@ -425,7 +425,7 @@
                     <properties>
                       <font size="16"/>
                       <foreground color="-16777216"/>
-                      <text value="Commission Rate"/>
+                      <text value="Commission Rate (%)"/>
                     </properties>
                   </component>
                   <component id="90744" class="javax.swing.JLabel">
@@ -500,7 +500,7 @@
                   </vspacer>
                   <component id="26697" class="javax.swing.JTextField" binding="Commision_Rate_TextField" custom-create="true">
                     <constraints>
-                      <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                      <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="2" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
                       </grid>
                       <gridbag weightx="1.0" weighty="0.0"/>
@@ -511,19 +511,6 @@
                       <foreground color="-854793"/>
                       <preferredSize width="150" height="55"/>
                       <text value=""/>
-                    </properties>
-                  </component>
-                  <component id="e1351" class="javax.swing.JLabel">
-                    <constraints>
-                      <grid row="13" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="0.0" weighty="0.0"/>
-                    </constraints>
-                    <properties>
-                      <font size="20"/>
-                      <foreground color="-16777216"/>
-                      <horizontalAlignment value="2"/>
-                      <horizontalTextPosition value="2"/>
-                      <text value="%"/>
                     </properties>
                   </component>
                 </children>

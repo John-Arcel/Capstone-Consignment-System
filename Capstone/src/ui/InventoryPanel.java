@@ -55,7 +55,7 @@ public class InventoryPanel extends JPanel {
             if(dialog.isConfirmed()) {
                 ArrayList<Object> newItemData = dialog.getAllFieldInput();
                 inventoryHandler.addItem(
-                        (String) newItemData.getFirst(),
+                        (String) newItemData.get(0),
                         (String) newItemData.get(1),
                         (String) newItemData.get(2),
                         (String) newItemData.get(3),
