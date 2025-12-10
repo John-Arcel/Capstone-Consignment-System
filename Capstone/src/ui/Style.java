@@ -84,24 +84,24 @@ public class Style {
     }
 
     // ==========================================
-    //       FONT LOGIC (Now correctly Static)
+    //       For Custom Font
     // ==========================================
 
-    // FIXED: Added 'static' here so Main can call Style.applyGlobalFonts()
+
     public static void applyGlobalFonts() {
-        // 1. Load the Regular font
+        //Load the Regular font
         String familyName = loadCustomFont("canva-sans-regular.otf");
 
-        // 2. Load the Bold font
+        //Load the Bold font
         loadCustomFont("canva-sans-bold.otf");
 
-        // 3. Apply it globally
+        //Apply it globally
         if (familyName != null) {
             updateUIManagerWithFont(familyName);
         }
     }
 
-    // --- INTERNAL HELPERS (Private) ---
+    // --- INTERNAL HELPERS ---
 
     private static String loadCustomFont(String filename) {
         try {
@@ -158,6 +158,11 @@ public class Style {
     }
 
 
+
+    // ==========================================
+    //       For Custom JDialog
+    // ==========================================
+
     // --- COLOR PALETTE ---
     public static final Color BLUE_COLOR = new Color(46, 139, 239);
     public static final Color RED_COLOR = new Color(239, 83, 80);
@@ -169,7 +174,7 @@ public class Style {
         btnOk.setText("OK");
         btnOk.setForeground(Color.WHITE);
 
-        // FIX: Automatically set color based on message type
+        // Automatically set color based on message type
         if (messageType == JOptionPane.ERROR_MESSAGE || messageType == JOptionPane.WARNING_MESSAGE) {
             btnOk.setBackground(Style.RED_COLOR); // Red for errors/warnings
         } else {
@@ -184,6 +189,7 @@ public class Style {
         JOptionPane.showOptionDialog(parent, message, title,
                 JOptionPane.DEFAULT_OPTION, messageType, null, options, btnOk);
     }
+
     // --- 2. HELPER: Show a Confirm dialog (2 Buttons: Confirm/Cancel) ---
     // Returns TRUE if "Confirm" is clicked, FALSE otherwise.
     public static boolean showCustomConfirm(Component parent, String message, String title) {
