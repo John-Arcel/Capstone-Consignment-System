@@ -252,7 +252,7 @@
               <minimumSize width="800" height="500"/>
               <opaque value="true"/>
               <preferredSize width="600" height="350"/>
-              <visible value="false"/>
+              <visible value="true"/>
             </properties>
             <clientProperties>
               <html.disable class="java.lang.Boolean" value="false"/>
@@ -272,8 +272,8 @@
                   <font name="Century Gothic" size="94" style="1"/>
                   <foreground color="-854793"/>
                   <horizontalAlignment value="0"/>
-                  <preferredSize width="76" height="100"/>
-                  <text value="CoStock"/>
+                  <preferredSize width="76" height="120"/>
+                  <text value="CoSign"/>
                   <verticalTextPosition value="1"/>
                 </properties>
               </component>

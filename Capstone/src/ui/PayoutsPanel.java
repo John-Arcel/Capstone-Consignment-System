@@ -87,8 +87,8 @@ public class PayoutsPanel extends JPanel {
                 pendingList.add(new Object[]{
                         false, // Checkbox starts unchecked
                         tr.getTransactionId(),
-                        String.format("%.2f", tr.getTotalAmount()),
-                        String.format("%.2f", tr.getConsignorShare()),
+                        String.format("$%.2f", tr.getTotalAmount()),
+                        String.format("$%.2f", tr.getConsignorShare()),
                         tr.getConsignorName()
                 });
             }
